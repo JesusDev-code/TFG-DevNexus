@@ -1,0 +1,77 @@
+<div class="inbox-wrapper">
+
+  <div class="inbox-header">
+    <div class="header-text">
+      <h2>Tickets <span class="highlight">Activos</span></h2>
+      <p>Gestiona las incidencias desde aquí.</p>
+    </div>
+    
+    <div class="stats-mini-badge" *ngIf="(chats$ | async)?.length as total">
+      {{ total }} Pendientes
+    </div>
+  </div>
+
+  <div class="inbox-list-container">
+    
+    <ion-list class="glass-list" lines="none">
+      
+      <ion-item *ngFor="let chat of chats$ | async" 
+                button 
+                (click)="abrirChat(chat)" 
+                class="glass-item"
+                [class.unread]="chat.estado === 'PENDIENTE'"
+                [class.resolved]="chat.estado === 'RESUELTO'">
+        
+        <div class="item-content-wrapper">
+          <div class="row-top">
+            <span class="user-name">
+              <ion-icon name="person-circle-outline"></ion-icon> 
+              {{ chat.usuarioNombre || 'Usuario' }}
+            </span>
+            
+            <span class="time-stamp" *ngIf="chat.fecha?.toDate">
+              {{ chat.fecha.toDate() | date:'HH:mm' }}
+            </span>
+          </div>
+          
+          <div class="row-bottom">
+            <p class="preview-msg">
+              {{ chat.estado === 'RESUELTO' ? '✅ Incidencia resuelta' : chat.ultimoMensaje }}
+            </p>
+            
+            <div class="new-badge" *ngIf="chat.estado === 'PENDIENTE'">
+              NUEVO
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons" slot="end" (click)="$event.stopPropagation()">
+          <ion-button *ngIf="chat.estado !== 'RESUELTO'" 
+                      fill="clear" 
+                      class="btn-action resolve"
+                      (click)="resolverTicket($event, chat)"
+                      title="Marcar como Resuelto">
+            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+          </ion-button>
+
+          <ion-button fill="clear" 
+                      class="btn-action delete"
+                      (click)="borrarTicket($event, chat)"
+                      title="Eliminar">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      
+      </ion-item>
+    </ion-list>
+
+    <div *ngIf="(chats$ | async)?.length === 0" class="empty-state-glass">
+      <div class="icon-circle">
+        <ion-icon name="file-tray-outline"></ion-icon>
+      </div>
+      <h3>Todo limpio</h3>
+      <p>No hay tickets pendientes de revisión.</p>
+    </div>
+
+  </div>
+</div>

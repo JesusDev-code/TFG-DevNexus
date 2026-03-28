@@ -1,0 +1,97 @@
+<ion-content [fullscreen]="true" class="bg-transparent">
+  
+  <div class="main-content-wrapper">
+    
+    <div class="hero-container">
+      <ion-grid>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="12" size-lg="6" class="hero-text-col">
+            <h1 class="hero-title">Impulsa tu carrera <br> como <span class="text-gradient">desarrollador.</span></h1>
+            <p class="hero-description">
+              Documenta tus proyectos, recibe feedback de mentores y conecta con una comunidad apasionada por el código.
+            </p>
+            <div class="slogans-group">
+              <div class="slogan-item-pill highlight">
+                <span class="status-dot"></span> Únete a la comunidad
+              </div>
+              <div class="slogan-item-pill ghost">
+                Explorar proyectos
+              </div>
+            </div>
+          </ion-col>
+
+          <ion-col size="12" size-lg="6" class="hero-visual">
+            <div class="visual-wrapper">
+              <div class="glow-aura"></div>
+              <video 
+                #heroVideo
+                autoplay 
+                muted 
+                loop 
+                playsinline
+                preload="auto"
+                class="main-hero-video">
+                <source src="assets/videos/tfg-video.mp4" type="video/mp4">
+                Tu navegador no soporta la reproducción de video.
+              </video>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div class="services-grid-container">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="4" *ngFor="let card of cards">
+            <div class="service-box">
+              <div class="service-inner">
+                <div class="icon-glow-box">
+                  <ion-icon [name]="card.icon"></ion-icon>
+                </div>
+                <h3>{{card.title}}</h3>
+                <p>{{card.desc}}</p>
+                <div class="box-light"></div>
+              </div>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div class="tech-marquee">
+      <div class="tech-item angular">
+        <svg viewBox="0 0 250 250" fill="currentColor"><path d="M125 30L31.9 63.2l14.2 123.1L125 230l78.9-43.7 14.2-123.1L125 30zm0 158.2l-55.8-30.9 12.6-30.4h86.4l12.6 30.4L125 188.2z"/></svg>
+        <span class="label">Angular</span>
+      </div>
+      <div class="tech-item ionic">
+        <svg viewBox="0 0 512 512" fill="currentColor"><path d="M256 64C150 64 64 150 64 256s86 192 192 192 192-86 192-192S362 64 256 64zm0 346c-84.9 0-154-69.1-154-154 0-84.9 69.1-154 154-154 84.9 0 154 69.1 154 154 0 84.9-69.1 154-154 154z"/><circle cx="256" cy="256" r="48"/><circle cx="376" cy="146" r="26"/></svg>
+        <span class="label">Ionic</span>
+      </div>
+      <div class="tech-item spring">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 12.6c-.2-.6-1.5-2.7-2.6-3.8l-1.3-1.2c-.3-.2-.6-.3-1-.3l-.9.1c-.2.1-.5.3-.6.5-.4.7-.7 1.4-.9 2.2-.3 1.1-.3 2.1-.2 2.7l.1.5h-2.1c-1.1 0-2.3-.6-2.9-1.6-.7-1-.7-2.3-.2-3.4 1.2-2.3 4.2-3.1 6.5-1.9.3.1.5.1.7-.1.2-.2.2-.6.1-.8C14.7 1.8 11.6.8 9.2 1.9c-2.3 1-3.6 3-3.6 5.4 0 1.2.3 2.3.9 3.2-.8-.2-1.6-.3-2.3-.2-1.8.3-3.2 1.6-3.7 3.4-.6 1.9-.1 3.9 1.2 5.3 1.1 1.3 2.8 1.9 4.5 1.7 1.6-.2 3.1-1 4.2-2.2.8-1 2-1.6 3.3-1.6h2.2c.4 0 .7.3.7.7 0 .4-.3.7-.7.7h-3.4c-1.3 0-2.5.4-3.5 1.2-.9.8-1.5 1.8-1.7 3-.1.5.1 1 .5 1.3.3.2.6.2.9.1.5-.2 1-.6 1.3-1 .7-1.1 1.7-1.7 2.9-1.9.4-.1.8 0 1.2.1 1.7.5 3.3.1 4.5-1 1.2-1.1 1.9-2.6 1.9-4.3 0-.7-.2-1.3-.6-1.9z"/></svg>
+        <span class="label">Spring</span>
+      </div>
+      <div class="tech-item rive">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm2.5 3v14l11-7-11-7z"/></svg>
+        <span class="label">Rive</span>
+      </div>
+      <div class="tech-item github">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span class="label">GitHub</span>
+      </div>
+      <div class="tech-item docker">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.186v1.888c0 .102.083.185.185.185m-2.954-5.43h2.119a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.186.185.186m-2.955 5.43h2.12a.186.186 0 00.184-.185V9.006a.186.186 0 00-.184-.186h-2.12a.185.185 0 00-.184.186v1.888c0 .102.083.185.184.185m2.955-2.716h2.119a.186.186 0 00.186-.185V6.291a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.186v1.888c0 .102.083.185.185.185m-5.91 2.716h2.119a.186.186 0 00.185-.185V9.006a.186.186 0 00-.185-.186H5.16a.185.185 0 00-.186.186v1.888c0 .102.084.185.186.185m2.955-2.716h2.119a.186.186 0 00.185-.185V6.291a.186.186 0 00-.185-.186H8.113a.185.185 0 00-.186.186v1.888c0 .102.084.185.186.185m-2.955 0H7.277a.186.186 0 00.185-.185V6.291a.186.186 0 00-.185-.186H5.159a.185.185 0 00-.186.186v1.888c0 .102.084.185.186.185M24 16.223c-.32-.236-2.5-1.423-4.665-1.423-2.172 0-3.328 1.189-4.526 1.189-1.2 0-2.355-1.189-4.529-1.189-2.172 0-3.325 1.189-4.526 1.189-1.2 0-2.355-1.189-4.526-1.189-1.782 0-2.022.697-2.022.697l.635 8.169h13.253v.013h7.94c2.855-.067 2.318-3.364 2.318-3.364s2.327-1.926.626-4.09"/></svg>
+        <span class="label">Docker</span>
+      </div>
+    </div>
+
+    <div class="bottom-cta-section">
+      <div class="commit-compact-banner">
+        <h2>Estás a un <span class="accent-text">commit</span> de tu mejor versión.</h2>
+        <div class="compact-button" (click)="triggerOnboarding()">Empieza hoy</div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

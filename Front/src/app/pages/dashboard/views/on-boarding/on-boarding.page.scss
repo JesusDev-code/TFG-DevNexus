@@ -1,0 +1,155 @@
+.main-container {
+  // Fondo oscuro profundo (Cyberpunk/Dark)
+  background: #0f172a; 
+  background: linear-gradient(to bottom, #0f172a, #1e2336);
+  overflow: hidden; 
+}
+
+ion-img.bg-spline {
+  width: 840px; 
+  align-self: center;
+  position: absolute;
+  top: 0; bottom: 0; left: -50%; right: 0; margin: auto;
+  
+  filter: blur(40px);
+  transform: translateX(200px) translateY(100px) translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+
+  opacity: 0.6;
+  mix-blend-mode: screen; 
+}
+
+canvas.rive-bg {
+  filter: blur(30px);
+  transform: translateZ(0);
+  will-change: transform;
+  opacity: 0.5; 
+}
+
+div.content-container {
+  position: absolute;
+  top: 0; bottom: 0; width: 100%;
+  display: flex; flex-direction: column;
+  padding: 40px;
+  padding-top: calc(var(--safe-area-inset-top) + 80px);
+  padding-bottom: calc(var(--safe-area-inset-bottom) + 40px);
+  overflow-y: scroll;
+  will-change: transform; transform: translateZ(0);
+
+  .title {
+    max-width: 460px;
+    ion-text {
+      color: #ffffff; 
+      font-size: 50px;
+      font-family: Poppins-Bold;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .subtitle {
+    margin: 16px 0px;
+    ion-text {
+      color: #94a3b8; 
+      line-height: 1.5;
+    }
+  }
+
+  .spacer { flex: 1; }
+
+  // --- BOTÓN SÓLIDO (FIX DEFINITIVO) ---
+  ion-buttons.startCoursebtn {
+    max-width: 236px;
+    max-height: 64px;
+    display: grid;
+    margin: 16px 0px;
+    cursor: pointer;
+
+    // 🔥 IMPORTANTE: Fondo blanco físico. 
+    // Esto evita que se vea transparente o haga extraños al cargar/resetear.
+    background: #ffffff; 
+    border-radius: 32px; 
+    
+    .contained {
+      grid-column: 1;
+      grid-row: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    .shadow {
+      z-index: -1; 
+      background: rgba(168, 85, 247, 0.4); 
+      filter: blur(15px);
+      transform: translateY(10px) translateZ(0);
+      border-radius: 32px;
+    }
+
+    // El canvas de Rive va ENCIMA del fondo blanco
+    canvas.contained {
+      border-radius: 32px;
+      z-index: 1; 
+    }
+
+    // El texto e icono van ENCIMA de Rive
+    .btnContent {
+      color: black; 
+      font-weight: 600;
+      text-align: center;
+      align-self: center;
+      justify-content: center;
+      display: flex;
+      transform: translateX(4px) translateY(4px);
+      z-index: 2; 
+
+      .arrow { width: 24px; height: 24px; }
+      ion-text { align-self: center; margin-left: 8px; }
+    }
+  }
+
+  .footer-text {
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.close-btn {
+  --background: rgba(255, 255, 255, 0.1);
+  --background-hover: rgba(255, 255, 255, 0.2);
+  --border-radius: 50%;
+  --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1); 
+  backdrop-filter: blur(10px);
+
+  width: 44px; min-height: 44px; color: white;
+  position: absolute;
+  top: calc(var(--safe-area-inset-top) + 100px);
+  right: 16px;
+  cursor: pointer;
+  z-index: 100;
+  will-change: transform; transform: translateZ(0);
+
+  ion-icon { font-size: 24px; }
+}
+
+ion-modal {
+  --max-width: 600px;
+  --border-radius: 24px;
+  --background: transparent; 
+
+  .ion-page {
+    justify-content: center;
+    background: transparent; 
+  }
+
+  @media only screen and (min-width: 768px) and (min-height: 600px) {
+    --height: 100%;
+    --box-shadow: none;
+  }
+}
+
+ion-modal::part(backdrop) {
+  background: rgba(0, 0, 0, 0.8);
+  opacity: 1;
+}

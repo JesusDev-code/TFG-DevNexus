@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+// Mantenemos configuración del host
+:host { 
+  background: transparent !important; 
+  display: block; 
+  height: 100%;
+}
+
+// --- HERO SECTION ---
+.hero-container { 
+  max-width: 1240px; 
+  margin: 0 auto; 
+  padding: 60px 24px 80px; 
+}
+
+.hero-title { 
+  font-size: 3.5rem; 
+  font-weight: 800; 
+  line-height: 1.1; 
+  margin-bottom: 20px; 
+  letter-spacing: -1.5px; 
+  
+  @media (max-width: 576px) {
+    font-size: 2.2rem;
+    letter-spacing: -0.5px;
+  }
+}
+
+.hero-description { 
+  color: #94a3b8; 
+  font-size: 1.2rem; 
+  line-height: 1.6; 
+  max-width: 500px; 
+  margin-bottom: 40px; 
+}
+
+.hero-visual { 
+  .visual-wrapper { 
+    position: relative; 
+    padding: 10px; 
+    
+    .glow-aura { 
+      position: absolute; 
+      top: 50%; left: 50%; 
+      transform: translate(-50%, -50%); 
+      width: 110%; height: 110%; 
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%); 
+      filter: blur(50px); 
+      z-index: 0; 
+    } 
+    
+    .main-hero-video { 
+      position: relative; 
+      z-index: 1; 
+      border-radius: 20px; 
+      border: 1px solid rgba(255, 255, 255, 0.1); 
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5); 
+      width: 100%; height: 100%; 
+      object-fit: cover; 
+      transition: transform 0.5s ease; 
+      display: block; 
+      
+      &:hover { transform: perspective(1000px) rotateY(-3deg) scale(1.01); } 
+    } 
+  } 
+}
+
+.slogans-group { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.slogan-item-pill { 
+  padding: 12px 28px; 
+  border-radius: 100px; 
+  font-weight: 600; 
+  font-size: 0.95rem; 
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
+  display: flex; align-items: center; 
+  cursor: default; 
+  
+  &.highlight { 
+    background: rgba(168, 85, 247, 0.1); 
+    border: 1px solid rgba(168, 85, 247, 0.2); 
+    color: #e9d5ff; 
+    
+    .status-dot { 
+      width: 8px; height: 8px; 
+      background: #4ade80; 
+      border-radius: 50%; 
+      margin-right: 12px; 
+      box-shadow: 0 0 12px #4ade80; 
+    } 
+    
+    &:hover { 
+      background: rgba(168, 85, 247, 0.15); 
+      border-color: rgba(168, 85, 247, 0.5); 
+      transform: translateY(-3px); 
+      box-shadow: 0 10px 30px rgba(168, 85, 247, 0.2); 
+    } 
+  } 
+  
+  &.ghost { 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    color: #94a3b8; 
+    
+    &:hover { 
+      border-color: rgba(255, 255, 255, 0.4); 
+      color: white; 
+      transform: translateY(-3px); 
+    } 
+  } 
+}
+
+// --- SERVICES GRID ---
+.services-grid-container { 
+  max-width: 1240px; 
+  margin: 0 auto 80px; 
+  padding: 0 24px; 
+  
+  .service-box { 
+    height: 100%; 
+    padding: 1px; 
+    /* Borde sutil */
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent); 
+    border-radius: 24px; 
+    transition: transform 0.3s ease; 
+    
+    &:hover { 
+      transform: translateY(-8px); 
+      .box-light { opacity: 1; } 
+      .icon-glow-box { transform: scale(1.1); background: rgba(168, 85, 247, 0.2); } 
+    } 
+  } 
+  
+  /* --- CAMBIO DE COLOR AQUÍ --- */
+  .service-inner { 
+    /* Color SÓLIDO (sin rgba, sin transparencia). 
+       Es un gris azulado oscuro, más claro que el negro de fondo. */
+    background: #1e2336; 
+    
+    /* Quitamos el filtro de desenfoque porque es sólido */
+    backdrop-filter: none;
+    
+    border-radius: 23px; 
+    padding: 40px 30px; 
+    height: 100%; 
+    position: relative; 
+    overflow: hidden; 
+    
+    /* Sombra para darle volumen */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    
+    .icon-glow-box { 
+      width: 56px; height: 56px; 
+      background: rgba(255,255,255,0.05); 
+      border-radius: 14px; 
+      display: flex; align-items: center; justify-content: center; 
+      font-size: 24px; color: #a855f7; 
+      margin-bottom: 24px; 
+      transition: all 0.3s ease; 
+    } 
+    
+    h3 { 
+      font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; 
+      color: #ffffff; 
+    } 
+    p { 
+      color: #94a3b8; 
+      font-size: 0.95rem; line-height: 1.6; 
+    } 
+    
+    .box-light { 
+      position: absolute; top: -50%; left: -50%; 
+      width: 200%; height: 200%; 
+      background: radial-gradient(circle at center, rgba(168, 85, 247, 0.08), transparent 50%); 
+      opacity: 0; 
+      transition: opacity 0.5s ease; 
+      pointer-events: none; 
+    } 
+  } 
+}
+
+// --- TECH MARQUEE ---
+.tech-marquee { 
+  display: flex; 
+  justify-content: center; 
+  gap: 50px; 
+  padding: 60px 24px; 
+  border-top: 1px solid rgba(255,255,255,0.05); 
+  
+  .tech-item { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    color: #475569; 
+    transition: 0.4s; 
+    
+    svg { 
+      width: 45px; height: 45px; 
+      filter: grayscale(1); 
+      margin-bottom: 10px; 
+      transition: 0.4s; 
+    } 
+    
+    .label { 
+      font-size: 0.75rem; 
+      font-weight: 600; 
+      opacity: 0; 
+      transition: 0.4s; 
+    } 
+    
+    &:hover { 
+      color: white; 
+      transform: translateY(-5px); 
+      
+      svg { filter: grayscale(0); } 
+      .label { opacity: 1; } 
+      
+      &.angular { color: #dd0031; } 
+      &.ionic { color: #3880ff; } 
+      &.spring { color: #6db33f; } 
+      &.rive { color: #f26091; } 
+      &.github { color: #ffffff; } 
+      &.docker { color: #2496ed; } 
+    } 
+  } 
+}
+
+// --- BOTTOM CTA BANNER ---
+.bottom-cta-section {
+  padding: 40px 24px 30px; 
+  max-width: 1000px; 
+  margin: 0 auto;
+
+  .commit-compact-banner {
+    background: linear-gradient(90deg, rgba(168, 85, 247, 0.05), rgba(59, 130, 246, 0.05));
+    border: 1px solid rgba(255,255,255,0.08); 
+    border-radius: 24px; 
+    padding: 30px 50px; 
+    display: flex; align-items: center; justify-content: space-between; 
+    gap: 30px;
+    
+    @media (max-width: 768px) {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+    }
+    
+    h2 { 
+      font-size: 1.6rem; font-weight: 700; margin: 0; 
+      .accent-text { color: #a855f7; } 
+    }
+    
+    // ✅ CURSOR ACTUALIZADO AQUÍ
+    .compact-button {
+      padding: 12px 28px; 
+      background: linear-gradient(90deg, #a855f7, #3b82f6); 
+      border-radius: 12px; 
+      font-weight: 700; 
+      white-space: nowrap; 
+      transition: all 0.3s ease; 
+      cursor: pointer; /* Antes era default */
+      
+      &:hover { 
+        transform: scale(1.05); 
+        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); 
+      }
+    }
+  }
+}

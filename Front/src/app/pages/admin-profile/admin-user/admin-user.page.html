@@ -1,0 +1,150 @@
+<div class="admin-content-wrapper">
+  
+  <div class="header-actions">
+    <div class="search-glass-wrapper">
+      <ion-icon name="search-outline"></ion-icon>
+      <input type="text" placeholder="Buscar por nombre, email o rol..." [value]="filtroTexto()" (input)="setFiltro($event)">
+    </div>
+    
+    <div class="premium-badge">
+      <span class="dot"></span>
+      {{ usuariosFiltrados().length }} Usuarios registrados
+    </div>
+  </div>
+
+  <div class="table-glass-container">
+    <table class="premium-table">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Rol</th>
+          <th>Departamento</th>
+          <th>Estado</th> 
+          <th class="ion-text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of usuariosFiltrados(); track u.id) {
+          <tr class="table-row">
+            <td>
+              <div class="user-cell">
+                <div class="avatar-glow">
+                  @if (u.foto_perfil) {
+                    <img [src]="u.foto_perfil">
+                  } @else {
+                    <span>{{ u.nombre.charAt(0) }}</span>
+                  }
+                </div>
+                <div class="user-info">
+                  <span class="name">{{ u.nombre }}</span>
+                  <span class="email">{{ u.email }}</span>
+                </div>
+              </div>
+            </td>
+  
+            <td>
+              <span class="role-pill" [ngClass]="u.rolNombre.toLowerCase()">
+                {{ u.rolNombre }}
+              </span>
+            </td>
+  
+            <td>
+              <span class="dpto-text">{{ u.departamentoNombre || 'Sin asignar' }}</span>
+            </td>
+  
+            <td>
+              <div class="status-indicator" [class.busy]="!u.permiteContacto">
+                <ion-icon [name]="u.permiteContacto ? 'checkmark-circle' : 'ban'"></ion-icon>
+                <span>{{ u.permiteContacto ? 'Disponible' : 'Ocupado' }}</span>
+              </div>
+            </td>
+  
+            <td>
+              <div class="actions-group">
+                <button class="action-btn edit" (click)="abrirModalEditar(u)">
+                  <ion-icon name="create-outline"></ion-icon>
+                </button>
+                <button class="action-btn delete" (click)="confirmarBorrado(u)">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <ion-modal [isOpen]="modalAbierto()" (didDismiss)="cerrarModal()" class="premium-modal">
+    <ng-template>
+      @if (usuarioEditando(); as user) {
+        <div class="modal-wrapper-dark">
+          
+          <div class="modal-header">
+            <h2>Editar <span class="text-gradient">Usuario</span></h2>
+            <button class="close-btn" (click)="cerrarModal()">
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+          </div>
+  
+          <div class="modal-body">
+            <div class="form-grid">
+              <div class="input-group full">
+                <label>Nombre Completo</label>
+                <input type="text" [(ngModel)]="user.nombre">
+              </div>
+  
+              <div class="input-group">
+                <label>Rol de Sistema</label>
+                <select [(ngModel)]="user.rolNombre">
+                  <option value="USER">USER</option>
+                  <option value="STAFF">STAFF</option>
+                  <option value="ADMIN">ADMIN</option>
+                </select>
+              </div>
+  
+              <div class="input-group">
+                <label>Departamento</label>
+                <select [(ngModel)]="user.departamentoId">
+                  <option [ngValue]="null">Sin asignar</option>
+                  @for (d of departamentos(); track d.id) {
+                    <option [ngValue]="d.id">
+                      {{ d.nombre }}
+                    </option>
+                  }
+                </select>
+              </div>
+  
+              <div class="input-group full toggle-group">
+                <div class="toggle-text">
+                  <label>Permitir Contacto</label>
+                  <p>Visibilidad en el chat de la comunidad.</p>
+                </div>
+                <ion-toggle [(ngModel)]="user.permiteContacto" color="success"></ion-toggle>
+              </div>
+  
+              @if (!user.permiteContacto) {
+                <div class="motivo-box">
+                  <div class="motivo-header">
+                    <ion-icon name="eye-off-outline"></ion-icon>
+                    <span>Motivo de indisponibilidad</span>
+                  </div>
+                  <textarea 
+                    [(ngModel)]="user.motivoNoContacto" 
+                    rows="3" 
+                    placeholder="Explica por qué este usuario no está disponible...">
+                  </textarea>
+                </div>
+              }
+            </div>
+  
+            <div class="modal-footer">
+              <button class="btn-ghost" (click)="cerrarModal()">Cancelar</button>
+              <button class="btn-gradient" (click)="guardarEdicion()">Guardar Cambios</button>
+            </div>
+          </div>
+        </div>
+      }
+    </ng-template>
+  </ion-modal>
+</div>

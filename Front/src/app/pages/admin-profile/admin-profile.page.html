@@ -1,0 +1,63 @@
+<ion-content [fullscreen]="true" class="bg-transparent">
+  
+  <div class="main-content-wrapper">
+    
+    <div class="admin-hero-container compact">
+      <h1 class="admin-title">Panel de <span class="text-gradient">Administración.</span></h1>
+      <p class="admin-description">
+        Gestiona usuarios, tickets, eventos y audita el sistema.
+      </p>
+    </div>
+
+    <div class="admin-nav-container">
+      <div class="premium-admin-bar">
+        
+        <a class="admin-tab" routerLink="admin-user" routerLinkActive="active-tab">
+          <ion-icon name="people-outline"></ion-icon>
+          <span>Usuarios</span>
+        </a>
+
+        <a class="admin-tab" routerLink="staff-inbox" routerLinkActive="active-tab">
+          <ion-icon name="file-tray-full-outline"></ion-icon>
+          <span>Chats-Servicio técnico</span>
+        </a>
+
+        <a class="admin-tab" routerLink="admin-tickets" routerLinkActive="active-tab">
+          <ion-icon name="ticket-outline"></ion-icon>
+          <span>Tickets</span>
+        </a>
+
+        <a class="admin-tab" routerLink="admin-mensajes" routerLinkActive="active-tab">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          <span>Mensajes</span>
+        </a>
+
+        <a class="admin-tab" routerLink="admin-eventos" routerLinkActive="active-tab">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>Eventos</span>
+        </a>
+
+        <a class="admin-tab" routerLink="admin-diarios" routerLinkActive="active-tab">
+          <ion-icon name="book-outline"></ion-icon>
+          <span>Diarios</span>
+        </a>
+
+        <a class="admin-tab" routerLink="admin-auditar" routerLinkActive="active-tab">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          <span>Auditoría</span>
+        </a>
+
+        <a class="admin-tab" routerLink="admin-personal" routerLinkActive="active-tab">
+          <ion-icon name="person-outline"></ion-icon>
+          <span>Perfil</span>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="admin-content-view">
+      <router-outlet></router-outlet>
+    </div>
+    
+  </div>
+</ion-content>

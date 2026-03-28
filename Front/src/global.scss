@@ -1,0 +1,166 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ */
+
+@use "theme/app.scss";
+@use "theme/course-rive.scss";
+
+/* Core CSS */
+@import "@ionic/angular/css/core.css";
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/* Syncfusion Styles */
+@import "@syncfusion/ej2-schedule/styles/material.css";
+@import "@ionic/angular/css/palettes/dark.system.css";
+@import '../node_modules/angular-calendar/css/angular-calendar.css';
+@import '../node_modules/@syncfusion/ej2-base/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-buttons/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-calendars/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-dropdowns/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-inputs/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-lists/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-popups/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-navigations/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-angular-schedule/styles/material.css';
+
+/** --- Syncfusion Custom Overrides --- **/
+:host ::ng-deep .e-schedule,
+:host ::ng-deep .e-schedule .e-work-cells,
+:host ::ng-deep .e-schedule .e-header-cells,
+:host ::ng-deep .e-schedule-toolbar,
+:host ::ng-deep .e-date-header-wrap,
+:host ::ng-deep .e-timeline-view,
+:host ::ng-deep .e-time-cells {
+  min-height: 360px; max-height: 360px; width: 100%;
+  border-radius: 18px; background: #fbfafd !important; color: #404060 !important;
+}
+:host ::ng-deep .e-schedule .e-appointment {
+  background: linear-gradient(90deg,#fae5c4 0%,#e9f0fc 50%, #f5cef8 100%) !important;
+  color: #4c4064 !important; border-radius: 13px !important;
+  box-shadow: 0 2px 14px rgba(150,140,180,0.09) !important; font-weight: 500;
+}
+:host ::ng-deep .e-schedule .e-today { border-color: #b5bde5 !important; background: #f9f8fc !important; }
+:host ::ng-deep .e-schedule .e-toolbar .e-toolbar-item.e-active,
+:host ::ng-deep .e-schedule .e-toolbar .e-toolbar-item:hover {
+  background: linear-gradient(90deg,#c5e3fa 0%,#f3dbf8 100%) !important;
+  border-radius: 7px; color: #465080 !important; font-weight: 700;
+  box-shadow: 0 2px 15px rgba(140,170,220,0.13) !important;
+}
+:host ::ng-deep .e-schedule .e-toolbar, :host ::ng-deep .e-schedule .e-toolbar-items {
+  background: transparent !important; border: none !important; flex-wrap: wrap; gap: .35rem;
+}
+:host ::ng-deep .e-schedule .e-header-cells { color: #7ba9dc !important; font-weight: 600; border-radius: 6px; background: #f3faff !important; }
+:host ::ng-deep .e-schedule .e-month-view .e-header-cells { color: #f484b7 !important; background: #fdf1f7 !important; }
+:host ::ng-deep .e-schedule .e-agenda-view .e-time-cells { color: #c8add2 !important; background: #fbfafd !important; }
+:host ::ng-deep ::-webkit-scrollbar { width: 7px; background: #efe7fc; }
+:host ::ng-deep ::-webkit-scrollbar-thumb { background: #c5e3fa; border-radius: 3px; }
+
+/* --- Fondo global oscuro con bolas --- */
+.background-effects {
+  position: fixed; 
+  inset: 0; 
+  overflow: hidden; 
+  z-index: 0; 
+  pointer-events: none;
+  background: radial-gradient(circle at top, #020617 0, #020617 40%, #000 100%);
+  
+  /* 🔥 TRUCO 1: Promover a capa propia de GPU */
+  transform: translateZ(0); 
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.glow-blob {
+  position: absolute; 
+  width: 420px; 
+  height: 420px; 
+  border-radius: 50%;
+  
+  /* Mantenemos el blur, pero lo aislamos */
+  filter: blur(60px); 
+  opacity: 0.8; /* Bajamos un pelín la opacidad para ayudar al render */
+  mix-blend-mode: screen; 
+  
+  /* 🔥 TRUCO 2: Avisar al navegador de lo que va a cambiar */
+  will-change: transform; 
+  
+  /* 🔥 TRUCO 3: Aceleración de hardware forzada */
+  transform: translate3d(0, 0, 0); 
+}
+
+.blob-1 {
+  top: 10%; left: 10%;
+  background: radial-gradient(circle at 30% 30%, #c084fc, #7c3aed 60%, transparent 75%);
+  animation: floatBlobA 25s infinite ease-in-out alternate;
+}
+
+.blob-2 {
+  bottom: 10%; right: 10%;
+  background: radial-gradient(circle at 70% 70%, #fb7185, #e11d48 55%, transparent 75%);
+  animation: floatBlobB 28s infinite ease-in-out alternate;
+}
+
+/* Animaciones usando translate3d para evitar repintados */
+@keyframes floatBlobA {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  33%  { transform: translate3d(50vw, 20vh, 0) scale(1.1); } /* Reducido rango para menos estrés */
+  66%  { transform: translate3d(10vw, 50vh, 0) scale(0.9); }
+  100% { transform: translate3d(40vw, -10vh, 0) scale(1); }
+}
+
+@keyframes floatBlobB {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  33%  { transform: translate3d(-40vw, -30vh, 0) scale(1.1); }
+  66%  { transform: translate3d(-10vw, -15vh, 0) scale(1.1); }
+  100% { transform: translate3d(-30vw, 20vh, 0) scale(0.95); }
+}
+
+/* Modal Chat */
+ion-modal.chat-modal-widget {
+  --width: 380px; --height: 600px; --border-radius: 20px; --box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  @media (max-width: 576px) { --width: 100%; --height: 100%; --border-radius: 0; }
+  &::part(content) { position: absolute; bottom: 20px; right: 20px; @media (max-width: 576px) { bottom: 0; right: 0; } }
+}
+
+/* === Layout global === */
+ion-app, ion-router-outlet, ion-content {
+  --background: transparent !important; background: transparent !important;
+}
+.main-content-wrapper, .page-wrapper {
+  min-height: 100vh; background: transparent !important;
+}
+
+/* ARREGLO DE TEXTO BLANCO SELECTIVO (ORIGINAL) */
+ion-content, cr-side-menu, .main-content-animable, .admin-hero-container, .blog-hero-container {
+  --ion-text-color: #ffffff; color: #ffffff;
+}
+/* Corrección de Inputs en zonas oscuras */
+
+
+/* =========================================================
+   🔥 TEXTO CON GRADIENTES 🔥
+   ========================================================= */
+
+.text-gradient {
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-lila {
+  background: linear-gradient(to right, #ffffff 20%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 15px rgba(192, 132, 252, 0.3));
+}

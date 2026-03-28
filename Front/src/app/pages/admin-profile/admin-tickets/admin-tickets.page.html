@@ -1,0 +1,167 @@
+<div class="admin-content-wrapper">
+
+  <div class="header-actions">
+    <div class="search-glass-wrapper">
+      <ion-icon name="search-outline"></ion-icon>
+      <input type="text" placeholder="Buscar por código, usuario o asunto..." [value]="filtroTexto()" (input)="setFiltro($event)">
+    </div>
+
+    <div class="premium-badge purple">
+      <span class="dot"></span>
+      {{ ticketsFiltrados().length }} Tickets activos
+    </div>
+  </div>
+
+  <div class="table-glass-container">
+
+    <!-- Header row (div-based — replaces invalid <thead> inside virtual scroll) -->
+    <div class="tickets-table-header">
+      <span class="col-codigo">Cód.</span>
+      <span class="col-usuario">Usuario</span>
+      <span class="col-asunto">Asunto</span>
+      <span class="col-prioridad">Prioridad</span>
+      <span class="col-estado">Estado</span>
+      <span class="col-acciones ion-text-center">Chat</span>
+    </div>
+
+    <!-- Virtual scroll viewport — now valid: div context, not inside <table> -->
+    <cdk-virtual-scroll-viewport itemSize="60" class="premium-viewport">
+      <div *cdkVirtualFor="let t of ticketsFiltrados()" class="ticket-row">
+
+        <span class="col-codigo">
+          <span class="code-pill">#{{ t.codigo }}</span>
+        </span>
+
+        <span class="col-usuario">
+          <div class="user-info">
+            <span class="name">{{ t.usuarioNombre }}</span>
+            <span class="date">{{ t.fechaCreacion | date:'dd/MM/yy' }}</span>
+          </div>
+        </span>
+
+        <span class="col-asunto subject-cell">{{ t.titulo }}</span>
+
+        <span class="col-prioridad">
+          <span class="priority-tag" [ngClass]="t.prioridad.toLowerCase()">
+            {{ t.prioridad }}
+          </span>
+        </span>
+
+        <span class="col-estado">
+          <span class="status-pill" [ngClass]="t.estado.toLowerCase()">
+            {{ t.estado === 'SOLICITUD_REAPERTURA' ? 'Solicitud Reapertura' : t.estado.replace('_', ' ') }}
+          </span>
+        </span>
+
+        <span class="col-acciones">
+          <div class="actions-group">
+            <button class="action-btn chat" (click)="abrirModalEditar(t)">
+              <ion-icon name="chatbubbles-outline"></ion-icon>
+            </button>
+          </div>
+        </span>
+
+      </div>
+    </cdk-virtual-scroll-viewport>
+
+  </div>
+
+  <ion-modal [isOpen]="modalAbierto()" (didDismiss)="cerrarModal()" class="premium-modal-ticket">
+    <ng-template>
+      <!-- Usamos @if con alias para un código más limpio -->
+      @if (ticketEditando(); as ticket) {
+        <div class="modal-wrapper-dark">
+
+          <div class="modal-header">
+            <h2>Ticket <span class="text-gradient">#{{ ticket.codigo }}</span></h2>
+            <button class="close-modal-btn" (click)="cerrarModal()">
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+          </div>
+
+          <div class="modal-body-split">
+
+            <div class="info-sidebar">
+              <div class="sidebar-card">
+                <label>Solicitante</label>
+                <p class="val">{{ ticket.usuarioNombre }}</p>
+
+                <label>Fecha Apertura</label>
+                <p class="val">{{ ticket.fechaCreacion | date:'medium' }}</p>
+              </div>
+
+              @if (ticket.estado === 'SOLICITUD_REAPERTURA') {
+                <div class="reopen-request-card">
+                  <div class="alert-title">
+                    <ion-icon name="alert-circle-outline"></ion-icon>
+                    Solicitud de Reapertura
+                  </div>
+                  <p>El usuario solicita reabrir este caso. Revisa el chat para ver el motivo.</p>
+
+                  <div class="reopen-actions">
+                    <button class="btn-reject" (click)="gestionarReapertura(false)">
+                      Rechazar
+                    </button>
+                    <button class="btn-accept" (click)="gestionarReapertura(true)">
+                      Aceptar
+                    </button>
+                  </div>
+                </div>
+              }
+
+              @if (ticket.estado !== 'SOLICITUD_REAPERTURA') {
+                <div class="sidebar-card control">
+                  <label>Estado</label>
+                  <select [ngModel]="ticket.estado" (ngModelChange)="ticket.estado = $event; guardarCambios()">
+                    <option value="ABIERTO">🟢 Abierto</option>
+                    <option value="EN_PROGRESO">🔵 En Progreso</option>
+                    <option value="RESUELTO">⚫ Resuelto</option>
+                  </select>
+
+                  <label>Prioridad</label>
+                  <select [ngModel]="ticket.prioridad" (ngModelChange)="ticket.prioridad = $event; guardarCambios()">
+                    <option value="BAJA">Baja</option>
+                    <option value="MEDIA">Media</option>
+                    <option value="ALTA">Alta</option>
+                  </select>
+                </div>
+              }
+            </div>
+
+            <div class="chat-main">
+              <div class="problem-desc">
+                <strong>Descripción inicial:</strong>
+                <p>{{ ticket.descripcion }}</p>
+              </div>
+
+              <div class="messages-container">
+                @for (msg of mensajes(); track msg.fechaEnvio) {
+                  <div class="msg-bubble" [class.staff]="msg.esStaff">
+                    <div class="msg-meta">
+                      <span class="name">{{ msg.autorNombre }}</span>
+                      <span class="time">{{ msg.fechaEnvio | date:'HH:mm' }}</span>
+                    </div>
+                    <p class="msg-text">{{ msg.texto }}</p>
+                  </div>
+                }
+              </div>
+
+              @if (ticket.estado !== 'RESUELTO') {
+                <div class="chat-input-box">
+                  <input type="text" placeholder="Escribir respuesta..." [ngModel]="nuevoMensaje()"
+                    (ngModelChange)="nuevoMensaje.set($event)"
+                    (keyup.enter)="enviarMensaje()">
+                  <button class="send-btn" (click)="enviarMensaje()" [disabled]="!nuevoMensaje().trim()">
+                    <ion-icon name="send-outline"></ion-icon>
+                  </button>
+                </div>
+              }
+            </div>
+
+          </div>
+        </div>
+      }
+    </ng-template>
+  </ion-modal>
+
+</div>

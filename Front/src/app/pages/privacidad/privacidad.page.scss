@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+:host { 
+  background: transparent !important; 
+  display: block; 
+  height: 100%;
+}
+
+// HEADER
+.privacy-hero-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  text-align: center;
+
+  .hero-icon-glow {
+    font-size: 4rem;
+    color: #a855f7;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.4));
+  }
+
+  .privacy-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    letter-spacing: -1.5px;
+  }
+
+  .privacy-description {
+    color: #94a3b8;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto 30px;
+  }
+
+  .update-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    font-size: 0.85rem;
+    color: #7baed9;
+  }
+}
+
+// GRID DE SECCIONES
+.privacy-content-grid {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+// --- COLOR APLICADO AQUÍ ---
+.glass-section-card {
+  background: #1e2336; /* Color sólido */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+
+  border-radius: 24px;
+  padding: 40px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #232840; /* Ligero aclarado al pasar ratón */
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-5px);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    .neon-icon {
+      font-size: 1.8rem;
+      &.purple { color: #a855f7; }
+      &.blue { color: #3b82f6; }
+      &.cyan { color: #23c6fa; }
+      &.green { color: #20d77c; }
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0;
+      color: #fff;
+    }
+  }
+
+  .section-body {
+    color: #94a3b8;
+    font-size: 1.05rem;
+    line-height: 1.7;
+
+    ul {
+      margin-top: 15px;
+      padding-left: 20px;
+      li { margin-bottom: 10px; }
+    }
+  }
+}
+
+// FOOTER DE PRIVACIDAD
+.privacy-contact-footer {
+  max-width: 900px;
+  margin: 60px auto 0;
+  padding: 0 24px;
+
+  .glass-bar {
+    background: #1e2336; /* También aquí para coherencia */
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    border-radius: 24px;
+    padding: 30px;
+    text-align: center;
+
+    h3 { margin-bottom: 10px; font-weight: 700; color: #fff; }
+    p { color: #94a3b8; }
+    .highlight { color: #a855f7; font-weight: 600; }
+  }
+}
+
+@media (max-width: 768px) {
+  .privacy-title { font-size: 2.5rem; }
+  .glass-section-card { padding: 30px 20px; }
+}

@@ -1,0 +1,80 @@
+<div class="notifications-premium-wrapper">
+
+  <div class="page-header">
+    <h2 class="text-gradient">Centro de Notificaciones</h2>
+    <p>Mantente al día con tus actualizaciones.</p>
+  </div>
+
+  <div class="glass-content-container">
+    
+    <div class="actions-header">
+      <div class="stats-badge">
+        <span class="dot"></span>
+        {{ conteoNoLeidas }} Nuevas
+      </div>
+
+      <button class="btn-glass-action" (click)="marcarTodasLeidas()" [disabled]="conteoNoLeidas === 0">
+        <ion-icon name="checkmark-done-outline"></ion-icon>
+        Marcar todo leído
+      </button>
+    </div>
+
+    <div class="notifications-list">
+      @for (notif of notificaciones; track notif.id) {
+        
+        <div class="notification-glass-card" [class.read]="notif.leida" [class.invite-card]="notif.esInvitacion">
+          
+          <div class="icon-box" [ngClass]="notif.tipo">
+            <ion-icon [name]="notif.icono"></ion-icon>
+          </div>
+
+          <div class="notif-content">
+            <div class="notif-header-row">
+              <h4 class="notif-title">{{ notif.titulo }}</h4>
+              <span class="notif-time">{{ notif.hora }}</span>
+            </div>
+            <p class="notif-desc">{{ notif.descripcion }}</p>
+          </div>
+
+          <div class="notif-actions">
+            
+            @if (notif.esInvitacion) {
+              <button class="action-btn accept" title="Unirse" (click)="responderInvitacion(notif, true)">
+                <ion-icon name="checkmark-outline"></ion-icon>
+              </button>
+              <button class="action-btn reject" title="Rechazar" (click)="responderInvitacion(notif, false)">
+                <ion-icon name="close-outline"></ion-icon>
+              </button>
+            } 
+            
+            @else {
+              @if (!notif.leida) {
+                <button class="action-btn check" title="Marcar leída" (click)="marcarLeida(notif)">
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                </button>
+              }
+              <button class="action-btn delete" title="Eliminar" (click)="eliminar(notif)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            }
+
+          </div>
+
+          @if (!notif.leida && !notif.esInvitacion) {
+            <div class="unread-indicator"></div>
+          }
+          @if (notif.esInvitacion) {
+            <div class="invite-indicator"></div>
+          }
+
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <ion-icon name="notifications-off-outline"></ion-icon>
+          <p>No tienes notificaciones pendientes.</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

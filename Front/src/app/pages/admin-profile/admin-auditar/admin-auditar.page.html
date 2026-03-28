@@ -1,0 +1,86 @@
+<div class="admin-content-wrapper">
+
+  <div class="header-actions">
+    <div class="title-block">
+      <h2 class="section-title">Registro de <span class="text-gradient">Auditoría</span></h2>
+      <p class="section-subtitle">Monitorización en tiempo real de seguridad y actividad del sistema.</p>
+    </div>
+
+    <div class="actions-right">
+      <div class="search-glass-wrapper">
+        <ion-icon name="search-outline"></ion-icon>
+        <input type="text" placeholder="Buscar usuario, acción o recurso..." (input)="buscar($event)">
+      </div>
+      <button class="premium-refresh-btn" (click)="cargarLogs(true)">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="table-glass-container">
+    <table class="premium-table">
+      <thead>
+        <tr>
+          <th>Nivel</th>
+          <th>Acción</th>
+          <th>Recurso</th>
+          <th>Usuario</th>
+          <th>Detalles</th>
+          <th class="ion-text-right">Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (log of logs(); track log.id) {
+          <tr class="table-row">
+            <td>
+              <div class="badge-status" [ngClass]="getClass(log.severidad)">
+                <ion-icon [name]="getIcon(log.severidad)"></ion-icon>
+                <span>{{ log.severidad }}</span>
+              </div>
+            </td>
+            <td class="action-cell">
+              <span class="mono-text">{{ log.accion }}</span>
+            </td>
+            <td>
+              <span class="resource-pill">{{ log.recurso }}</span>
+            </td>
+            <td>
+              <div class="user-cell">
+                <ion-icon name="person-outline"></ion-icon>
+                <span>{{ log.usuarioEmail || 'Sistema' }}</span>
+              </div>
+            </td>
+            <td class="details-cell">
+              <p [title]="log.descripcion">{{ log.descripcion }}</p>
+            </td>
+            <td class="date-cell ion-text-right">
+              <div class="date-wrapper">
+                <span class="date">{{ log.fecha | date:'dd MMM' }}</span>
+                <span class="time">{{ log.fecha | date:'HH:mm' }}</span>
+              </div>
+            </td>
+          </tr>
+        }
+
+        @if (logs().length === 0 && !cargando()) {
+          <tr>
+            <td colspan="6" class="empty-state">No se han encontrado registros de actividad.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (cargando() && page() === 0) {
+    <div class="spinner-center">
+      <ion-spinner name="crescent"></ion-spinner>
+      <span>Sincronizando logs...</span>
+    </div>
+  }
+
+  <ion-infinite-scroll [disabled]="allPagesLoaded()" (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Cargando más registros...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</div>

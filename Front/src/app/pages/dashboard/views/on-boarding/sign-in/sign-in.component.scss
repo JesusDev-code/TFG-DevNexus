@@ -1,0 +1,186 @@
+.gradient-border {
+  margin: 16px;
+  // Sombra Glow Morada
+  box-shadow: 0 0 40px rgba(168, 85, 247, 0.15); 
+  border: 1px solid transparent;
+  border-radius: 24px;
+  
+  // Borde degradado sutil oscuro
+  background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.15),
+      rgba(255, 255, 255, 0.02)
+    )
+    border-box;
+
+  @media only screen and (min-width: 768px) and (min-height: 600px) {
+    margin: 24px;
+  }
+}
+
+div.sign-in-container {
+  text-align: center;
+  padding: 30px;
+  border-radius: 23px;
+
+  // 🔥 CAMBIO DE OPACIDAD AQUÍ (Más sólido pero sigue siendo glass)
+  // Antes: rgba(30, 41, 59, 0.85) -> Ahora: rgba(15, 23, 42, 0.95)
+  // Un tono más oscuro y menos transparente para mejor lectura
+  background: rgba(15, 23, 42, 0.95); 
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+
+  // Titulo grande blanco
+  ion-text.font-largeTitle {
+    color: white;
+    font-weight: 700;
+  }
+
+  .subtitle p {
+    margin: 24px 0;
+    color: #94a3b8; // Gris azulado
+  }
+
+  .input-title {
+    color: #e2e8f0; // Blanco grisáceo
+    text-align: start;
+    p { margin-bottom: 8px; }
+  }
+
+  .input-container {
+    --padding-start: 8px;
+    --border-radius: 12px;
+    --border-width: 1px;
+    // Borde sutil transparente
+    --border-color: rgba(255, 255, 255, 0.1); 
+    // 🔥 CAMBIO: Fondo input un pelín más oscuro para contraste
+    --background: rgba(0, 0, 0, 0.45); 
+
+    // Iconos blancos
+    ion-img, ion-icon { 
+      width: 36px; height: 40px; 
+      filter: invert(1); 
+      opacity: 0.8;
+    }
+    
+    ion-input, .native-input {
+      --padding-start: 8px;
+      --padding-end: 15px;
+      --padding-top: 15px;
+      --padding-bottom: 15px;
+      
+      --color: #ffffff !important;
+      color: #ffffff !important;
+      --placeholder-color: #64748b;
+      
+      text-align: start;
+      border-radius: 10px;
+    }
+  }
+
+  .forgot-pass-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 5px;
+    margin-top: 8px;
+    margin-bottom: 5px;
+    p {
+      font-size: 0.85rem;
+      color: #94a3b8; 
+      margin: 0;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+      &:hover { color: #a855f7; text-decoration: underline; }
+    }
+  }
+
+  .sign-in-button {
+    // Mantenemos estilo original
+    --background: #a855f7; 
+    --background-hover: #9333ea;
+    --background-activated: #7e22ce;
+    --border-radius: 14px;
+    --box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4); 
+    --color: white;
+    margin: 24px 0;
+    margin-bottom: 20px; 
+
+    .icon { margin-right: 8px; }
+  }
+
+  .google-btn {
+    --background: rgba(255, 255, 255, 0.05);
+    --color: white;
+    --border-radius: 14px; 
+    --box-shadow: none;
+    
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px; 
+    
+    margin-top: 20px;
+    font-weight: 600;
+    text-transform: none; 
+    ion-icon { font-size: 1.2rem; margin-right: 10px; }
+    
+    &:hover { --background: rgba(255, 255, 255, 0.1); }
+  }
+
+  .or-divider {
+    justify-content: space-around;
+    align-items: center;
+    .divider { flex: 1; height: 1px; background-color: rgba(255,255,255,0.1); }
+    .or-text { color: rgba(255,255,255,0.4); margin: 0px 8px; }
+  }
+
+  .footer-text {
+    color: #94a3b8;
+    p { margin: 24px 0; }
+  }
+
+  .footer-container {
+    justify-content: space-between;
+    ion-img { width: 64px; height: 70px; }
+  }
+
+  .close-container {
+    position: absolute; left: 0; right: 0; margin-top: 8px;
+    
+    ion-button {
+      width: 36px; min-height: 36px;
+      
+      --background: rgba(255,255,255,0.1);
+      --background-hover: rgba(255,255,255,0.2);
+      --border-radius: 50%;
+      --box-shadow: none;
+      --padding-top: 0; --padding-start: 0; --padding-end: 0; --padding-bottom: 0;
+      
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%; 
+      
+      ion-icon { color: white; width: 20px; height: 20px; }
+    }
+  }
+
+  .rive-auth-indicator-container {
+    position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1;
+    display: flex; align-items: center; justify-content: center; pointer-events: none;
+    .rive-confetti { position: absolute; }
+  }
+}
+
+// Soporte para backdrop-filter
+@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  div.sign-in-container {
+    // 🔥 AJUSTE OPACIDAD AQUÍ TAMBIÉN
+    background-color: rgba(15, 23, 42, 0.95); 
+    -webkit-backdrop-filter: blur(25px);
+    backdrop-filter: blur(25px);
+  }
+}
+.fade-in { animation: fadeIn 0.3s ease-in-out; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

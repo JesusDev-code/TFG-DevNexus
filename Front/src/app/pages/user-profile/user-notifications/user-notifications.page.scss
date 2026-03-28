@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+// Página hija: sin :host ni ion-content
+
+.notifications-premium-wrapper {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  color: white;
+  min-height: 100vh;
+}
+
+.page-header {
+  margin-bottom: 30px;
+  h2 { font-size: 2rem; font-weight: 800; margin: 0; }
+  p { color: #94a3b8; margin: 5px 0 0; font-size: 0.95rem; }
+}
+
+/* CONTENEDOR PRINCIPAL */
+.glass-content-container {
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+/* BARRA DE ACCIONES */
+.actions-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px;
+}
+
+.stats-badge {
+  background: rgba(168, 85, 247, 0.1); color: #d8b4fe;
+  padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+  .dot { width: 6px; height: 6px; background: #a855f7; border-radius: 50%; box-shadow: 0 0 8px #a855f7; }
+}
+
+.btn-glass-action {
+  // 🔥 CAMBIO: Botón sólido
+  background: #0f1225; 
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white; padding: 10px 20px; border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+  display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s;
+  
+  ion-icon { font-size: 1.2rem; color: #a855f7; }
+  
+  &:hover:not(:disabled) { background: #1e293b; border-color: #a855f7; transform: translateY(-2px); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+/* LISTA DE NOTIFICACIONES */
+.notifications-list {
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.notification-glass-card {
+  // 🔥 CAMBIO: Tarjeta sólida
+  background: #05071a; 
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  
+  border-radius: 18px;
+  padding: 16px;
+  display: flex; align-items: center; gap: 16px;
+  position: relative; overflow: hidden;
+  transition: all 0.3s ease;
+
+  /* Estado Leído */
+  &.read {
+    opacity: 0.7; 
+    background: #05071a; // Mismo fondo, solo opacidad
+    border-color: rgba(255, 255, 255, 0.02);
+    .icon-box { filter: grayscale(1); opacity: 0.5; }
+  }
+
+  /* Estado No Leído: Hover Brillante */
+  &:not(.read):hover {
+    background: #0a0c1e; // Ligeramente más claro
+    border-color: rgba(168, 85, 247, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  /* ESTILO ESPECIAL: INVITACIÓN */
+  &.invite-card {
+    border-left: 3px solid #a855f7; 
+    // Gradiente sutil sobre fondo sólido
+    background: linear-gradient(90deg, rgba(168, 85, 247, 0.05), #05071a);
+  }
+
+  /* ICONO LATERAL */
+  .icon-box {
+    width: 50px; height: 50px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; flex-shrink: 0; color: white;
+    
+    &.mensaje { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+    &.evento { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+    &.ticket { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    &.invitacion { background: linear-gradient(135deg, #a855f7, #ec4899); }
+  }
+
+  /* CONTENIDO */
+  .notif-content { flex: 1; min-width: 0; }
+  
+  .notif-header-row {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;
+    .notif-title { margin: 0; font-size: 1rem; font-weight: 700; color: white; }
+    .notif-time { font-size: 0.75rem; color: #64748b; font-weight: 600; }
+  }
+  
+  .notif-desc { margin: 0; font-size: 0.9rem; color: #cbd5e1; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+
+  /* BOTONES ACCIÓN */
+  .notif-actions {
+    display: flex; flex-direction: column; gap: 8px; opacity: 0; transition: 0.2s;
+    @media(max-width: 768px) { opacity: 1; flex-direction: row; }
+  }
+  
+  &:hover .notif-actions { opacity: 1; }
+
+  .action-btn {
+    width: 32px; height: 32px; border-radius: 8px; border: none;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
+    
+    // Normales
+    &.check { background: rgba(32, 215, 124, 0.15); color: #20d77c; &:hover { background: #20d77c; color: #000; } }
+    &.delete { background: rgba(243, 77, 92, 0.15); color: #f34d5c; &:hover { background: #f34d5c; color: white; } }
+
+    // Invitación: Aceptar (Verde más fuerte)
+    &.accept { 
+      background: rgba(32, 215, 124, 0.2); color: #20d77c; border: 1px solid rgba(32, 215, 124, 0.3);
+      &:hover { background: #20d77c; color: white; } 
+    }
+    // Invitación: Rechazar
+    &.reject { 
+      background: rgba(244, 63, 94, 0.15); color: #f43f5e; 
+      &:hover { background: #f43f5e; color: white; } 
+    }
+  }
+
+  /* PUNTOS INDICADORES */
+  .unread-indicator {
+    position: absolute; top: 16px; right: 16px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #f34d5c; box-shadow: 0 0 10px #f34d5c;
+  }
+
+  .invite-indicator {
+    position: absolute; top: 16px; right: 16px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #a855f7; box-shadow: 0 0 10px #a855f7;
+  }
+  
+  &:hover .unread-indicator, &:hover .invite-indicator { display: none; }
+}
+
+.empty-state {
+  text-align: center; padding: 60px 20px; color: #64748b;
+  ion-icon { font-size: 4rem; margin-bottom: 15px; opacity: 0.3; }
+  p { font-size: 1.1rem; }
+}

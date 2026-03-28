@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  --background: transparent !important; /* ✅ Forzamos transparencia en variable de Ionic */
+  background: transparent !important;   /* ✅ Forzamos transparencia estándar */
+}
+
+.dashboard-wrapper {
+  width: 100%;
+  height: 100%;
+  background: transparent !important; /* ✅ Aseguramos que el wrapper no tenga color */
+}
+
+/* Mantenemos tu código para ocultar elementos residuales si los hubiera */
+cr-side-menu, 
+cr-on-boarding, 
+.side-menu-button, 
+.on-boarding-btn, 
+.tabs-white-underlay {
+  display: none !important;
+}

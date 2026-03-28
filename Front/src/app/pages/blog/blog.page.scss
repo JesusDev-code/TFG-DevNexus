@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+:host { 
+  background: transparent !important; 
+  display: block; 
+  height: 100%;
+}
+
+// --- HEADER COMPACTO ---
+.blog-hero-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 10px 24px 20px; 
+  text-align: center;
+}
+
+.blog-title {
+  font-size: 2.2rem; 
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 10px; 
+  letter-spacing: -1px;
+}
+
+.blog-description {
+  color: #94a3b8;
+  font-size: 1rem; 
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto 20px; 
+}
+
+// --- GRID DE BLOG ---
+.blog-grid-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+// --- TARJETA PREMIUM ---
+.premium-blog-card {
+  background: #1e2336;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  border-radius: 20px;
+  overflow: hidden;
+  height: 100%; /* Para que ocupe altura en grid */
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+
+  &:hover {
+    transform: translateY(-5px);
+    background: #232840;
+    border-color: rgba(168, 85, 247, 0.4);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    .card-image { filter: saturate(1.2); transform: scale(1.03); }
+  }
+
+  .card-image {
+    height: 160px; 
+    background-size: cover;
+    background-position: center;
+    transition: 0.6s ease;
+    position: relative;
+    padding: 16px;
+
+    &.bg1 { background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80'); }
+    &.bg2 { background-image: url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80'); }
+    &.bg3 { background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80'); }
+    &.bg6 { background-image: url('https://images.unsplash.com/photo-1482062364825-616fd23b8fc1?auto=format&fit=crop&w=600&q=80'); }
+  }
+
+  .blog-chip {
+    padding: 4px 12px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: white;
+    &.tutorial { background: linear-gradient(90deg, #b224ef, #7567ec); }
+    &.design { background: linear-gradient(90deg, #3c7ee7, #ae3ecd); }
+    &.perf { background: linear-gradient(90deg, #2bc1fc, #19efd4); }
+    &.backend { background: linear-gradient(90deg, #fa984e, #d94b57); }
+  }
+
+  .card-content {
+    padding: 20px; display: flex; flex-direction: column; flex-grow: 1;
+
+    .meta-row {
+      margin-bottom: 8px;
+      .date-badge { font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center; gap: 5px; }
+    }
+
+    h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; line-height: 1.3; color: #fff; }
+    p { color: #94a3b8; font-size: 0.9rem; margin-bottom: 16px; line-height: 1.5; }
+  }
+
+  .card-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 12px; margin-top: auto;
+
+    .author { font-size: 0.8rem; color: #64748b; display: flex; align-items: center; gap: 6px; ion-icon { color: #a855f7; } }
+
+    .action-btn {
+      background: transparent; border: none; color: #3b82f6; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 1.2rem;
+      transition: 0.2s;
+      &:hover { color: white; transform: scale(1.1); }
+      .count { font-size: 0.8rem; font-weight: 700; }
+    }
+  }
+
+  /* --- SECCIÓN DE COMENTARIOS --- */
+  .comments-section {
+    background: rgba(0,0,0,0.2);
+    margin: 15px -20px -20px; /* Expandir a los bordes */
+    padding: 15px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+
+    .spinner-box { text-align: center; padding: 10px; }
+
+    .comments-list {
+      max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
+      
+      .empty-msg { text-align: center; font-size: 0.8rem; color: #64748b; font-style: italic; }
+
+      .comment-bubble {
+        padding: 8px 12px; border-radius: 12px; font-size: 0.85rem; max-width: 90%;
+        display: flex; flex-direction: column; 
+        
+        .bubble-author { font-size: 0.7rem; font-weight: 700; margin-bottom: 2px; opacity: 0.8; }
+        .bubble-text { line-height: 1.4; }
+
+        &.staff { 
+          align-self: flex-start; background: rgba(168, 85, 247, 0.15); color: #e2e8f0; 
+          .bubble-author { color: #a855f7; }
+        }
+        &.me { 
+          align-self: flex-end; background: rgba(255, 255, 255, 0.1); color: white; 
+          .bubble-author { color: #94a3b8; text-align: right; }
+        }
+      }
+    }
+
+    .comment-input-area {
+      display: flex; gap: 8px;
+      input { 
+        flex: 1; background: rgba(255,255,255,0.05); border: none; border-radius: 20px; 
+        padding: 8px 14px; color: white; font-size: 0.9rem; outline: none;
+        &:focus { background: rgba(255,255,255,0.1); }
+      }
+      button {
+        background: #3b82f6; border: none; width: 34px; height: 34px; border-radius: 50%;
+        color: white; display: flex; align-items: center; justify-content: center; cursor: pointer;
+        &:hover { transform: scale(1.1); }
+      }
+    }
+  }
+}
+
+// --- TARJETA LOCKED ---
+.full-height-center { min-height: 20vh; display: flex; align-items: center; justify-content: center; padding-bottom: 40px; }
+
+.locked-compact-card {
+  width: 100%; max-width: 550px; background: #1e2336;
+  border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 16px; padding: 20px 24px;
+  display: flex; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+  .icon-side .glow-circle {
+    width: 50px; height: 50px; border-radius: 50%; background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.3); display: flex; align-items: center; justify-content: center;
+    ion-icon { font-size: 24px; color: #a855f7; }
+  }
+  .text-side {
+    text-align: left;
+    h2 { font-size: 1.1rem; font-weight: 700; color: white; margin: 0 0 4px 0; }
+    p { font-size: 0.9rem; color: #94a3b8; margin: 0 0 10px 0; }
+    .status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; color: #3b82f6; background: rgba(59, 130, 246, 0.1); padding: 4px 10px; border-radius: 6px; }
+  }
+}
+
+@media (max-width: 450px) {
+  .locked-compact-card { flex-direction: column; text-align: center; .text-side { text-align: center; .status-badge { justify-content: center; } } }
+}
+
+@media (max-width: 768px) { .blog-title { font-size: 1.8rem; } }

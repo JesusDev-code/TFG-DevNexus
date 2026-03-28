@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+// Página hija: sin :host ni ion-content
+
+.admin-content-wrapper {
+  padding: 20px;
+  max-width: 1240px;
+  margin: 0 auto;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: white;
+}
+
+/* --- VISTA USUARIOS --- */
+.header-actions {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; gap: 20px; flex-wrap: wrap;
+  .section-title { font-size: 2rem; font-weight: 800; margin: 0; }
+  .section-subtitle { color: #64748b; margin: 5px 0 0; font-size: 1rem; }
+}
+
+.search-glass-wrapper {
+  flex: 1; max-width: 400px; 
+  // 🔥 CAMBIO: Fondo sólido oscuro
+  background: #05071a; 
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px; padding: 12px 18px; display: flex; align-items: center; gap: 12px;
+  transition: 0.3s;
+  
+  ion-icon { color: #64748b; font-size: 1.2rem; }
+  input { background: transparent; border: none; color: white; width: 100%; outline: none; &::placeholder { color: #475569; } }
+  
+  &:focus-within { background: #0a0c1e; border-color: #a855f7; }
+}
+
+.users-glass-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;
+}
+
+.user-premium-card {
+  padding: 1px; border-radius: 24px; background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  cursor: pointer; transition: 0.3s ease;
+  &:hover { transform: translateY(-5px); .card-light { opacity: 1; } }
+}
+
+.user-card-inner {
+  // Ya era sólido, perfecto.
+  background: #05071a; 
+  border-radius: 23px; padding: 20px; display: flex; align-items: center; gap: 18px; position: relative; overflow: hidden;
+  .avatar-glow { width: 55px; height: 55px; border-radius: 16px; border: 2px solid #3b82f6; overflow: hidden; img { width: 100%; height: 100%; object-fit: cover; } }
+  .user-details { flex: 1; h3 { font-size: 1.1rem; font-weight: 700; margin: 0; } p { color: #64748b; font-size: 0.85rem; margin: 4px 0 0; } }
+  .user-arrow { color: #3b82f6; font-size: 1.4rem; }
+  .card-light { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1), transparent 70%); opacity: 0; transition: 0.5s; pointer-events: none; }
+}
+
+/* --- VISTA DIARIOS --- */
+.header-diaries-nav {
+  display: flex; align-items: center; gap: 30px; margin-bottom: 40px; flex-wrap: wrap;
+  .premium-back-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 10px 20px; border-radius: 100px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; &:hover { background: rgba(255,255,255,0.1); border-color: white; } }
+  h2 { font-size: 1.8rem; font-weight: 800; margin: 0; }
+}
+
+.diarios-premium-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 30px; }
+
+.diario-glass-card {
+  // 🔥 CAMBIO: Fondo sólido para las tarjetas de diario
+  background: #05071a; 
+  border: 1px solid rgba(255, 255, 255, 0.05); 
+  border-radius: 28px; padding: 25px; display: flex; flex-direction: column; transition: 0.3s;
+  
+  &:hover { border-color: rgba(168, 85, 247, 0.3); background: #0a0c1e; }
+}
+
+.card-top-accent {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+  .topic-pill { background: rgba(168, 85, 247, 0.15); color: #d8b4fe; padding: 5px 14px; border-radius: 10px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; }
+  .date-tag { display: flex; align-items: center; gap: 6px; color: #475569; font-size: 0.85rem; font-weight: 600; }
+}
+
+.diario-body { flex: 1; p { margin: 0; color: #e2e8f0; font-style: italic; line-height: 1.7; font-size: 1.05rem; } }
+
+.diario-footer {
+  margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);
+  .footer-actions { display: flex; justify-content: space-between; gap: 12px; }
+}
+
+.action-btn {
+  display: flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s;
+  &.chat-toggle { background: rgba(59, 130, 246, 0.1); color: #3b82f6; .count-badge { background: #3b82f6; color: white; padding: 2px 6px; border-radius: 6px; font-size: 0.7rem; } &.active { background: #3b82f6; color: white; } }
+  &.delete-btn { background: rgba(243, 77, 92, 0.1); color: #f34d5c; &:hover { background: #f34d5c; color: white; transform: scale(1.05); } }
+}
+
+/* --- FEEDBACK / COMENTARIOS --- */
+.feedback-section { margin-top: 20px; animation: fadeIn 0.4s ease; }
+.feedback-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.2), transparent); margin-bottom: 20px; }
+.feedback-list { display: flex; flex-direction: column; gap: 12px; max-height: 300px; overflow-y: auto; padding-right: 5px; }
+
+.feedback-bubble {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 12px 16px; border-radius: 18px 18px 18px 4px; align-self: flex-start; max-width: 90%;
+  &.is-admin { background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.2); align-self: flex-end; border-radius: 18px 18px 4px 18px; }
+  .bubble-header { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 6px; .author { font-size: 0.75rem; font-weight: 800; color: #a855f7; } .time { font-size: 0.7rem; color: #475569; } }
+  .text { margin: 0; font-size: 0.95rem; line-height: 1.4; color: #cbd4e6; }
+}
+
+.feedback-input-box {
+  margin-top: 20px; 
+  // 🔥 CAMBIO: Fondo sólido para input de comentarios
+  background: #05071a; 
+  border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 6px 6px 6px 18px; display: flex; align-items: center; gap: 12px;
+  
+  input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 0.95rem; }
+  .send-btn { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(90deg, #a855f7, #3b82f6); color: white; border: none; cursor: pointer; &:hover { transform: scale(1.05); } }
+}
+
+.empty-feedback { text-align: center; color: #475569; padding: 20px; font-size: 0.9rem; font-style: italic; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
+  .header-actions { flex-direction: column; align-items: stretch; }
+  .users-glass-grid, .diarios-premium-grid { grid-template-columns: 1fr; }
+}

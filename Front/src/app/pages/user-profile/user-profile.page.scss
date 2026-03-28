@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+// Mantenemos la configuración del host
+:host { 
+  background: transparent !important; 
+  display: block; 
+  height: 100%;
+}
+
+// 🗑️ BORRADOS: ion-content, .background-effects, keyframes, .main-wrapper, .text-gradient
+// (Ahora se gestionan desde global.scss)
+
+// HEADER COMPACTO
+.user-hero-container {
+  max-width: 1240px; 
+  margin: 0 auto; 
+  padding: 20px 24px 10px; 
+  text-align: center;
+  
+  &.compact {
+    .user-title { font-size: 2.2rem; margin-bottom: 8px; }
+    .user-description { font-size: 1rem; color: #94a3b8; margin-bottom: 20px; line-height: 1.4; }
+  }
+}
+
+.user-title { 
+  font-weight: 800; 
+  line-height: 1.1; 
+  letter-spacing: -1px; 
+}
+
+// BARRA DE NAVEGACIÓN DE USUARIO
+.user-nav-container { 
+  max-width: 1100px; 
+  margin: 0 auto 25px; 
+  padding: 0 24px; 
+}
+
+.premium-user-bar { 
+  background: rgba(255, 255, 255, 0.03); 
+  border: 1px solid rgba(255, 255, 255, 0.08); 
+  border-radius: 16px; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  padding: 6px; 
+  gap: 5px; 
+  flex-wrap: wrap; 
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
+}
+
+.user-tab { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  padding: 10px 16px; 
+  border-radius: 12px; 
+  color: #94a3b8; 
+  font-weight: 600; 
+  font-size: 0.9rem; 
+  text-decoration: none; 
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); 
+  cursor: pointer; 
+  
+  ion-icon { font-size: 1.1rem; } 
+  
+  &:hover { 
+    color: white; 
+    background: rgba(255, 255, 255, 0.05); 
+    transform: translateY(-1px); 
+  }
+  
+  &.active-tab { 
+    background: linear-gradient(90deg, #a855f7, #3b82f6); 
+    color: white; 
+    box-shadow: 0 8px 15px rgba(168, 85, 247, 0.2); 
+    
+    ion-icon { color: white; } 
+  }
+  
+  &.staff-tab { 
+    border: 1px solid rgba(168, 85, 247, 0.2); 
+  }
+}
+
+// WRAPPER PARA EL ROUTER-OUTLET HIJO
+.user-content-view { 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  padding: 10px 24px; 
+  animation: fadeIn 0.5s ease; 
+}
+
+@keyframes fadeIn { 
+  from { opacity: 0; transform: translateY(5px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+@media (max-width: 900px) { 
+  .user-title { font-size: 1.8rem; } 
+  
+  .premium-user-bar { 
+    justify-content: flex-start; 
+    overflow-x: auto; 
+    white-space: nowrap; 
+    flex-wrap: nowrap; 
+    padding: 8px; 
+  } 
+  
+  .user-tab { 
+    padding: 8px 12px; 
+    span { font-size: 0.8rem; } 
+  } 
+}

@@ -1,0 +1,41 @@
+<ion-content [fullscreen]="true" class="bg-transparent">
+  
+  <div class="main-content-wrapper">
+    
+    <div class="user-hero-container compact">
+      <h1 class="user-title">Panel de <span class="text-gradient">Usuario.</span></h1>
+      <p class="user-description">
+        Gestiona tu perfil, diario personal y comunicación con la comunidad.
+      </p>
+    </div>
+
+    <div class="user-nav-container">
+      <div class="premium-user-bar">
+        <a class="user-tab" routerLink="perfil" routerLinkActive="active-tab">
+          <ion-icon name="person-outline"></ion-icon> <span>Mi Perfil</span>
+        </a>
+        <a class="user-tab" routerLink="diario" routerLinkActive="active-tab">
+          <ion-icon name="book-outline"></ion-icon> <span>Diario</span>
+        </a>
+        <a class="user-tab" routerLink="tickets" routerLinkActive="active-tab">
+          <ion-icon name="ticket-outline"></ion-icon> <span>Tickets</span>
+        </a>
+        <a class="user-tab" routerLink="mensajes" routerLinkActive="active-tab">
+          <ion-icon name="chatbubble-ellipses-outline"></ion-icon> <span>Mensajes</span>
+        </a>
+        <a class="user-tab" routerLink="notificaciones" routerLinkActive="active-tab">
+          <ion-icon name="notifications-outline"></ion-icon> <span>Avisos</span>
+        </a>
+        <a class="user-tab" routerLink="eventos" routerLinkActive="active-tab">
+          <ion-icon name="calendar-outline"></ion-icon> <span>Eventos</span>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="user-content-view">
+      <router-outlet></router-outlet>
+    </div>
+    
+  </div>
+</ion-content>

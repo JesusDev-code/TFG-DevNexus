@@ -1,0 +1,42 @@
+<div class="background-effects">
+  <div class="glow-blob blob-1"></div>
+  <div class="glow-blob blob-2"></div>
+</div>
+
+<div class="screen-background"></div>
+
+<cr-side-menu #sideMenu (closeMenuEvent)="onMenuToggle()">
+</cr-side-menu>
+
+<div class="menu-overlay" [class.visible]="!isMenuOpen" (click)="onMenuToggle()">
+</div>
+
+<cr-on-boarding #onBoarding [class.active]="showOnBoarding" (closeOnBoardingEvent)="showOnBoardingToggle()">
+</cr-on-boarding>
+
+<ng-container *ngIf="!authService.currentUser()">
+  <div class="on-boarding-btn" (click)="showOnBoardingToggle()" #onBoardingBtn data-testid="onboarding-btn">
+    <ion-icon name="person-outline"></ion-icon>
+  </div>
+</ng-container>
+
+<div class="side-menu-button neon-glass-btn" (click)="onMenuToggle()" #menuToggleBtn>
+  <ion-icon name="menu-outline"></ion-icon>
+</div>
+
+<div class="tabs-white-underlay" #tabWhiteBg></div>
+
+<div class="main-content-animable" #mainContent>
+  <router-outlet></router-outlet>
+</div>
+
+<ng-container *ngIf="authService.currentUser() as user">
+  <ion-fab *ngIf="!user || (user.rolNombre !== 'ADMIN' && user.rolNombre !== 'STAFF')" vertical="bottom"
+    horizontal="end" slot="fixed" #bottomTabs style="margin-bottom: 30px; margin-right: 20px;">
+
+    <ion-fab-button (click)="abrirChat()" color="tertiary" class="chat-fab-btn">
+      <ion-icon name="chatbubbles-outline"></ion-icon>
+    </ion-fab-button>
+
+  </ion-fab>
+</ng-container>

@@ -1,0 +1,193 @@
+/* ================================
+   AppShell - Layout final estable
+   ================================ */
+
+/* Fondo general transparente */
+.screen-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  z-index: 0;
+}
+
+/* Contenido principal */
+.main-content-animable {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  min-height: 100vh;
+  background: transparent; 
+  overflow: visible;
+  transform-origin: center;
+  
+  /* 🛑 IMPORTANTE: Sin 'transition: transform' para que funcione el TS */
+  will-change: transform; 
+}
+
+/* Menú lateral (Oculto inicialmente a la izquierda) */
+cr-side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  height: 100vh;
+  transform: translateX(-100%); 
+}
+
+/* ✅ OVERLAY CORREGIDO (Transición suave) */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55); /* Color oscuro */
+  z-index: 80;
+  
+  /* Estado inicial: Oculto */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Estado visible (cuando el menú se abre) */
+.menu-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Onboarding */
+cr-on-boarding {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 30px;
+  box-shadow: 0 40px 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+  transform: translateY(-100%);
+  transition: opacity 0.3s ease, transform 0.5s ease;
+}
+
+cr-on-boarding.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+  z-index: 1000;
+}
+
+/* Fondo degradado inferior */
+.tabs-white-underlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 150px;
+  background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.9));
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* --- BOTONES SUPERIORES --- */
+.on-boarding-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background: white;
+  position: fixed;
+  top: calc(var(--safe-area-inset-top) + 20px);
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 5px 5px rgba(var(--cr-color-shadow-rgb), 0.2);
+  z-index: 200;
+  ion-icon { --ionicon-stroke-width: 40px; color: black; }
+}
+
+.side-menu-button {
+  position: fixed;
+  top: calc(var(--safe-area-inset-top) + 16px);
+  left: 16px;
+  z-index: 9999;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent; 
+  padding: 0;
+  box-shadow: none;
+}
+
+.neon-glass-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(168, 85, 247, 0.1); 
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.15);
+  color: white;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  animation: menuBtnGlow 3s infinite ease-in-out;
+  ion-icon { color: white; }
+
+  &:hover {
+    animation: none; 
+    transform: scale(1.1); 
+    background: rgba(168, 85, 247, 0.25);
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.6);
+    border-color: #a855f7;
+  }
+}
+
+.logged-user-actions {
+  position: fixed;
+  top: calc(var(--safe-area-inset-top) + 20px);
+  right: 16px;
+  display: flex;
+  gap: 12px;
+  z-index: 200;
+}
+
+.circle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s;
+}
+.circle-btn:active { transform: scale(0.95); }
+
+.logout-btn { background: white; ion-icon { color: #eb445a; font-size: 20px; } }
+
+.profile-btn {
+  background: #f77d8e; 
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid white;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &.admin { border-color: #f34d5c; box-shadow: 0 0 8px rgba(243, 77, 92, 0.4); }
+  &.staff { border-color: #ae3ecd; box-shadow: 0 0 8px rgba(174, 62, 205, 0.4); }
+
+  span { color: white; font-weight: bold; font-size: 1.2rem; }
+  .avatar-img-shell { width: 100%; height: 100%; object-fit: cover; display: block; }
+}
+
+@keyframes menuBtnGlow {
+  0% { box-shadow: 0 4px 15px rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); background: rgba(168, 85, 247, 0.1); }
+  50% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); border-color: rgba(168, 85, 247, 0.6); background: rgba(168, 85, 247, 0.15); }
+  100% { box-shadow: 0 4px 15px rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); background: rgba(168, 85, 247, 0.1); }
+}

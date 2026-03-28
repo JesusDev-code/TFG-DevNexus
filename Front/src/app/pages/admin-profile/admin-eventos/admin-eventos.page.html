@@ -1,0 +1,134 @@
+<div class="admin-content-wrapper">
+  
+  <div class="header-actions">
+    <div class="search-glass-wrapper">
+      <ion-icon name="search-outline"></ion-icon>
+      <input type="text" placeholder="Buscar eventos por título o descripción..." (input)="onSearchChange($event)">
+    </div>
+    
+    <button class="premium-add-btn" (click)="abrirModal()">
+      <ion-icon name="add-outline"></ion-icon>
+      Nuevo Evento
+    </button>
+  </div>
+
+  <div class="filter-glass-bar">
+    <button class="filter-pill" [class.active]="filtroVisibilidad === 'TODOS'" (click)="cambiarFiltro('TODOS')">
+      Todos
+    </button>
+    <button class="filter-pill public" [class.active]="filtroVisibilidad === 'PUBLICO'" (click)="cambiarFiltro('PUBLICO')">
+      <ion-icon name="globe-outline"></ion-icon> Públicos
+    </button>
+    <button class="filter-pill private" [class.active]="filtroVisibilidad === 'PRIVADO'" (click)="cambiarFiltro('PRIVADO')">
+      <ion-icon name="lock-closed-outline"></ion-icon> Privados
+    </button>
+  </div>
+
+  <div class="table-glass-container">
+    <table class="premium-table">
+      <thead>
+        <tr>
+          <th>Evento</th>
+          <th>Fecha y Hora</th>
+          <th>Creador</th>
+          <th>Visibilidad</th>
+          <th class="ion-text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ev of eventosFiltrados" class="table-row">
+          <td>
+            <div class="event-cell">
+              <div class="event-icon-box" [class.public]="ev.visibilidad === 'PUBLICO'">
+                <ion-icon name="calendar-outline"></ion-icon>
+              </div>
+              <div class="event-info">
+                <span class="title">{{ ev.titulo }}</span>
+                <span class="desc">{{ ev.descripcion || 'Sin descripción' }}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="date-info">
+              <span class="date">{{ ev.fechaEvento | date:'dd MMM yyyy' }}</span>
+              <span class="time">{{ ev.horaEvento }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="creator-tag">{{ ev.usuario?.nombre || 'Admin' }}</span>
+          </td>
+          <td>
+            <span class="visibility-pill" [class.is-public]="ev.visibilidad === 'PUBLICO'">
+              <ion-icon [name]="ev.visibilidad === 'PUBLICO' ? 'globe-outline' : 'lock-closed-outline'"></ion-icon>
+              {{ ev.visibilidad === 'PUBLICO' ? 'Público' : 'Privado' }}
+            </span>
+          </td>
+          <td>
+            <div class="actions-group">
+              <button class="action-btn delete" (click)="confirmarBorrado(ev)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="eventosFiltrados.length === 0">
+          <td colspan="5" class="empty-state">No se encontraron eventos con estos parámetros.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ion-modal [isOpen]="modalAbierto" (didDismiss)="cerrarModal()" class="premium-modal-small">
+    <ng-template>
+      <div class="modal-wrapper-dark">
+        <div class="modal-header">
+          <h2>{{ esEdicion ? 'Editar' : 'Crear' }} <span class="text-gradient">Evento</span></h2>
+          <button class="close-modal-btn" (click)="cerrarModal()">
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="input-group full">
+              <label>Título del Evento</label>
+              <input type="text" [(ngModel)]="eventoEditando.titulo" placeholder="Ej: Workshop de Angular Pro">
+            </div>
+
+            <div class="input-group">
+              <label>Fecha</label>
+              <input type="date" [(ngModel)]="eventoEditando.fechaEvento">
+            </div>
+
+            <div class="input-group">
+              <label>Hora</label>
+              <input type="time" [(ngModel)]="eventoEditando.horaEvento">
+            </div>
+
+            <div class="input-group full">
+              <label>Visibilidad</label>
+              <div class="glass-radio-group">
+                <div class="radio-item" [class.active]="eventoEditando.visibilidad === 'PUBLICO'" (click)="eventoEditando.visibilidad = 'PUBLICO'">
+                  <ion-icon name="globe-outline"></ion-icon><span>Público</span>
+                </div>
+                <div class="radio-item" [class.active]="eventoEditando.visibilidad === 'PRIVADO'" (click)="eventoEditando.visibilidad = 'PRIVADO'">
+                  <ion-icon name="lock-closed-outline"></ion-icon><span>Privado</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group full">
+              <label>Descripción</label>
+              <textarea rows="4" [(ngModel)]="eventoEditando.descripcion" placeholder="Detalla de qué trata el evento..."></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn-ghost" (click)="cerrarModal()">Cancelar</button>
+            <button class="btn-gradient" (click)="guardarEvento()">{{ esEdicion ? 'Actualizar' : 'Publicar Evento' }}</button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ion-modal>
+</div>

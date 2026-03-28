@@ -1,0 +1,199 @@
+<div class="messages-premium-wrapper">
+
+  <div class="page-header">
+    <h2 class="text-gradient">Mensajería</h2>
+    <p>Conecta con compañeros y soporte.</p>
+  </div>
+
+  <div class="glass-layout-container" [class.chat-mobile-active]="conversacionSeleccionada()">
+
+    <aside class="glass-sidebar">
+
+      <div class="sidebar-header">
+        @if (!mostrarBuscador()) {
+          <h3 style="margin: 0; font-size: 1.1rem;">Mis Chats</h3>
+        } @else {
+          <h3 style="margin: 0; font-size: 1.1rem;">Nuevo Chat</h3>
+        }
+
+        <button class="btn-add-glass" (click)="toggleBuscador()" [class.active]="mostrarBuscador()">
+          <ion-icon [name]="mostrarBuscador() ? 'close-outline' : 'person-add-outline'"></ion-icon>
+        </button>
+      </div>
+
+      @if (!mostrarBuscador()) {
+        <div class="search-bar-container">
+          <div class="search-glass-pill">
+            <ion-icon name="search-outline"></ion-icon>
+            <input type="text" placeholder="Filtrar mis chats..." [value]="filtroChats()" (input)="setFiltroChats($event)">
+          </div>
+        </div>
+
+        <cdk-virtual-scroll-viewport itemSize="70" class="conversations-list premium-viewport" style="height: 60vh;">
+          <div *cdkVirtualFor="let conv of conversacionesFiltradas()" class="chat-item"
+            [class.active]="conv.id === conversacionSeleccionada()?.id" [class.is-admin]="conv.esAdmin"
+            (click)="seleccionarConversacion(conv)">
+
+            <div class="avatar">
+              @if (conv.avatarUrl) {
+                <img [src]="conv.avatarUrl">
+              } @else {
+                <span>{{ conv.titulo.charAt(0) }}</span>
+              }
+            </div>
+
+            <div class="info">
+              <div class="name-row">
+                <span>{{ conv.titulo }}</span>
+                @if (conv.unreadCount! > 0) {
+                  <span class="unread-dot">{{ conv.unreadCount }}</span>
+                }
+              </div>
+              <div class="preview">
+                @if (conv.esAdmin) {
+                  <span class="admin-badge">Soporte</span>
+                }
+                {{ conv.ultimoMensaje || 'Nueva conversación' }}
+              </div>
+            </div>
+          </div>
+
+          @if (conversacionesFiltradas().length === 0) {
+            <div class="empty-list-msg">
+              No tienes chats activos.
+            </div>
+          }
+        </cdk-virtual-scroll-viewport>
+      }
+
+      @if (mostrarBuscador()) {
+        <div class="user-finder-premium-panel">
+
+          <div class="dept-filter-scroll">
+            <div class="dept-chip" [class.active]="departamentoSeleccionado() === null"
+              (click)="setDepartamento(null)">
+              Todos
+            </div>
+            @for (d of departamentos(); track d.id) {
+              <div class="dept-chip" [class.active]="departamentoSeleccionado() === d.id"
+                (click)="setDepartamento(d.id)">
+                {{ d.nombre }}
+              </div>
+            }
+          </div>
+  
+          <div class="finder-input-wrapper">
+            <ion-icon name="search-outline"></ion-icon>
+            <input type="text" placeholder="Escribe el nombre..." [value]="searchQuery()" autofocus
+              (input)="setSearchQuery($event)">
+          </div>
+  
+          <div class="results-list">
+  
+            @if (searchQuery().length < 1 && departamentoSeleccionado() === null) {
+              <div class="hint-msg">
+                <ion-icon name="people-outline" style="font-size: 2rem; margin-bottom: 10px;"></ion-icon>
+                <p>Selecciona un departamento o busca por nombre.</p>
+              </div>
+            }
+  
+            @if (usuariosEncontrados().length === 0 && (searchQuery().length >= 1 || departamentoSeleccionado() !== null)) {
+              <div class="hint-msg">
+                No se encontraron usuarios.
+              </div>
+            }
+  
+            @for (u of usuariosEncontrados(); track u.id) {
+              <div (click)="iniciarChatCon(u)" class="found-user-item">
+                <div class="avatar-mini">
+                  @if (u.foto_perfil) {
+                    <img [src]="u.foto_perfil">
+                  } @else {
+                    <span>{{ u.nombre ? u.nombre.charAt(0) : '?' }}</span>
+                  }
+                </div>
+                <span class="u-name">{{ u.nombre || 'Usuario' }}</span>
+                <ion-icon name="chatbubbles-outline" style="color: #a855f7;"></ion-icon>
+              </div>
+            }
+  
+          </div>
+        </div>
+      }
+
+    </aside>
+
+    <main class="glass-chat-area">
+      @if (conversacionSeleccionada(); as selectedChat) {
+        <header class="chat-header">
+          <div class="user-details">
+            <button class="premium-back-btn" (click)="deseleccionarConversacion()">
+              <ion-icon name="chevron-back-outline"></ion-icon>
+            </button>
+            <div class="avatar-header">
+              @if (selectedChat.avatarUrl) {
+                <img [src]="selectedChat.avatarUrl">
+              } @else {
+                <span>{{ selectedChat.titulo.charAt(0) }}</span>
+              }
+            </div>
+            <div class="text-info">
+              <h3>{{ selectedChat.titulo }}</h3>
+              @if (selectedChat.esAdmin) {
+                <span class="status">SOPORTE OFICIAL</span>
+              }
+            </div>
+          </div>
+          @if (!selectedChat.esAdmin) {
+            <button class="btn-icon-glass"
+              (click)="eliminarConversacion(selectedChat.id)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          }
+        </header>
+
+        <cdk-virtual-scroll-viewport itemSize="60" class="messages-scroll premium-viewport-messages"
+          style="height: 50vh;">
+          <div *cdkVirtualFor="let msg of mensajes()" class="msg-bubble" [ngClass]="{
+                 'propio': esPropio(msg), 
+                 'staff': !esPropio(msg) && msg.esStaff, 
+                 'ajeno': !esPropio(msg) && !msg.esStaff
+               }">
+            @if (!esPropio(msg) && msg.esStaff) {
+              <span class="admin-tag">Administración</span>
+            }
+            {{ msg.texto }}
+            <span class="time">{{ msg.fechaEnvio | date:'HH:mm' }}</span>
+          </div>
+        </cdk-virtual-scroll-viewport>
+
+        <div class="chat-input-area">
+          <button class="btn-emoji" (click)="toggleEmojiPicker()"
+            [class.active]="mostrarEmojiPicker()">
+            <ion-icon name="happy-outline"></ion-icon>
+          </button>
+          <input type="text" class="glass-input" placeholder="Escribe tu mensaje..." [ngModel]="nuevoMensaje()"
+            (ngModelChange)="nuevoMensaje.set($event)"
+            (keyup.enter)="enviarMensaje()">
+          <button class="btn-send" (click)="enviarMensaje()" [disabled]="!nuevoMensaje().trim()">
+            <ion-icon name="send"></ion-icon>
+          </button>
+        </div>
+
+        @if (mostrarEmojiPicker()) {
+          <div class="emoji-bar">
+            @for (e of emojiList; track e) {
+              <span (click)="addEmoji(e)" class="emoji-item">{{ e }}</span>
+            }
+          </div>
+        }
+      } @else {
+        <div class="empty-state-glass">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          <h3>Centro de Mensajería</h3>
+          <p>Selecciona un chat o inicia uno nuevo.</p>
+        </div>
+      }
+    </main>
+  </div>
+</div>

@@ -1,0 +1,114 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="chat-header">
+    <ion-buttons slot="start">
+      <ion-button *ngIf="esModal" (click)="cerrarModal()">
+        <ion-icon name="close-outline" color="light" style="font-size: 1.5rem;"></ion-icon>
+      </ion-button>
+      <ion-back-button *ngIf="!esModal" [defaultHref]="esStaff ? '/staff-inbox' : '/dashboard'" color="light"></ion-back-button>
+    </ion-buttons>
+    
+    <div class="header-info">
+      <ion-title>
+        {{ esStaff ? 'Usuario' : 'Soporte Técnico' }}
+      </ion-title>
+      
+      <span class="status-indicator closed" *ngIf="chatCerrado">
+        <ion-icon name="lock-closed"></ion-icon> Finalizado
+      </span>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="chat-background">
+  <div *ngIf="cargando && !isGuest" class="spinner-container">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <div *ngIf="!cargando && isGuest" class="empty-state">
+    <div class="icon-circle" style="background: rgba(255, 99, 71, 0.1);">
+      <ion-icon name="person-circle-outline" style="color: tomato;"></ion-icon>
+    </div>
+    <h3>Modo Invitado</h3>
+    <p>Debes estar registrado para usar el chat de soporte.</p>
+  </div>
+
+  <div class="chat-container" *ngIf="!isGuest && !cargando">
+    <div *ngFor="let msg of mensajes; trackBy: trackByFn" 
+         class="message-row"
+         [class.my-message]="(esStaff && msg.esStaff) || (!esStaff && !msg.esStaff)"
+         [class.other-message]="(esStaff && !msg.esStaff) || (!esStaff && msg.esStaff)"
+         [class.system-message]="msg.uid === 'SYSTEM'">
+      
+      <div *ngIf="msg.uid === 'SYSTEM'; else normalMessage" class="system-bubble">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        <span>{{ msg.texto }}</span>
+      </div>
+
+      <ng-template #normalMessage>
+        <div class="bubble">
+          <div class="user-name" *ngIf="(esStaff && !msg.esStaff) || (!esStaff && msg.esStaff)">
+            {{ msg.esStaff ? 'Soporte' : msg.nombre }}
+          </div>
+          <div class="text">{{ msg.texto }}</div>
+          <div class="meta-info">
+            <span class="time">
+              <ng-container *ngIf="msg.fecha?.toDate; else tempDate">
+                {{ msg.fecha.toDate() | date:'HH:mm' }}
+              </ng-container>
+              <ng-template #tempDate>
+                <ion-icon name="time-outline" style="font-size: 0.8rem;"></ion-icon>
+              </ng-template>
+            </span>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <div *ngIf="mensajes.length === 0" class="empty-state">
+      <div class="icon-circle">
+        <ion-icon name="chatbubbles-outline"></ion-icon>
+      </div>
+      <h3>Comienza la conversación</h3>
+      <p>Estamos aquí para ayudarte. Escribe tu consulta abajo.</p>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-toolbar class="input-toolbar">
+    
+    <div class="input-container" 
+         [class.locked-mode]="chatCerrado || isGuest">
+
+      <ng-container *ngIf="!chatCerrado && !isGuest">
+        <input 
+          [(ngModel)]="nuevoMensaje" 
+          (keyup.enter)="enviar()"
+          placeholder="Escribe un mensaje..." 
+          type="text"
+        >
+        <button class="send-btn" (click)="enviar()" [disabled]="!nuevoMensaje.trim()">
+          <ion-icon name="send"></ion-icon>
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="chatCerrado && !isGuest">
+        <div class="closed-state-content" [class.no-pointer]="esStaff" (click)="!esStaff && iniciarNuevoTicket()">
+          <span style="color: #fbbf24; font-weight: 500;">🔒 Conversación finalizada</span>
+          
+          <div class="reopen-btn" *ngIf="!esStaff">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            Nueva Consulta
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="isGuest">
+        <span style="color: rgba(255,255,255,0.4); font-size: 0.9rem; margin: auto; font-style: italic;">
+          Debes estar registrado para chatear
+        </span>
+      </ng-container>
+
+    </div>
+  </ion-toolbar>
+</ion-footer>

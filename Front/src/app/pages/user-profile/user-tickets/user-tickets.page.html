@@ -1,0 +1,128 @@
+<div class="main-content-wrapper">
+
+  <div class="tickets-container">
+
+    <div class="tickets-header">
+      <div class="title-block">
+        <h2 class="text-gradient">Centro de Soporte</h2>
+        <p>Gestiona tus incidencias y consultas técnicas.</p>
+      </div>
+      <button class="btn-new-ticket" [class.is-active]="nuevoTicketVisible()"
+        (click)="toggleNuevoTicket()">
+        <ion-icon [name]="nuevoTicketVisible() ? 'close-outline' : 'add-outline'"></ion-icon>
+        <span>{{ nuevoTicketVisible() ? 'Cerrar' : 'Nuevo Ticket' }}</span>
+      </button>
+    </div>
+
+    <div class="premium-filter-bar">
+      <button class="filter-pill" [class.active]="filtroActual() === 'ABIERTOS'" (click)="setFiltro('ABIERTOS')">
+        <ion-icon name="time-outline"></ion-icon> Activos
+      </button>
+      <button class="filter-pill" [class.active]="filtroActual() === 'RESUELTOS'" (click)="setFiltro('RESUELTOS')">
+        <ion-icon name="checkmark-done-outline"></ion-icon> Historial
+      </button>
+      <button class="filter-pill" [class.active]="filtroActual() === 'TODOS'"
+        (click)="setFiltro('TODOS')">Todos</button>
+    </div>
+
+    @if (nuevoTicketVisible()) {
+      <div class="glass-card ticket-form-container">
+        <h3>Nueva Incidencia</h3>
+        <div class="form-grid">
+          <input [(ngModel)]="nuevoTitulo" placeholder="Título del problema..." class="premium-input">
+  
+          <select [(ngModel)]="nuevaPrioridad" class="premium-input select-dark">
+            <option value="BAJA">Prioridad Baja</option>
+            <option value="MEDIA">Prioridad Media</option>
+            <option value="ALTA">Prioridad Alta</option>
+          </select>
+  
+          <textarea [(ngModel)]="nuevaDescripcion" placeholder="Describe detalladamente qué ocurre..."
+            class="premium-input" rows="4"></textarea>
+  
+          <div class="form-footer-btns">
+            <button (click)="nuevoTicketVisible.set(false)" class="btn-cancel-ghost">
+              Cancelar
+            </button>
+            <button (click)="crearTicket()" [disabled]="!nuevoTitulo.trim() || !nuevaDescripcion.trim()"
+              class="btn-gradient-save">
+              Enviar Ticket
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <cdk-virtual-scroll-viewport itemSize="120" class="tickets-list premium-viewport" style="height: 65vh;">
+      <div *cdkVirtualFor="let ticket of ticketsFiltrados()" class="ticket-glass-item"
+        [class.is-expanded]="ticketAbiertoId() === ticket.id">
+
+        <div class="ticket-summary" (click)="toggleChat(ticket)">
+          <div class="status-indicator" [class.resuelto]="ticket.estado === 'RESUELTO'"></div>
+          <div class="ticket-main-info">
+            <span class="ticket-code">#{{ ticket.codigo }}</span>
+            <h4 class="ticket-title">{{ ticket.titulo }}</h4>
+          </div>
+          <div class="ticket-meta">
+            <span class="priority-badge" [ngClass]="ticket.prioridad.toLowerCase()">{{ ticket.prioridad }}</span>
+            <ion-icon [name]="ticketAbiertoId() === ticket.id ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+          </div>
+        </div>
+
+        @if (ticketAbiertoId() === ticket.id) {
+          <div class="ticket-detail-chat">
+            <div class="chat-messages-container">
+              @for (msg of mensajes(); track msg.fechaEnvio) {
+                <div class="msg-bubble-wrapper" [class.is-staff]="msg.esStaff">
+                  <div class="bubble-info">
+                    <strong>{{ msg.autorNombre }}</strong>
+                    <span>{{ msg.fechaEnvio | date:'HH:mm' }}</span>
+                  </div>
+                  <div class="bubble-text">{{ msg.texto }}</div>
+                </div>
+              }
+              
+              @if (mensajes().length === 0) {
+                <div class="empty-chat">
+                  Iniciando conversación con el equipo de soporte...
+                </div>
+              }
+            </div>
+  
+            @if (ticket.estado !== 'RESUELTO' && ticket.estado !== 'SOLICITUD_REAPERTURA') {
+              <div class="chat-input-row">
+                <input [(ngModel)]="nuevoMensajeTexto" (keyup.enter)="enviarMensaje()" placeholder="Escribe un mensaje...">
+                <button (click)="enviarMensaje()" [disabled]="!nuevoMensajeTexto.trim()">
+                  <ion-icon name="send-outline"></ion-icon>
+                </button>
+              </div>
+            }
+  
+            @if (ticket.estado === 'RESUELTO') {
+              <div class="reopen-premium-box">
+                <p>Esta incidencia se marcó como resuelta.</p>
+                <button class="btn-reopen-glass" (click)="solicitarReapertura(ticket)">
+                  <ion-icon name="refresh-outline"></ion-icon> Solicitar Reapertura
+                </button>
+              </div>
+            }
+  
+            @if (ticket.estado === 'SOLICITUD_REAPERTURA') {
+              <div class="pending-notice">
+                <ion-icon name="hourglass-outline"></ion-icon>
+                <span>Solicitud de reapertura pendiente de revisión.</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      @if (ticketsFiltrados().length === 0) {
+        <div class="no-tickets-msg">
+          No hay tickets disponibles en esta sección.
+        </div>
+      }
+    </cdk-virtual-scroll-viewport>
+
+  </div>
+</div>

@@ -1,0 +1,253 @@
+// --- CONFIGURACIÓN GENERAL ---
+.chat-background {
+  --background: #0b0e1e; // Fondo azul oscuro profundo
+}
+
+// --- HEADER ---
+.chat-header {
+  --background: rgba(11, 14, 30, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  .header-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 4px;
+  }
+
+  ion-title {
+    padding-left: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  // ✅ ESTILO "FINALIZADO" PROFESIONAL (Dorado, sin caja)
+  .status-indicator {
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 20px;
+    font-weight: 500;
+    
+    &.closed {
+      color: #fbbf24; // Amarillo dorado
+      background: transparent; // Sin fondo
+      padding: 0;
+      
+      ion-icon {
+        font-size: 0.9rem;
+        margin-bottom: 1px;
+      }
+    }
+  }
+}
+
+// --- CONTENEDOR CHAT ---
+.chat-container {
+  padding: 15px 12px 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+// --- MENSAJES ---
+.message-row {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  // SISTEMA (Centrado)
+  &.system-message {
+    align-self: center;
+    max-width: 90%;
+    margin: 15px 0;
+
+    .system-bubble {
+      background: rgba(99, 102, 241, 0.15); // Fondo violeta muy suave
+      border: 1px dashed rgba(99, 102, 241, 0.4); // Borde punteado elegante
+      color: #a5b4fc;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      
+      ion-icon { font-size: 1.1rem; }
+    }
+  }
+
+  // MI MENSAJE (Derecha)
+  &.my-message {
+    align-self: flex-end;
+    .bubble {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: white;
+      border-radius: 16px 16px 2px 16px;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+    }
+    .meta-info { color: rgba(255, 255, 255, 0.7); }
+  }
+
+  // MENSAJE OTRO (Izquierda)
+  &.other-message {
+    align-self: flex-start;
+    .bubble {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-radius: 16px 16px 16px 2px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .user-name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #f472b6;
+      margin-bottom: 2px;
+    }
+    .meta-info { color: rgba(255, 255, 255, 0.4); }
+  }
+}
+
+.bubble {
+  padding: 8px 14px;
+  position: relative;
+  word-wrap: break-word;
+  .text { font-size: 0.95rem; line-height: 1.4; }
+  .meta-info {
+    display: flex; justify-content: flex-end; margin-top: 4px;
+    .time { font-size: 0.65rem; display: flex; align-items: center; }
+  }
+}
+
+// --- BARRA DE INPUT (GLASSMORPHISM) ---
+.input-toolbar {
+  --background: transparent;
+  padding: 10px;
+  background: linear-gradient(to top, #0b0e1e 90%, transparent); 
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  // Efecto cristal
+  background: rgba(30, 41, 59, 0.8); 
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  padding: 5px 5px 5px 15px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  min-height: 50px;
+  transition: all 0.3s ease;
+
+  // Estado CERRADO o GUEST (un poco más oscuro)
+  &.locked-mode {
+    background: rgba(15, 23, 42, 0.95);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 0.95rem;
+    padding: 10px 0;
+    &::placeholder { color: rgba(148, 163, 184, 0.6); }
+  }
+
+  .send-btn {
+    background: #6366f1;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-left: 8px;
+    transition: transform 0.2s;
+    
+    &:active { transform: scale(0.9); }
+    &:disabled { 
+      background: rgba(255, 255, 255, 0.1); 
+      color: rgba(255, 255, 255, 0.2); 
+    }
+  }
+
+  // CONTENIDO "CHAT CERRADO" DENTRO DE LA BARRA
+  .closed-state-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-right: 5px;
+    
+    // Si no es admin (tiene botón), ponemos cursor
+    cursor: pointer;
+    
+    // Si es Admin (no tiene botón), quitamos cursor y centramos
+    &.no-pointer {
+      cursor: default;
+      justify-content: center;
+      padding-right: 0;
+    }
+
+    span {
+      font-size: 0.9rem;
+      // El color se define inline en el HTML, pero por si acaso:
+      color: #fbbf24; 
+    }
+
+    .reopen-btn {
+      background: #6366f1;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+      transition: background 0.2s;
+
+      &:hover { background: #4f46e5; }
+      &:active { transform: scale(0.95); }
+    }
+  }
+}
+
+// Empty state
+.empty-state {
+  text-align: center; margin-top: 80px; color: #64748b;
+  .icon-circle {
+    width: 60px; height: 60px; background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;
+    ion-icon { font-size: 30px; color: #6366f1; }
+  }
+  h3 { font-size: 1.1rem; color: white; margin-bottom: 5px; }
+  p { font-size: 0.9rem; max-width: 250px; margin: 0 auto; }
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}

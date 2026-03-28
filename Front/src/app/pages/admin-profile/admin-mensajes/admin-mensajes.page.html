@@ -1,0 +1,114 @@
+<div class="admin-content-wrapper">
+
+  <div class="messages-premium-container">
+
+    <div class="chat-sidebar" [class.mobile-hidden]="conversacionSeleccionada">
+
+      <div class="sidebar-header">
+        <h2>Mensajería <span class="text-gradient">Pro</span></h2>
+        <div class="actions">
+          <button class="btn-action-circle" (click)="mostrarBuscador = !mostrarBuscador"
+            [class.active]="mostrarBuscador">
+            <ion-icon [name]="mostrarBuscador ? 'close-outline' : 'person-add-outline'"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="search-glass-area" *ngIf="!mostrarBuscador">
+        <ion-icon name="search-outline"></ion-icon>
+        <input type="text" placeholder="Buscar chats..." [(ngModel)]="filtroTexto" (input)="filtrarConversaciones()">
+      </div>
+
+      <div class="user-finder-premium-panel" *ngIf="mostrarBuscador">
+        <div class="finder-input-wrapper">
+          <ion-icon name="search-outline"></ion-icon>
+          <input type="text" placeholder="Escribe un nombre..." autofocus (input)="buscarUsuarios($event)">
+        </div>
+
+        <div class="results-list">
+          <div *ngIf="busquedaUsuario.length > 0 && usuariosEncontrados.length === 0" class="no-results">Sin resultados
+          </div>
+          <div *ngFor="let u of usuariosEncontrados" class="user-result-item" (click)="iniciarChatCon(u)">
+            <div class="avatar-mini">
+              <img *ngIf="u.foto_perfil" [src]="u.foto_perfil">
+              <span *ngIf="!u.foto_perfil">{{ u.nombre.charAt(0) }}</span>
+            </div>
+            <span>{{ u.nombre }}</span>
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          </div>
+        </div>
+      </div>
+
+      <cdk-virtual-scroll-viewport itemSize="70" class="chat-list-scroll premium-viewport" *ngIf="!mostrarBuscador">
+        <div *cdkVirtualFor="let chat of conversacionesFiltradas" class="chat-item-card"
+          [class.active-item]="conversacionSeleccionada?.id === chat.id" (click)="seleccionarChat(chat)">
+
+          <div class="avatar-box">
+            <img *ngIf="chat.avatarUrl" [src]="chat.avatarUrl">
+            <span *ngIf="!chat.avatarUrl">{{ chat.titulo.charAt(0) }}</span>
+          </div>
+
+          <div class="chat-details">
+            <div class="chat-row-top">
+              <span class="chat-name">{{ chat.titulo }}</span>
+              <span class="unread-dot" *ngIf="chat.unreadCount! > 0">{{ chat.unreadCount }}</span>
+            </div>
+            <span class="chat-preview-text">{{ chat.ultimoMensaje || 'Sin mensajes...' }}</span>
+          </div>
+
+          <button class="delete-chat-btn" (click)="confirmarEliminarChat(chat, $event)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </cdk-virtual-scroll-viewport>
+    </div>
+
+    <div class="chat-main-view" [class.mobile-visible]="conversacionSeleccionada">
+
+      <div class="no-chat-placeholder" *ngIf="!conversacionSeleccionada">
+        <div class="inner-placeholder">
+          <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+          <h3>Centro de Mensajería</h3>
+          <p>Selecciona un canal para comenzar a moderar o conversar.</p>
+        </div>
+      </div>
+
+      <div class="active-chat-container" *ngIf="conversacionSeleccionada">
+
+        <div class="active-chat-header">
+          <button class="premium-back-btn mobile-only" (click)="cerrarChat()">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </button>
+          <div class="header-info">
+            <h3>{{ conversacionSeleccionada.titulo }}</h3>
+            <span class="status-online">En línea</span>
+          </div>
+        </div>
+
+        <cdk-virtual-scroll-viewport itemSize="60" class="chat-messages-area premium-viewport-messages"
+          id="chat-scroll-area">
+          <div *cdkVirtualFor="let msg of mensajes" class="message-bubble-wrapper" [class.is-mine]="esMio(msg)">
+
+            <div class="message-glass-bubble">
+              <p>{{ msg.texto }}</p>
+              <span class="message-time-stamp">{{ msg.fechaEnvio | date:'HH:mm' }}</span>
+            </div>
+          </div>
+        </cdk-virtual-scroll-viewport>
+
+        <div class="chat-input-premium">
+          <div class="input-glass-container">
+            <input type="text" placeholder="Escribe un mensaje..." [(ngModel)]="nuevoMensaje"
+              (keyup.enter)="enviarMensaje()">
+
+            <button class="premium-send-btn" (click)="enviarMensaje()" [disabled]="!nuevoMensaje.trim()">
+              <ion-icon name="send-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

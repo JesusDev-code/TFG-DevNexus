@@ -1,0 +1,96 @@
+<div class="user-info-container">
+  <div class="profile-premium-card">
+    
+    <div class="perfil-header-section">
+      <div class="perfil-avatar-outer">
+        <div class="glow-aura"></div>
+        <img *ngIf="formData.foto_perfil" [src]="formData.foto_perfil" class="perfil-avatar">
+        <div *ngIf="!formData.foto_perfil" class="perfil-avatar placeholder">
+          {{ inicial }}
+        </div>
+        <button class="perfil-avatar-cam" id="open-avatar-selector">
+          <ion-icon name="camera-outline"></ion-icon>
+        </button>
+      </div>
+      <div class="perfil-intro">
+        <h2 class="perfil-nombre">{{ formData.nombre || 'Tu Nombre' }}</h2>
+        <p class="perfil-email">{{ formData.email }}</p>
+      </div>
+    </div>
+
+    <ion-modal #modal trigger="open-avatar-selector" class="glass-modal-center">
+      <ng-template>
+        <div class="modal-dark-content">
+          
+          <div class="modal-header">
+            <h3>Elige tu <span class="text-gradient">Avatar</span></h3>
+            <div class="close-btn" (click)="modal.dismiss()">
+              <ion-icon name="close-outline"></ion-icon>
+            </div>
+          </div>
+
+          <div class="avatar-grid-premium">
+            <div *ngFor="let avatar of avataresDisponibles" 
+                 class="avatar-option"
+                 [class.selected]="avatarTemporal === avatar"
+                 (click)="seleccionarAvatar(avatar)">
+              <img [src]="avatar">
+              <div class="check-overlay" *ngIf="avatarTemporal === avatar">
+                <ion-icon name="checkmark-outline"></ion-icon>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn-cancel" (click)="modal.dismiss()">Cancelar</button>
+            <button class="btn-confirm" (click)="confirmarAvatar(modal)">Confirmar</button>
+          </div>
+
+        </div>
+      </ng-template>
+    </ion-modal>
+
+    <form class="perfil-form-glass" (ngSubmit)="guardarCambios()">
+      <div class="input-group">
+        <label>Nombre Completo</label>
+        <input type="text" name="nombre" [(ngModel)]="formData.nombre" placeholder="¿Cómo te llamas?">
+      </div>
+
+      <div class="input-group">
+        <label>Tu Especialidad</label>
+        <div class="roles-grid-glass">
+          <div *ngFor="let d of departamentos" 
+               class="role-pill-card" 
+               [class.selected]="formData.departamentoId === d.id"
+               (click)="seleccionarRol(d.id)">
+            <ion-icon [name]="getIconoRol(d.nombre)"></ion-icon>
+            <span>{{ d.nombre }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="toggle-glass-row">
+        <div class="text">
+          <label>Permitir contacto</label>
+          <p>Si lo desactivas, otros compañeros no podrán encontrarte en el chat.</p>
+        </div>
+        <ion-toggle name="permiteContacto" [(ngModel)]="formData.permiteContacto" color="success"></ion-toggle>
+      </div>
+
+      <div class="input-group ani-fade" *ngIf="!formData.permiteContacto">
+        <label>Motivo de no contacto</label>
+        <textarea name="motivoNoContacto" rows="2" [(ngModel)]="formData.motivoNoContacto" placeholder="Explica brevemente por qué..."></textarea>
+      </div>
+
+      <div class="input-group">
+        <label>Biografía Profesional</label>
+        <textarea name="biografia" rows="4" [(ngModel)]="formData.biografia" placeholder="Cuéntanos un poco sobre ti y tus proyectos..."></textarea>
+      </div>
+
+      <button class="btn-save-gradient" type="submit" [disabled]="isLoading">
+        <ion-icon [name]="isLoading ? 'refresh-outline' : 'save-outline'" [class.spin]="isLoading"></ion-icon>
+        <span>{{ isLoading ? 'Actualizando...' : 'Guardar Cambios' }}</span>
+      </button>
+    </form>
+  </div>
+</div>

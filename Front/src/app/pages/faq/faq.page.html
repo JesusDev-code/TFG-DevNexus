@@ -1,0 +1,76 @@
+<ion-content [fullscreen]="true" class="bg-transparent">
+  
+  <div class="main-content-wrapper">
+    
+    <div class="faq-hero-container">
+      <h1 class="faq-title">Preguntas <span class="text-gradient">Frecuentes.</span></h1>
+      <p class="faq-description">
+        Resuelve tus dudas sobre el funcionamiento de la plataforma, el sistema de tickets y tu privacidad.
+      </p>
+    </div>
+
+    <div class="faq-accordion-container">
+      <ion-accordion-group class="premium-accordion-group">
+        
+        <ion-accordion value="q1" class="glass-accordion">
+          <ion-item slot="header">
+            <ion-label>¿Cómo funciona el sistema de Soporte Técnico?</ion-label>
+          </ion-item>
+          <div class="accordion-content" slot="content">
+            Si tienes una incidencia, puedes abrir un ticket directamente desde el botón flotante del chat. Nuestro equipo de Staff (Administradores) recibirá tu consulta al instante y podrás seguir el estado ("Pendiente", "Respondido" o "Resuelto") desde tu perfil.
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="q2" class="glass-accordion">
+          <ion-item slot="header">
+            <ion-label>¿Es privado mi Diario Personal?</ion-label>
+          </ion-item>
+          <div class="accordion-content" slot="content">
+            Absolutamente. El módulo de "Diario" está diseñado para tu uso exclusivo. Toda la información que registres allí está encriptada y nadie de la comunidad lo podrá ver a no ser que decidas compartir un proyecto con la comunidad 
+            de ser así dispones de una opción para hacerlo público o mantenerlo privado.
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="q3" class="glass-accordion">
+          <ion-item slot="header">
+            <ion-label>¿Cómo funciona la sección de Eventos?</ion-label>
+          </ion-item>
+          <div class="accordion-content" slot="content">
+          En la sección de "Eventos" de tu dashboard verás el calendario actualizado. Dispones de una opción para crear eventos personales (visibles solo para ti) o eventos públicos (visibles para toda la comunidad) los cuales serán puesto por la administración. Los eventos públicos aparecerán en el calendario general y serán notificados a todos los usuarios, no te preocupes, no te vas a peder nada importante!
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="q4" class="glass-accordion">
+          <ion-item slot="header">
+            <ion-label>¿Tienes alguna duda de tu proyecto?</ion-label>
+          </ion-item>
+          <div class="accordion-content" slot="content">
+            No te preocupes, si tienes alguna duda sobre cómo gestionar o avanzar en tu proyecto, puedes abrir un ticket de soporte técnico y nuestro equipo de Staff te ayudará encantado e incluso puede dar su opinión en la sección de comentarios de tu proyecto si así lo deseas.
+          </div>
+        </ion-accordion>
+
+      </ion-accordion-group>
+    </div>
+
+    <div class="faq-links-row">
+      
+      <div class="faq-action-card privacy" (click)="goToPrivacy()">
+        <div class="card-inner">
+          <div class="icon-box"><ion-icon name="shield-checkmark-outline"></ion-icon></div>
+          <h3>Privacidad</h3>
+          <p>Tus datos y derechos.</p>
+        </div>
+      </div>
+
+      <div class="faq-action-card support" (click)="goToContact()">
+        <div class="card-inner">
+          <div class="icon-box"><ion-icon name="chatbubbles-outline"></ion-icon></div>
+          <h3>¿Dudas?</h3>
+          <p>Contacta con el Staff.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</ion-content>

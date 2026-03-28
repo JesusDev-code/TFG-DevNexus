@@ -1,0 +1,7 @@
+{
+  "name": "miweb",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

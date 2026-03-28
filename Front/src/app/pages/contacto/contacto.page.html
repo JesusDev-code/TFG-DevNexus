@@ -1,0 +1,86 @@
+<ion-content [fullscreen]="true" class="bg-transparent">
+  
+  <div class="main-content-wrapper">
+    
+    <div class="contact-hero-container">
+      <h1 class="contact-title">Ponte en <span class="text-gradient">contacto.</span></h1>
+      <p class="contact-description">
+        ¿Tienes alguna duda o quieres colaborar con nosotros? Elige tu canal preferido.
+      </p>
+    </div>
+
+    <div class="services-grid-container">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="4">
+            <div class="service-box">
+              <div class="service-inner">
+                <div class="icon-glow-box"><ion-icon name="mail-outline"></ion-icon></div>
+                <h3>Email</h3>
+                <p>hola@comunidad.com</p>
+                <div class="box-light"></div>
+              </div>
+            </div>
+          </ion-col>
+
+          <ion-col size="12" size-md="4">
+            <div class="service-box">
+              <div class="service-inner">
+                <div class="icon-glow-box"><ion-icon name="call-outline"></ion-icon></div>
+                <h3>Teléfono</h3>
+                <p>+34 900 123 456</p>
+                <div class="box-light"></div>
+              </div>
+            </div>
+          </ion-col>
+
+          <ion-col size="12" size-md="4">
+            <div class="service-box">
+              <div class="service-inner">
+                <div class="icon-glow-box">
+                  <ion-icon name="chatbubbles-outline"></ion-icon>
+                </div>
+                <h3>Comunidad</h3>
+                <p>Canal de Discord oficial.</p> 
+                <div class="box-light"></div>
+              </div>
+            </div>
+          </ion-col>
+
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div class="form-container">
+      <div class="glass-form-card">
+        <form>
+          <div class="form-grid">
+            <div class="input-group">
+              <label>Nombre</label>
+              <input type="text" placeholder="Tu nombre">
+            </div>
+            <div class="input-group">
+              <label>Email</label>
+              <input type="email" placeholder="tu@email.com">
+            </div>
+            <div class="input-group full-width">
+              <label>Asunto</label>
+              <input type="text" placeholder="¿En qué podemos ayudarte?">
+            </div>
+            <div class="input-group full-width">
+              <label>Mensaje</label>
+              <textarea placeholder="Escribe tu mensaje aquí..." rows="4"></textarea>
+            </div>
+          </div>
+          <div class="btn-wrapper">
+            <button type="submit" class="premium-button">
+              <ion-icon name="send-outline"></ion-icon>
+              Enviar mensaje
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

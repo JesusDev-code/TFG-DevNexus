@@ -1,0 +1,60 @@
+<div class="side-menu">
+
+  <ion-row class="header">
+    <ng-container *ngIf="authService.currentUser() as usuario">
+      <div class="identity-col">
+
+        <div class="user-avatar-container" [class.clickable]="usuario" (click)="usuario ? goToProfile() : null">
+          <img *ngIf="usuario?.foto_perfil" [src]="usuario?.foto_perfil" class="user-img" alt="Avatar">
+          <ion-icon *ngIf="!usuario?.foto_perfil" class="user-icon" name="person-outline"></ion-icon>
+        </div>
+
+        <div class="mini-logout-btn" *ngIf="usuario" (click)="goBack()">
+          <ion-icon name="log-out-outline"></ion-icon>
+        </div>
+
+      </div>
+
+      <ion-col class="user-info">
+        <ion-text class="font-body">{{ usuario?.nombre || 'Invitado' }}</ion-text>
+
+        <ion-text class="user-profession font-subheadline">
+          {{ usuario?.rolNombre || 'Usuario' }}
+          <span *ngIf="usuario?.departamentoNombre"> · {{ usuario?.departamentoNombre }}</span>
+        </ion-text>
+      </ion-col>
+    </ng-container>
+  </ion-row>
+
+  <div class="sections-container">
+    <div class="menu-list-section">
+      <ion-text class="section-title">MENÚ PRINCIPAL</ion-text>
+
+      <div class="menu-items-wrapper">
+        <ion-item *ngFor="let item of menuItems; let i = index" lines="none" button class="custom-menu-item"
+          [class.selected]="item.status" (click)="onMenuItemPress(i, item)">
+
+          <ion-icon slot="start" [name]="item.icon"></ion-icon>
+          <ion-label>{{ item.id }}</ion-label>
+
+          <div class="active-indicator" *ngIf="item.status"></div>
+        </ion-item>
+      </div>
+    </div>
+  </div>
+
+  <div class="community-seal-container">
+    <div class="seal-placeholder">
+      <img src="assets/images/daemon-logo2.png" class="daemon-logo-img" alt="Code Daemon">
+    </div>
+  </div>
+
+  <div class="footer-section">
+    <ion-item class="exit-btn" button="true" lines="none" detail="false" (click)="goBack()"
+      *ngIf="platform.is('capacitor')">
+      <ion-icon slot="start" name="log-out-outline"></ion-icon>
+      <ion-label>Cerrar Sesión</ion-label>
+    </ion-item>
+  </div>
+
+</div>
