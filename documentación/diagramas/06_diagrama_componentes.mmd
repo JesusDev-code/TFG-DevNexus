@@ -1,0 +1,98 @@
+%%{init: {'theme': 'dark'}}%%
+graph TB
+    subgraph Cliente["Cliente (Navegador / Dispositivo)"]
+        direction TB
+        subgraph FE["Frontend - Angular 20 + Ionic 8"]
+            direction LR
+            subgraph Publicas["Paginas Publicas"]
+                Landing["Landing Page"]
+                About["Sobre Nosotros"]
+                Contact["Contacto"]
+                Blog["Blog"]
+                FAQ["FAQ / Ayuda"]
+                Privacy["Privacidad"]
+            end
+            subgraph UserPanel["Panel de Usuario"]
+                UPerfil["Mi Perfil"]
+                UDiario["Diario"]
+                UTickets["Tickets"]
+                UMensajes["Mensajes"]
+                UAvisos["Notificaciones"]
+                UEventos["Eventos"]
+            end
+            subgraph AdminPanel["Panel de Administracion"]
+                AUsers["Usuarios"]
+                AChat["Servicio Tecnico"]
+                ATickets["Tickets Admin"]
+                AMensajes["Mensajeria Pro"]
+                AEventos["Eventos Admin"]
+                ADiarios["Diarios Admin"]
+                AAudit["Auditoria"]
+                APerfil["Perfil Admin"]
+            end
+            subgraph Shared["Servicios Compartidos"]
+                AuthSvc["AuthService"]
+                ApiSvc["ApiService"]
+                NotifSvc["NotificationService"]
+                EventSvc["EventsService"]
+                Guards["AuthGuard + RoleGuard"]
+                Interceptor["TokenInterceptor"]
+            end
+        end
+    end
+
+    subgraph Servidor["Servidor (Docker Host)"]
+        direction TB
+        subgraph BE["Backend - Spring Boot 3.5.7 + Kotlin"]
+            direction LR
+            subgraph Controllers["Controllers (15)"]
+                AuthCtrl["AuthController"]
+                UserCtrl["UsuarioController"]
+                DiarioCtrl["DiarioController"]
+                TicketCtrl["TicketController"]
+                MsgCtrl["MensajeController"]
+                EventCtrl["EventoController"]
+                NotifCtrl["NotificacionController"]
+                AuditCtrl["AuditoriaController"]
+                OtherCtrl["+ 7 controllers mas"]
+            end
+            subgraph Services["Services (13)"]
+                AuthSvcBE["SecurityService"]
+                UserSvcBE["UsuarioService"]
+                DiarioSvcBE["DiarioService"]
+                TicketSvcBE["TicketService"]
+                OtherSvc["+ 9 services mas"]
+            end
+            subgraph Repos["Repositories (16)"]
+                RepoJPA["Spring Data JPA<br/>Interfaces"]
+            end
+            subgraph Security["Security"]
+                FirebaseFilter["FirebaseAuthFilter"]
+                SecurityCfg["SecurityConfig"]
+                UserPrincipal["UserPrincipal"]
+            end
+            AuditAspect["AuditoriaAspect<br/>(Spring AOP)"]
+        end
+        subgraph DB["Base de Datos"]
+            PG["PostgreSQL 16<br/>16 tablas"]
+        end
+    end
+
+    subgraph Externos["Servicios Externos"]
+        FirebaseAuth["Firebase<br/>Authentication"]
+        FirebaseFCM["Firebase<br/>Cloud Messaging"]
+        NeonDB["Neon<br/>PostgreSQL Cloud"]
+    end
+
+    FE -->|"HTTP/HTTPS + JWT"| BE
+    Controllers --> Services
+    Services --> Repos
+    Repos --> DB
+    Security -->|"Verifica JWT"| FirebaseAuth
+    BE -->|"Push notifications"| FirebaseFCM
+    DB -.->|"Cloud hosting"| NeonDB
+    AuditAspect -->|"Intercepta"| Controllers
+
+    style Cliente fill:#1e1b4b,stroke:#6366f1,color:#fff
+    style Servidor fill:#1a1a2e,stroke:#e94560,color:#fff
+    style Externos fill:#0f3460,stroke:#16213e,color:#fff

@@ -12,7 +12,7 @@ import {
 } from 'ionicons/icons';
 
 import {
-  IonIcon, IonInfiniteScroll, IonInfiniteScrollContent,
+  IonContent, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent,
   AlertController, ToastController, IonSpinner
 } from '@ionic/angular/standalone';
 
@@ -26,7 +26,7 @@ import {
   standalone: true,
   imports: [
     CommonModule, FormsModule,
-    IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, IonSpinner
+    IonContent, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, IonSpinner
   ]
 })
 export class AdminDiariosPage implements OnInit {

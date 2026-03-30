@@ -1,0 +1,57 @@
+%%{init: {'theme': 'dark'}}%%
+graph TB
+    subgraph Sistema["Sistema DevNexus"]
+        direction TB
+        UC1["Iniciar sesion /<br/>Registrarse con Google"]
+        UC2["Gestionar perfil personal"]
+        UC3["Crear / editar / eliminar<br/>entradas de diario"]
+        UC4["Crear temas e<br/>invitar colaboradores"]
+        UC5["Crear tickets de soporte"]
+        UC6["Chat en ticket<br/>con staff"]
+        UC7["Enviar / recibir mensajes"]
+        UC8["Crear / ver / eliminar<br/>eventos"]
+        UC9["Consultar notificaciones"]
+        UC10["Revisar y aprobar<br/>diarios pendientes"]
+        UC11["Cambiar estado<br/>de tickets"]
+        UC12["Bandeja de<br/>soporte tecnico"]
+        UC13["Gestionar usuarios<br/>CRUD + roles"]
+        UC14["Gestionar departamentos"]
+        UC15["Consultar registro<br/>de auditoria"]
+        UC16["Gestionar eventos<br/>globales"]
+    end
+
+    USER(("Usuario<br/>USER"))
+    STAFF(("Staff /<br/>Mentor<br/>STAFF"))
+    ADMIN(("Administrador<br/>ADMIN"))
+
+    USER --- UC1
+    USER --- UC2
+    USER --- UC3
+    USER --- UC4
+    USER --- UC5
+    USER --- UC6
+    USER --- UC7
+    USER --- UC8
+    USER --- UC9
+
+    STAFF --- UC1
+    STAFF --- UC2
+    STAFF --- UC3
+    STAFF --- UC7
+    STAFF --- UC10
+    STAFF --- UC11
+    STAFF --- UC12
+
+    ADMIN --- UC1
+    ADMIN --- UC2
+    ADMIN --- UC10
+    ADMIN --- UC11
+    ADMIN --- UC13
+    ADMIN --- UC14
+    ADMIN --- UC15
+    ADMIN --- UC16
+
+    style USER fill:#6366f1,stroke:#818cf8,color:#fff
+    style STAFF fill:#f59e0b,stroke:#fbbf24,color:#000
+    style ADMIN fill:#ef4444,stroke:#f87171,color:#fff
+    style Sistema fill:#1e1b4b,stroke:#6366f1,color:#fff

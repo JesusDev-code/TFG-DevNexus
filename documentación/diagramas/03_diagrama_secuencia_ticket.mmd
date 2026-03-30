@@ -1,0 +1,32 @@
+%%{init: {'theme': 'dark'}}%%
+sequenceDiagram
+    actor U as Usuario
+    participant F as Frontend<br/>Angular/Ionic
+    participant B as Backend<br/>Spring Boot
+    participant DB as PostgreSQL
+    participant FCM as Firebase<br/>Cloud Messaging
+    actor S as Staff / Admin
+
+    U->>F: Accede a Tickets > "Nuevo Ticket"
+    F-->>U: Muestra formulario<br/>(titulo, descripcion, prioridad)
+    U->>F: Rellena y pulsa "Enviar"
+
+    F->>B: POST /api/tickets<br/>Authorization: Bearer {JWT}<br/>Body: {titulo, descripcion, prioridad}
+
+    B->>B: Validar token JWT<br/>+ permisos del usuario
+    B->>B: Validar datos de entrada<br/>(titulo no vacio, etc.)
+
+    B->>DB: INSERT INTO ticket<br/>(titulo, desc, estado=ABIERTO,<br/>prioridad, usuario_id)
+    DB-->>B: ticket_id generado
+
+    B->>DB: INSERT INTO ticket_historico<br/>(ticket_id, estado_ant=null,<br/>estado_nuevo=ABIERTO)
+    DB-->>B: OK
+
+    B->>DB: INSERT INTO auditoria<br/>(accion=CREAR, recurso=Ticket,<br/>severidad=INFO)
+    DB-->>B: OK
+
+    B->>FCM: Enviar notificacion push<br/>al staff (nuevo ticket)
+    FCM-->>S: Notificacion push
+
+    B-->>F: HTTP 201 Created<br/>+ TicketDto (JSON)
+    F-->>U: Redirigir a lista de tickets<br/>+ confirmacion visual

@@ -78,9 +78,11 @@
     </div>
   }
 
-  <ion-infinite-scroll [disabled]="allPagesLoaded()" (ionInfinite)="loadMore($event)">
-    <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Cargando más registros...">
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  @if (logs().length > 0) {
+    <ion-infinite-scroll [disabled]="allPagesLoaded()" (ionInfinite)="loadMore($event)">
+      <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Cargando más registros...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  }
 
 </div>

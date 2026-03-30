@@ -1,0 +1,63 @@
+%%{init: {'theme': 'dark'}}%%
+graph TB
+    subgraph ClientLayer["Capa de Presentacion"]
+        direction LR
+        Browser["Navegador Web"]
+        PWA["PWA / Movil"]
+    end
+
+    subgraph FrontendLayer["Frontend - Angular 20 + Ionic 8"]
+        direction LR
+        Components["Componentes<br/>Standalone + OnPush"]
+        Services["Servicios<br/>AuthService, ApiService..."]
+        GuardsInt["Guards + Interceptor<br/>AuthGuard, TokenInterceptor"]
+        FirebaseFE["Firebase SDK<br/>Auth + FCM"]
+    end
+
+    subgraph APILayer["Capa API - HTTP/HTTPS + JWT"]
+        API["API REST<br/>JSON + Bearer Token"]
+    end
+
+    subgraph BackendLayer["Backend - Spring Boot 3.5.7 + Kotlin 1.9.25"]
+        direction LR
+        Controllers["Controllers (15)<br/>@RestController"]
+        ServicesBE["Services (13)<br/>@Service"]
+        Repositories["Repositories (16)<br/>JpaRepository"]
+        SecurityBE["Security<br/>FirebaseAuthFilter<br/>SecurityConfig"]
+        AuditBE["Auditoria<br/>@Aspect (AOP)"]
+        SwaggerBE["Swagger<br/>SpringDoc OpenAPI"]
+    end
+
+    subgraph DataLayer["Capa de Persistencia"]
+        PostgreSQL["PostgreSQL 16<br/>16 tablas | 3FN<br/>Flyway migrations"]
+    end
+
+    subgraph ExternalLayer["Servicios Externos"]
+        direction LR
+        GAuth["Firebase<br/>Authentication<br/>Google OAuth 2.0"]
+        GFCM["Firebase<br/>Cloud Messaging<br/>Push Notifications"]
+        Neon["Neon Cloud<br/>PostgreSQL<br/>Gestionado"]
+    end
+
+    Browser --> FrontendLayer
+    PWA --> FrontendLayer
+    Components --> Services
+    Services --> GuardsInt
+    GuardsInt --> API
+    FirebaseFE --> GAuth
+
+    API --> Controllers
+    Controllers --> ServicesBE
+    ServicesBE --> Repositories
+    Repositories --> PostgreSQL
+    SecurityBE -->|"Verifica JWT"| GAuth
+    ServicesBE -->|"Push"| GFCM
+    AuditBE -->|"Intercepta"| Controllers
+    PostgreSQL -.->|"Cloud"| Neon
+
+    style ClientLayer fill:#1e1b4b,stroke:#6366f1,color:#fff
+    style FrontendLayer fill:#2d1b69,stroke:#8b5cf6,color:#fff
+    style APILayer fill:#4c1d95,stroke:#a78bfa,color:#fff
+    style BackendLayer fill:#3b1a45,stroke:#d946ef,color:#fff
+    style DataLayer fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style ExternalLayer fill:#0f3460,stroke:#16213e,color:#fff

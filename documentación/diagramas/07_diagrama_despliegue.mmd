@@ -1,0 +1,56 @@
+%%{init: {'theme': 'dark'}}%%
+graph TB
+    subgraph Internet["Internet"]
+        Browser["Navegador Web<br/>Chrome / Firefox / Safari"]
+        Mobile["Dispositivo Movil<br/>PWA / Capacitor"]
+    end
+
+    subgraph DockerHost["Servidor / VPS (Docker Host)"]
+        subgraph DockerCompose["Docker Compose - Red: tfg-net"]
+            subgraph FrontContainer["Contenedor Frontend"]
+                Nginx["Nginx :80<br/>nginx:alpine"]
+                StaticFiles["Angular Build<br/>/usr/share/nginx/html"]
+                NginxConf["nginx.conf<br/>SPA routing"]
+            end
+
+            subgraph BackContainer["Contenedor Backend"]
+                SpringBoot["Spring Boot :8080<br/>temurin:17-jre-alpine"]
+                JAR["app.jar<br/>Kotlin + JPA + Security"]
+                Swagger["Swagger UI<br/>/swagger-ui.html"]
+            end
+
+            subgraph DBContainer["Contenedor Base de Datos"]
+                Postgres["PostgreSQL :5432<br/>postgres:16-alpine"]
+                Volume["Volume:<br/>postgres_data"]
+                HealthCheck["Health Check:<br/>pg_isready"]
+            end
+        end
+    end
+
+    subgraph CloudServices["Servicios en la Nube"]
+        Firebase["Google Firebase<br/>Authentication + FCM"]
+        NeonCloud["Neon Cloud<br/>PostgreSQL (produccion)"]
+    end
+
+    Browser -->|"HTTPS :443"| Nginx
+    Mobile -->|"HTTPS :443"| Nginx
+    Nginx -->|"Sirve SPA"| StaticFiles
+    Nginx -.->|"Proxy pass /api"| SpringBoot
+
+    SpringBoot -->|"JDBC :5432"| Postgres
+    SpringBoot -->|"Firebase Admin SDK"| Firebase
+    SpringBoot -->|"FCM push"| Firebase
+
+    Postgres --> Volume
+    Postgres --> HealthCheck
+
+    SpringBoot -.->|"Alternativa cloud"| NeonCloud
+
+    BackContainer -->|"depends_on:<br/>service_healthy"| DBContainer
+
+    style Internet fill:#1e1b4b,stroke:#6366f1,color:#fff
+    style DockerHost fill:#1a1a2e,stroke:#e94560,color:#fff
+    style CloudServices fill:#0f3460,stroke:#16213e,color:#fff
+    style FrontContainer fill:#2d1b69,stroke:#8b5cf6,color:#fff
+    style BackContainer fill:#3b1a45,stroke:#d946ef,color:#fff
+    style DBContainer fill:#1e3a5f,stroke:#3b82f6,color:#fff

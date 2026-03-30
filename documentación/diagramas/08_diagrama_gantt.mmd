@@ -1,0 +1,69 @@
+%%{init: {'theme': 'dark'}}%%
+gantt
+    title Cronograma del Proyecto DevNexus — TFG DAM
+    dateFormat  YYYY-MM-DD
+    axisFormat  %d/%m
+
+    section Fase 1 - Analisis
+    Analisis de requisitos           :f1a, 2025-01-13, 7d
+    Analisis comparativo             :f1b, 2025-01-20, 5d
+    Diseno modelo de datos           :f1c, 2025-01-20, 7d
+    Diseno arquitectura              :f1d, 2025-01-27, 5d
+    Wireframes UI                    :f1e, 2025-01-27, 5d
+    Definicion API                   :f1f, 2025-01-27, 5d
+    Planificacion y riesgos          :f1g, 2025-02-01, 3d
+
+    section Fase 2 - Entorno
+    Repositorio Git                  :f2a, 2025-02-03, 2d
+    Config Spring Boot               :f2b, 2025-02-03, 5d
+    Config Angular/Ionic             :f2c, 2025-02-05, 5d
+    Config Firebase                  :f2d, 2025-02-07, 3d
+    Config PostgreSQL Neon           :f2e, 2025-02-10, 3d
+
+    section Fase 3 - Backend
+    Entidades JPA                    :f3a, 2025-02-10, 7d
+    Repositorios                     :f3b, 2025-02-17, 5d
+    Seguridad Firebase JWT           :f3c, 2025-02-17, 7d
+    Modulo usuarios y roles          :f3d, 2025-02-24, 5d
+    Modulo diarios                   :f3e, 2025-03-03, 7d
+    Modulo tickets                   :f3f, 2025-03-10, 7d
+    Modulo mensajeria                :f3g, 2025-03-17, 5d
+    Modulo eventos                   :f3h, 2025-03-17, 5d
+    Modulo notificaciones FCM        :f3i, 2025-03-24, 5d
+    Auditoria Spring AOP             :f3j, 2025-03-24, 3d
+    Swagger OpenAPI                  :f3k, 2025-03-27, 2d
+    Flyway migraciones               :f3l, 2025-03-27, 2d
+
+    section Fase 4 - Frontend
+    Routing guards interceptor       :f4a, 2025-03-10, 5d
+    Paginas publicas                 :f4b, 2025-03-17, 7d
+    Autenticacion Google             :f4c, 2025-03-17, 5d
+    Perfil usuario                   :f4d, 2025-03-24, 5d
+    Modulo diarios FE                :f4e, 2025-03-31, 7d
+    Modulo tickets FE                :f4f, 2025-04-07, 7d
+    Modulo mensajeria FE             :f4g, 2025-04-14, 5d
+    Modulo eventos calendario        :f4h, 2025-04-14, 7d
+    Centro notificaciones            :f4i, 2025-04-21, 3d
+    Panel administracion             :f4j, 2025-04-21, 10d
+    Firebase integration             :f4k, 2025-04-28, 3d
+    Diseno visual tema oscuro        :f4l, 2025-04-28, 5d
+    Responsive design                :f4m, 2025-05-01, 3d
+    OnPush optimization              :f4n, 2025-05-01, 3d
+
+    section Fase 5 - Pruebas
+    Integracion FE-BE                :f5a, 2025-05-05, 5d
+    Pruebas funcionales              :f5b, 2025-05-05, 7d
+    Pruebas seguridad                :f5c, 2025-05-12, 3d
+    Correccion errores               :f5d, 2025-05-12, 5d
+
+    section Fase 6 - Despliegue
+    Dockerfiles multi-stage          :f6a, 2025-05-19, 3d
+    Docker Compose                   :f6b, 2025-05-19, 3d
+    Despliegue produccion            :f6c, 2025-05-22, 5d
+    Config dominio devnexus.es       :f6d, 2025-05-26, 2d
+
+    section Fase 7 - Documentacion
+    Documentacion tecnica            :f7a, 2025-05-26, 7d
+    Manual instalacion y uso         :f7b, 2025-06-02, 5d
+    Preparacion defensa              :f7c, 2025-06-05, 3d
+    Revision final y entrega         :f7d, 2025-06-08, 2d

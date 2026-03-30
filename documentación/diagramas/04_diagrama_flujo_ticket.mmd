@@ -1,0 +1,26 @@
+%%{init: {'theme': 'dark'}}%%
+stateDiagram-v2
+    [*] --> ABIERTO: Usuario crea ticket
+    ABIERTO --> EN_PROGRESO: Staff/Admin asigna
+    EN_PROGRESO --> RESUELTO: Staff/Admin resuelve
+    EN_PROGRESO --> ABIERTO: Staff/Admin reabre
+
+    ABIERTO: Estado inicial
+    ABIERTO: Prioridad: ALTA / MEDIA / BAJA
+    ABIERTO: Visible para el usuario y staff
+
+    EN_PROGRESO: Staff trabajando en el ticket
+    EN_PROGRESO: Se registra en ticket_historico
+    EN_PROGRESO: Notificacion push al usuario
+
+    RESUELTO: Ticket cerrado
+    RESUELTO: Se registra en ticket_historico
+    RESUELTO: Notificacion push al usuario
+    RESUELTO: Visible en historial
+
+    note right of ABIERTO
+        Cada transicion:
+        1. Registra en ticket_historico
+        2. Genera notificacion FCM
+        3. Registra en auditoria
+    end note

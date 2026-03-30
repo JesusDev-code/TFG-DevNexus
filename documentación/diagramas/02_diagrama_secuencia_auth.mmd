@@ -1,0 +1,35 @@
+%%{init: {'theme': 'dark'}}%%
+sequenceDiagram
+    actor U as Usuario
+    participant F as Frontend<br/>Angular/Ionic
+    participant FB as Firebase<br/>Auth
+    participant G as Google<br/>OAuth 2.0
+    participant B as Backend<br/>Spring Boot
+    participant DB as PostgreSQL
+
+    U->>F: Click "Empezar / Acceder"
+    F->>FB: signInWithPopup(GoogleAuthProvider)
+    FB->>G: Abrir popup OAuth 2.0
+    G->>U: Mostrar selector de cuenta
+    U->>G: Seleccionar cuenta Google
+    G->>FB: Authorization code
+    FB->>FB: Generar ID Token (JWT)
+    FB-->>F: Token JWT + datos de usuario
+
+    F->>B: POST /api/auth/google<br/>Authorization: Bearer {token}
+    B->>FB: Verificar token con<br/>Firebase Admin SDK
+    FB-->>B: Token valido + uid + email
+
+    B->>DB: SELECT * FROM usuario<br/>WHERE firebase_uid = ?
+
+    alt Usuario existe
+        DB-->>B: Datos del usuario
+    else Usuario nuevo
+        B->>DB: INSERT INTO usuario<br/>(uid, email, nombre, rol=USER)
+        DB-->>B: Usuario creado
+    end
+
+    B->>DB: INSERT INTO auditoria<br/>(accion=LOGIN, severidad=INFO)
+    B-->>F: HTTP 200 + UsuarioDto (JSON)
+    F->>F: Almacenar token en memoria
+    F-->>U: Redirigir al Panel de Usuario

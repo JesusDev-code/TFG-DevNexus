@@ -1,0 +1,165 @@
+%%{init: {'theme': 'dark'}}%%
+erDiagram
+    USUARIO {
+        bigint id PK
+        varchar firebase_uid UK
+        varchar email UK
+        varchar nombre
+        text biografia
+        varchar foto_perfil
+        bigint rol_id FK
+        bigint departamento_id FK
+        varchar fcm_token
+        boolean permite_contacto
+        text motivo_no_contacto
+        timestamp fecha_creacion
+    }
+
+    ROL {
+        bigint id PK
+        varchar nombre UK "USER STAFF ADMIN"
+    }
+
+    DEPARTAMENTO {
+        bigint id PK
+        varchar nombre
+    }
+
+    DIARIO {
+        bigint id PK
+        text contenido
+        timestamp fecha_creacion
+        varchar visibilidad "PRIVADO PENDIENTE PUBLICO"
+        bigint usuario_id FK
+        bigint tema_id FK
+        bigint revisado_por FK
+        text revision_comentario
+        timestamp revision_en
+    }
+
+    DIARIO_TEMA {
+        bigint id PK
+        varchar titulo
+        text descripcion
+        bigint usuario_id FK
+    }
+
+    DIARIO_COLABORACION {
+        bigint id PK
+        bigint tema_id FK
+        bigint usuario_id FK
+        varchar estado "PENDIENTE ACEPTADA RECHAZADA"
+        timestamp fecha_invitacion
+    }
+
+    DIARIO_COMENTARIO {
+        bigint id PK
+        bigint diario_id FK
+        bigint autor_id FK
+        text texto
+        timestamp fecha
+    }
+
+    TICKET {
+        bigint id PK
+        varchar titulo
+        text descripcion
+        varchar estado "ABIERTO EN_PROGRESO RESUELTO"
+        varchar prioridad "ALTA MEDIA BAJA"
+        bigint usuario_id FK
+        timestamp fecha_creacion
+    }
+
+    TICKET_COMENTARIO {
+        bigint id PK
+        bigint ticket_id FK
+        bigint usuario_id FK
+        text texto
+        timestamp fecha_envio
+    }
+
+    TICKET_HISTORICO {
+        bigint id PK
+        bigint ticket_id FK
+        varchar estado_anterior
+        varchar estado_nuevo
+        bigint usuario_id FK
+        text comentario
+        timestamp fecha
+    }
+
+    CONVERSACION {
+        bigint id PK
+        varchar titulo
+        varchar tipo "individual grupal"
+        bigint creado_por FK
+        timestamp fecha_creacion
+    }
+
+    CONVERSACION_PARTICIPANTE {
+        bigint conversacion_id PK
+        bigint usuario_id PK
+        timestamp fecha_entrada
+        timestamp fecha_salida
+    }
+
+    MENSAJE {
+        bigint id PK
+        bigint conversacion_id FK
+        bigint autor_id FK
+        text texto
+        timestamp fecha_envio
+        timestamp leido_en
+    }
+
+    EVENTO {
+        bigint id PK
+        varchar titulo
+        text descripcion
+        date fecha_evento
+        time hora_evento
+        varchar visibilidad "PRIVADO PUBLICO"
+        bigint usuario_id FK
+    }
+
+    NOTIFICACION {
+        bigint id PK
+        bigint usuario_id FK
+        text mensaje
+        timestamp fecha
+        boolean leida
+    }
+
+    AUDITORIA {
+        bigint id PK
+        varchar accion
+        varchar recurso
+        text descripcion
+        varchar severidad "INFO WARNING DANGER"
+        timestamp fecha
+        bigint usuario_id FK
+        varchar usuario_email
+    }
+
+    ROL ||--o{ USUARIO : "tiene"
+    DEPARTAMENTO ||--o{ USUARIO : "pertenece"
+    USUARIO ||--o{ DIARIO : "crea"
+    USUARIO ||--o{ DIARIO_TEMA : "crea"
+    DIARIO_TEMA ||--o{ DIARIO : "agrupa"
+    DIARIO_TEMA ||--o{ DIARIO_COLABORACION : "tiene"
+    USUARIO ||--o{ DIARIO_COLABORACION : "colabora"
+    DIARIO ||--o{ DIARIO_COMENTARIO : "tiene"
+    USUARIO ||--o{ DIARIO_COMENTARIO : "escribe"
+    USUARIO ||--o{ TICKET : "crea"
+    TICKET ||--o{ TICKET_COMENTARIO : "tiene"
+    USUARIO ||--o{ TICKET_COMENTARIO : "escribe"
+    TICKET ||--o{ TICKET_HISTORICO : "registra"
+    USUARIO ||--o{ TICKET_HISTORICO : "cambia"
+    USUARIO ||--o{ CONVERSACION : "crea"
+    CONVERSACION ||--o{ CONVERSACION_PARTICIPANTE : "tiene"
+    USUARIO ||--o{ CONVERSACION_PARTICIPANTE : "participa"
+    CONVERSACION ||--o{ MENSAJE : "contiene"
+    USUARIO ||--o{ MENSAJE : "envia"
+    USUARIO ||--o{ EVENTO : "crea"
+    USUARIO ||--o{ NOTIFICACION : "recibe"
+    USUARIO ||--o{ AUDITORIA : "genera"
