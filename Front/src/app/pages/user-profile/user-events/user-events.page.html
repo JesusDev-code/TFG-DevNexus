@@ -57,7 +57,11 @@
         } @empty {
           <div class="empty-state">
             <ion-icon name="calendar-number-outline"></ion-icon>
-            <p>No hay eventos programados.</p>
+            <p>Sin eventos por ahora.</p>
+            <button class="btn-empty-cta" (click)="abrirNuevoEvento()">
+              <ion-icon name="add-outline"></ion-icon>
+              Crear primer evento
+            </button>
           </div>
         }
       </div>

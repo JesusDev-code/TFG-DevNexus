@@ -47,77 +47,127 @@
   position: relative;
 }
 
-/* 🔥 HACK SYNCFUSION PRO DARK MODE 
-   Forzamos los estilos internos para que coincidan con la app
-*/
-::ng-deep .custom-schedule.e-schedule {
-  background: transparent !important;
-  border: none !important;
-  font-family: 'Plus Jakarta Sans', sans-serif !important;
-  color: #cbd5e1 !important;
+/* ── SYNCFUSION DARK MODE — selectores completos ── */
+::ng-deep .custom-schedule {
 
-  // 1. Barra de herramientas superior (Mes, Semana, Hoy...)
-  .e-schedule-toolbar {
-    background: #0a0c1e !important; 
+  &.e-schedule {
+    background: transparent !important;
+    border: none !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    color: #cbd5e1 !important;
+  }
+
+  // 1. Toolbar y su contenedor (el fondo blanco venía de aquí)
+  .e-toolbar,
+  .e-schedule-toolbar,
+  .e-schedule-toolbar-container,
+  .e-toolbar-items,
+  .e-toolbar-left,
+  .e-toolbar-right,
+  .e-toolbar-center {
+    background: #0a0c1e !important;
+    border: none !important;
     border-bottom: 1px solid rgba(255,255,255,0.05) !important;
-    padding: 10px !important;
-    
-    .e-toolbar-item .e-tbar-btn {
-      background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  // 2. Botones del toolbar
+  .e-toolbar-item .e-tbar-btn,
+  .e-toolbar-item .e-tbar-btn-text {
+    background: transparent !important;
+    color: #94a3b8 !important;
+    font-weight: 600 !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    &:hover {
+      background: rgba(255,255,255,0.07) !important;
       color: white !important;
-      font-weight: 600;
-      border-radius: 8px;
-      &:hover { background: rgba(255,255,255,0.1) !important; }
-      &.e-active { background: #a855f7 !important; color: white !important; }
     }
   }
 
-  // 2. Cabecera de días (Lunes, Martes...)
-  .e-header-cells {
-    background: #0f1225 !important; 
-    color: #94a3b8 !important;
-    border-color: rgba(255,255,255,0.05) !important;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.75rem;
+  // 3. Vista activa (el que estaba en rojo/magenta)
+  .e-toolbar-item.e-active .e-tbar-btn,
+  .e-toolbar-item .e-tbar-btn.e-active,
+  .e-active-view .e-tbar-btn {
+    background: linear-gradient(90deg, #a855f7, #3b82f6) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    .e-tbar-btn-text { color: white !important; }
   }
 
-  // 3. Celdas de trabajo (La grilla)
-  .e-work-cells {
-    background: #05071a !important; 
-    border-color: rgba(255,255,255,0.03) !important;
-    &:hover { background: #0a0c1e !important; } // Efecto hover sutil
-  }
-
-  // 4. Columna de horas (Izquierda)
-  .e-time-cells-wrap .e-time-cells {
-    background: #05071a !important;
+  // 4. Cabecera de días de la semana
+  .e-header-cells,
+  .e-week-header,
+  .e-date-header-wrap table td {
+    background: #0f1225 !important;
     color: #64748b !important;
-    border-color: rgba(255,255,255,0.03) !important;
-    font-size: 0.75rem;
+    border-color: rgba(255,255,255,0.04) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    font-size: 0.72rem !important;
   }
 
-  // 5. Celdas de mes (Vista mes)
-  .e-month-view .e-work-cells {
-    min-height: 80px; // Controla la altura mínima en vista mes
+  // 5. Números de día en la vista mes (estaban invisibles)
+  .e-date-header,
+  .e-header-date,
+  .e-navigate,
+  .e-month-view .e-date-header { color: #94a3b8 !important; }
+
+  // Día de hoy
+  .e-today .e-date-header,
+  .e-today .e-header-date,
+  .e-current-date .e-date-header {
+    color: white !important;
+    background: #a855f7 !important;
+    border-radius: 50% !important;
+    width: 24px !important; height: 24px !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
   }
 
-  // 6. Eventos (Las cajitas de citas)
+  // 6. Celdas del calendario
+  .e-work-cells,
+  .e-other-month,
+  td.e-work-cells {
+    background: #05071a !important;
+    border-color: rgba(255,255,255,0.04) !important;
+    color: #94a3b8 !important;
+    &:hover { background: #0a0c1e !important; }
+  }
+
+  .e-other-month .e-date-header { color: #334155 !important; }
+
+  // 7. Vista mes — altura mínima por celda
+  .e-month-view .e-work-cells { min-height: 75px; }
+
+  // 8. Columna de horas (Day/Week view)
+  .e-time-cells-wrap .e-time-cells,
+  .e-time-slot-row .e-time-cells {
+    background: #05071a !important;
+    color: #475569 !important;
+    border-color: rgba(255,255,255,0.04) !important;
+    font-size: 0.72rem !important;
+  }
+
+  // 9. Eventos en el calendario
   .e-appointment {
     border-radius: 6px !important;
     border: none !important;
     opacity: 1 !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
     color: white !important;
-    font-size: 0.8rem !important;
-    font-weight: 600;
-    
-    // Contenido interno del evento
-    .e-appointment-details { padding: 2px 4px !important; }
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    .e-appointment-details { padding: 3px 6px !important; }
   }
-  
-  // Línea de hora actual
+
+  // 10. Línea de hora actual
   .e-current-time { background-color: #a855f7 !important; }
+
+  // 11. Fondo de filas alternas en agenda view
+  .e-agenda-view .e-agenda-item { background: #05071a !important; }
+  .e-agenda-view .e-day-date-header { background: #0f1225 !important; color: #94a3b8 !important; }
 }
 
 /* --- SIDEBAR LISTA --- */
@@ -193,8 +243,21 @@
 }
 
 .empty-state {
-  text-align: center; color: #64748b; margin-top: 40px;
-  ion-icon { font-size: 3rem; margin-bottom: 10px; opacity: 0.5; }
+  text-align: center; color: #64748b; padding: 30px 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  ion-icon { font-size: 2.5rem; opacity: 0.4; }
+  p { margin: 0; font-size: 0.9rem; }
+}
+
+.btn-empty-cta {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #d8b4fe; border-radius: 10px;
+  padding: 8px 16px; font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; transition: 0.2s;
+  ion-icon { font-size: 1rem; }
+  &:hover { background: rgba(168, 85, 247, 0.25); color: white; }
 }
 
 .btn-gradient-full {
@@ -208,5 +271,6 @@
   
   &:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(168, 85, 247, 0.4); }
   
+  @media(max-width: 900px) { display: flex; }
   @media(min-width: 901px) { display: none; }
 }

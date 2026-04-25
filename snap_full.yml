@@ -1,0 +1,104 @@
+- generic [ref=e4]:
+  - generic [ref=e7]:
+    - generic [ref=e8]:
+      - generic:
+        - generic [ref=e172]:
+          - img "Avatar" [ref=e174] [cursor=pointer]
+          - img [ref=e176] [cursor=pointer]:
+            - img [ref=e178]
+        - generic [ref=e180]:
+          - generic:
+            - generic [ref=e181]
+            - generic [ref=e182]
+    - generic [ref=e10]:
+      - generic [ref=e11]:
+        - generic: MENÚ PRINCIPAL
+      - generic [ref=e12]:
+        - button "Inicio" [ref=e14] [cursor=pointer]:
+          - img [ref=e15]:
+            - img [ref=e17]
+          - generic [ref=e22]: Inicio
+        - button "Sobre la comunidad" [ref=e25] [cursor=pointer]:
+          - img [ref=e26]:
+            - img [ref=e28]
+          - generic [ref=e35]: Sobre la comunidad
+        - button "Contacto" [ref=e37] [cursor=pointer]:
+          - img [ref=e38]:
+            - img [ref=e40]
+          - generic [ref=e45]: Contacto
+        - button "Blog de noticias" [ref=e47] [cursor=pointer]:
+          - img [ref=e48]:
+            - img [ref=e50]
+          - generic [ref=e57]: Blog de noticias
+        - button "FAQ / Ayuda" [ref=e59] [cursor=pointer]:
+          - img [ref=e60]:
+            - img [ref=e62]
+          - generic [ref=e68]: FAQ / Ayuda
+    - generic:
+      - generic:
+        - img "Code Daemon"
+  - generic:
+    - generic:
+      - generic:
+        - img "Spline background for blur effect"
+      - generic:
+        - generic:
+          - generic: Bienvenido a la comunidad de developers
+        - generic:
+          - generic: Crea, aprende y comparte tus ideas y proyectos en un entorno seguro y colaborativo. Aquí podrás trabajar en tus proyectos de forma privada, recibir mentoring personalizado y decidir cuándo y cómo publicar tus logros.
+        - generic:
+          - generic: Accede a una comunidad donde puedes crear tu diario profesional, gestionar tus proyectos y recibir ayuda de mentores. Tu privacidad es nuestra prioridad.
+      - generic:
+        - button:
+          - generic:
+            - generic
+  - img [ref=e77]:
+    - img [ref=e79]
+  - main [ref=e85]:
+    - generic [ref=e88]:
+      - generic [ref=e91]:
+        - generic:
+          - generic [ref=e92]:
+            - generic
+          - generic [ref=e102]: Tu navegador no soporta la reproducción de video.
+      - generic [ref=e105]:
+        - generic:
+          - generic [ref=e108]:
+            - img [ref=e110]
+            - heading "Documenta" [level=3] [ref=e115]
+            - paragraph [ref=e116]: Crea un historial impecable de tus avances.
+          - generic [ref=e119]:
+            - img [ref=e121]
+            - heading "Mentoría" [level=3] [ref=e126]
+            - paragraph [ref=e127]: Conecta con expertos que elevarán tu calidad.
+          - generic [ref=e130]:
+            - img [ref=e132]
+            - heading "Conecta" [level=3] [ref=e139]
+            - paragraph [ref=e140]: Forma parte de una red de desarrolladores.
+      - generic [ref=e141]:
+        - generic [ref=e142]:
+          - img [ref=e143]
+          - generic [ref=e145]: Angular
+        - generic [ref=e146]:
+          - img [ref=e147]
+          - generic [ref=e151]: Ionic
+        - generic [ref=e152]:
+          - img [ref=e153]
+          - generic [ref=e155]: Spring
+        - generic [ref=e156]:
+          - img [ref=e157]
+          - generic [ref=e159]: Rive
+        - generic [ref=e160]:
+          - img [ref=e161]
+          - generic [ref=e163]: GitHub
+        - generic [ref=e164]:
+          - img [ref=e165]
+          - generic [ref=e167]: Docker
+      - generic [ref=e169]:
+        - heading "Estás a un commit de tu mejor versión." [level=2] [ref=e170]
+        - generic [ref=e171] [cursor=pointer]: Empieza hoy
+  - button [ref=e185] [cursor=pointer]:
+    - img [ref=e186]:
+      - img [ref=e188]
+    - img [ref=e191]:
+      - img [ref=e193]

@@ -5,17 +5,17 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { IonIcon, ToastController, LoadingController, AlertController, IonSpinner } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-// Importamos el módulo de Markdown para que funcione en el HTML
 import { MarkdownModule } from 'ngx-markdown';
 
-// Importamos los iconos "Tech" y el nuevo de invitar
-import { 
-  addOutline, trashOutline, arrowBackOutline, lockClosedOutline, globeOutline, 
-  createOutline, chatbubbleEllipsesOutline, sendOutline, 
-  // Iconos nuevos:
-  gitBranchOutline, terminalOutline, codeSlashOutline, 
+import {
+  addOutline, trashOutline, arrowBackOutline, lockClosedOutline, globeOutline,
+  createOutline, chatbubbleEllipsesOutline, sendOutline,
+  gitBranchOutline, terminalOutline, codeSlashOutline,
   cloudUploadOutline, libraryOutline, timeOutline, bugOutline,
-  calendarOutline, rocketOutline, personAddOutline // <--- NUEVO ICONO
+  calendarOutline, rocketOutline, personAddOutline,
+  searchOutline, downloadOutline, eyeOutline, eyeOffOutline,
+  bookmarkOutline, bookmarkSharp, flameOutline, filterOutline,
+  chevronUpOutline
 } from 'ionicons/icons';
 
 import { DiarioService } from 'src/app/services/diario.service';
@@ -39,14 +39,12 @@ export class UserDiaryPage implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   temas: DiarioTemaDto[] = [];
-  entradas: any[] = []; 
+  entradas: any[] = [];
   temaSeleccionado: DiarioTemaDto | null = null;
-  
-  // Datos para el Heatmap (Gráfico de actividad)
   heatmapData: { date: Date, level: number, count: number }[] = [];
 
   nuevoTemaTitulo = '';
-  nuevoTemaDescripcion = ''; 
+  nuevoTemaDescripcion = '';
   nuevaEntradaTexto = '';
   nuevaEntradaVisibilidad: Visibilidad = 'PRIVADO';
 
@@ -54,17 +52,28 @@ export class UserDiaryPage implements OnInit {
   textoEditando = '';
   visibilidadEditando: Visibilidad = 'PRIVADO';
 
-  private themeImages = [
-    'assets/avatars/proyecto1.png', 'assets/avatars/proyecto2.png',
-    'assets/avatars/proyecto3.png', 'assets/avatars/proyecto4.png',
-    'assets/avatars/proyecto5.png', 'assets/avatars/proyecto6.png',
-    'assets/avatars/proyecto7.png', 'assets/avatars/proyecto8.png'
+  // Nuevas features
+  filtroTipo: 'todo' | 'daily' | 'bug' | 'feature' | 'otro' = 'todo';
+  busqueda = '';
+  mostrarPreview = false;
+  racha = 0;
+  pinnedEntradas = new Set<number>();
+  mostrarFormCrear = false;
+
+  private readonly themeColors = [
+    'linear-gradient(135deg, #7c3aed, #4f46e5)',
+    'linear-gradient(135deg, #2563eb, #0891b2)',
+    'linear-gradient(135deg, #059669, #0d9488)',
+    'linear-gradient(135deg, #d97706, #f59e0b)',
+    'linear-gradient(135deg, #dc2626, #e11d48)',
+    'linear-gradient(135deg, #7c3aed, #ec4899)',
+    'linear-gradient(135deg, #0369a1, #7c3aed)',
+    'linear-gradient(135deg, #065f46, #059669)',
   ];
 
   constructor() {
-    // Registramos todos los iconos
-    addIcons({ 
-      addOutline, trashOutline, arrowBackOutline, lockClosedOutline, globeOutline, 
+    addIcons({
+      addOutline, trashOutline, arrowBackOutline, lockClosedOutline, globeOutline,
       createOutline, chatbubbleEllipsesOutline, sendOutline,
       'git-branch-outline': gitBranchOutline,
       'terminal-outline': terminalOutline,
@@ -75,7 +84,16 @@ export class UserDiaryPage implements OnInit {
       'bug-outline': bugOutline,
       'calendar-outline': calendarOutline,
       'rocket-outline': rocketOutline,
-      'person-add-outline': personAddOutline // <--- REGISTRADO
+      'person-add-outline': personAddOutline,
+      'search-outline': searchOutline,
+      'download-outline': downloadOutline,
+      'eye-outline': eyeOutline,
+      'eye-off-outline': eyeOffOutline,
+      'bookmark-outline': bookmarkOutline,
+      'bookmark': bookmarkSharp,
+      'flame-outline': flameOutline,
+      'filter-outline': filterOutline,
+      'chevron-up-outline': chevronUpOutline,
     });
   }
 
@@ -86,6 +104,7 @@ export class UserDiaryPage implements OnInit {
     this.diarioService.getMisEntradas().subscribe(res => {
       this.entradas = res.content || [];
       this.generarHeatmap();
+      this.racha = this.calcularRacha();
       this.cdr.markForCheck();
     });
   }
@@ -131,8 +150,75 @@ export class UserDiaryPage implements OnInit {
     this.nuevaEntradaTexto = this.nuevaEntradaTexto ? this.nuevaEntradaTexto + '\n\n' + texto : texto;
   }
 
-  getThemeImage(temaId: number): string {
-    return this.themeImages[temaId % this.themeImages.length];
+  getThemeColor(temaId: number): string {
+    return this.themeColors[temaId % this.themeColors.length];
+  }
+
+  getThemeInitial(titulo: string): string {
+    return titulo?.charAt(0).toUpperCase() || '?';
+  }
+
+  private calcularRacha(): number {
+    let racha = 0;
+    const reverse = [...this.heatmapData].reverse();
+    for (const dia of reverse) {
+      if (dia.count > 0) racha++;
+      else break;
+    }
+    return racha;
+  }
+
+  detectTipo(contenido: string): 'daily' | 'bug' | 'feature' | 'otro' {
+    if (contenido.includes('Daily Standup') || contenido.includes('📅')) return 'daily';
+    if (contenido.includes('Bug Report') || contenido.includes('🐛')) return 'bug';
+    if (contenido.includes('Nueva Feature') || contenido.includes('🚀')) return 'feature';
+    return 'otro';
+  }
+
+  setFiltro(tipo: 'todo' | 'daily' | 'bug' | 'feature' | 'otro') {
+    this.filtroTipo = tipo;
+    this.cdr.markForCheck();
+  }
+
+  togglePreview() {
+    this.mostrarPreview = !this.mostrarPreview;
+  }
+
+  togglePin(entradaId: number) {
+    if (this.pinnedEntradas.has(entradaId)) this.pinnedEntradas.delete(entradaId);
+    else this.pinnedEntradas.add(entradaId);
+    this.cdr.markForCheck();
+  }
+
+  esPinned(entradaId: number): boolean {
+    return this.pinnedEntradas.has(entradaId);
+  }
+
+  exportarRepo() {
+    if (!this.temaSeleccionado) return;
+    const entradas = this.entradasFiltradas;
+    let md = `# ${this.temaSeleccionado.titulo}\n`;
+    if (this.temaSeleccionado.descripcion) md += `> ${this.temaSeleccionado.descripcion}\n`;
+    md += `\nExportado el ${new Date().toLocaleDateString('es-ES')}\n\n---\n\n`;
+    entradas.forEach((e, i) => {
+      const fecha = new Date(e.fechaCreacion).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+      md += `## Entrada ${i + 1} — ${fecha}\n*${e.visibilidad}*\n\n${e.contenido}\n\n---\n\n`;
+    });
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${this.temaSeleccionado.titulo.replace(/\s+/g, '-')}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  get heatmapWeeks(): { date: Date, level: number, count: number }[][] {
+    const weeks: { date: Date, level: number, count: number }[][] = [];
+    for (let i = 0; i < this.heatmapData.length; i += 7) {
+      weeks.push(this.heatmapData.slice(i, i + 7));
+    }
+    return weeks;
   }
 
   async crearTema() {
@@ -274,7 +360,19 @@ export class UserDiaryPage implements OnInit {
 
   get entradasFiltradas() {
     if (!this.temaSeleccionado) return [];
-    return this.entradas.filter(e => e.temaTitulo === this.temaSeleccionado?.titulo);
+    let resultado = this.entradas.filter(e => e.temaTitulo === this.temaSeleccionado?.titulo);
+    if (this.filtroTipo !== 'todo') {
+      resultado = resultado.filter(e => this.detectTipo(e.contenido) === this.filtroTipo);
+    }
+    if (this.busqueda.trim()) {
+      const q = this.busqueda.toLowerCase();
+      resultado = resultado.filter(e => e.contenido.toLowerCase().includes(q));
+    }
+    return resultado.sort((a, b) => {
+      const aPinned = this.pinnedEntradas.has(a.id) ? 0 : 1;
+      const bPinned = this.pinnedEntradas.has(b.id) ? 0 : 1;
+      return aPinned - bPinned;
+    });
   }
 
   volverATemas() { this.temaSeleccionado = null; }
