@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -31,7 +31,7 @@ import { Router } from '@angular/router';
     FormsModule
   ]
 })
-export class FAQPage implements OnInit {
+export class FAQPage {
   
   private router = inject(Router);
 
@@ -40,7 +40,6 @@ export class FAQPage implements OnInit {
     addIcons({ helpBuoyOutline, shieldCheckmarkOutline, chatbubblesOutline });
   }
 
-  ngOnInit() {}
 
   goToPrivacy() {
     this.router.navigate(['/privacidad']);

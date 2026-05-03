@@ -64,11 +64,10 @@ export class OnBoardingPage implements OnInit {
   public authService = inject(AuthService);
   public router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  public platform = inject(Platform);
+  private animationCtrl = inject(AnimationController);
 
-  constructor(
-    public platform: Platform,
-    private animationCtrl: AnimationController
-  ) {
+  constructor() {
     addIcons({ person, arrowForwardOutline, closeOutline });
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, effect, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { Component, inject, effect, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -25,7 +25,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
   imports: [CommonModule, FormsModule, IonicModule, ScrollingModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserMessagesPage implements OnInit {
+export class UserMessagesPage {
   private chatService = inject(ChatService);
   private modalCtrl = inject(ModalController);
   public authService = inject(AuthService);
@@ -92,7 +92,6 @@ export class UserMessagesPage implements OnInit {
     });
   }
 
-  ngOnInit() { }
 
   cargarConversaciones() {
     this.chatService.getConversaciones().subscribe({

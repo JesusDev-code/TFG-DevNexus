@@ -107,6 +107,7 @@ export class AuthService {
 
   // ✅ NUEVO: LOGIN CON GOOGLE
   async loginWithGoogle() {
+    this.isRegistering = true;
     try {
       const provider = new GoogleAuthProvider();
       const credential = await signInWithPopup(this.auth, provider);
@@ -117,6 +118,8 @@ export class AuthService {
     } catch (error) {
       console.error('Error en Google Login', error);
       throw error;
+    } finally {
+      this.isRegistering = false;
     }
   }
 

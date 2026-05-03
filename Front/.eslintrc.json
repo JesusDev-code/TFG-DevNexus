@@ -23,7 +23,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "app",
+            "prefix": ["app", "cr"],
             "style": "kebab-case"
           }
         ],
@@ -34,7 +34,9 @@
             "prefix": "app",
             "style": "camelCase"
           }
-        ]
+        ],
+        "@angular-eslint/no-output-on-prefix": "off",
+        "@angular-eslint/no-empty-lifecycle-method": "warn"
       }
     },
     {

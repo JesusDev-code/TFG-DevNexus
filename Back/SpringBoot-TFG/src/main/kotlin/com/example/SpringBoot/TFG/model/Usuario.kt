@@ -27,7 +27,7 @@ data class Usuario(
     @Column(name = "biografia", length = 500)
     var biografia: String? = null,
 
-    @Column(name = "foto_perfil", length = 500)
+    @Column(name = "foto_perfil", columnDefinition = "TEXT")
     var foto_perfil: String? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)

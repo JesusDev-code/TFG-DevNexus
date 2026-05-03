@@ -9,7 +9,10 @@ import com.example.SpringBoot.TFG.service.DiarioService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
@@ -96,6 +99,16 @@ class DiarioController(
     fun misDiarios(pageable: Pageable, authentication: Authentication): Page<DiarioDto> {
         val principal = authentication.principal as UserPrincipal
         return service.deUsuario(principal.uid, pageable)
+    }
+
+    @GetMapping("/tema/{temaId}/export.csv")
+    fun exportarTemaCsv(@PathVariable temaId: Int): ResponseEntity<ByteArray> {
+        val bytes = service.exportarTemaCsv(temaId)
+        val headers = HttpHeaders().apply {
+            contentType = MediaType("text", "csv")
+            set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"diario-tema-$temaId.csv\"")
+        }
+        return ResponseEntity.ok().headers(headers).body(bytes)
     }
 
     @DeleteMapping("/{id}")

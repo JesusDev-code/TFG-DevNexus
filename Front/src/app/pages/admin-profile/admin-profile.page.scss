@@ -14,7 +14,7 @@
 .admin-hero-container {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 20px 24px 10px;
+  padding: calc(var(--safe-area-inset-top, env(safe-area-inset-top, 0px)) + 20px) 24px 10px;
   text-align: center;
 
   &.compact {

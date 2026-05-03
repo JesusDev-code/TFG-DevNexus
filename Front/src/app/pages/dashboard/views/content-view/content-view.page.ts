@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonContent, IonGrid, IonRow, IonCol, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -12,7 +12,7 @@ import { copyOutline, schoolOutline, peopleOutline } from 'ionicons/icons';
   standalone: true,
   imports: [IonContent, IonGrid, IonRow, IonCol, IonIcon, CommonModule],
 })
-export class ContentViewPage implements OnInit, AfterViewInit {
+export class ContentViewPage implements AfterViewInit {
   // Referencia al video en el HTML
   @ViewChild('heroVideo') videoElement!: ElementRef<HTMLVideoElement>;
 
@@ -26,7 +26,6 @@ export class ContentViewPage implements OnInit, AfterViewInit {
     addIcons({ copyOutline, schoolOutline, peopleOutline });
   }
 
-  ngOnInit() {}
 
   ngAfterViewInit() {
     // Intentamos reproducir el video en cuanto la vista esté lista

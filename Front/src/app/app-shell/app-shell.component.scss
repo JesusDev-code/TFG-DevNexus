@@ -99,7 +99,7 @@ cr-on-boarding.active {
   border-radius: 18px;
   background: white;
   position: fixed;
-  top: calc(var(--safe-area-inset-top) + 20px);
+  top: calc(var(--safe-area-inset-top, env(safe-area-inset-top, 30px)) + 20px);
   right: 16px;
   display: flex;
   align-items: center;
@@ -112,7 +112,7 @@ cr-on-boarding.active {
 
 .side-menu-button {
   position: fixed;
-  top: calc(var(--safe-area-inset-top) + 16px);
+  top: calc(var(--safe-area-inset-top, env(safe-area-inset-top, 30px)) + 16px);
   left: 16px;
   z-index: 9999;
   pointer-events: auto;
@@ -149,7 +149,7 @@ cr-on-boarding.active {
 
 .logged-user-actions {
   position: fixed;
-  top: calc(var(--safe-area-inset-top) + 20px);
+  top: calc(var(--safe-area-inset-top, env(safe-area-inset-top, 30px)) + 20px);
   right: 16px;
   display: flex;
   gap: 12px;

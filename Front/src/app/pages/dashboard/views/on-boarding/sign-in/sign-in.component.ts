@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, OnInit, Output, NgZone } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Output, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -39,7 +39,7 @@ import { logoGoogle, personOutline, arrowForwardOutline, closeOutline } from 'io
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SignInComponent implements OnInit {
+export class SignInComponent {
   @Output() onClose = new EventEmitter();
 
   email = '';
@@ -59,7 +59,6 @@ export class SignInComponent implements OnInit {
     addIcons({ logoGoogle, personOutline, arrowForwardOutline, closeOutline });
   }
 
-  ngOnInit() {}
 
   onSubmit(success: any, failure: any, reset: any, confetti: any) {
     if (this.isRegister) {

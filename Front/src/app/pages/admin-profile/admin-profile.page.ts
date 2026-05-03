@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
@@ -29,7 +29,7 @@ import {
     RouterModule
   ]
 })
-export class AdminProfilePage implements OnInit {
+export class AdminProfilePage {
 
   constructor() {
     addIcons({ 
@@ -44,5 +44,4 @@ export class AdminProfilePage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 }

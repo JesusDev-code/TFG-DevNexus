@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy, signal, computed, effect } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController, LoadingController, AlertController } from '@ionic/angular';
@@ -23,7 +23,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
   imports: [CommonModule, FormsModule, IonicModule, ScrollingModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserTicketsPage implements OnInit {
+export class UserTicketsPage {
   private ticketService = inject(TicketService);
   private toastCtrl = inject(ToastController);
   private loadingCtrl = inject(LoadingController);
@@ -74,7 +74,6 @@ export class UserTicketsPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   cargarTickets() {
     this.ticketService.getMisTickets().subscribe({

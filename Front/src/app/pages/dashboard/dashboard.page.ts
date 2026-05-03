@@ -43,6 +43,7 @@ export class DashboardPage implements OnInit {
   @ViewChild('tabWhiteBg', { read: ElementRef }) tabWhiteBgRef?: ElementRef;
 
   private cdr = inject(ChangeDetectorRef);
+  public animationCtrl = inject(AnimationController);
 
   selectedTab = tabItemsList[0];
   isMenuOpen = true;
@@ -51,7 +52,7 @@ export class DashboardPage implements OnInit {
   showRiveMenuBtn = false; // Temporary
   avatarArr = [1, 2, 3];
 
-  constructor(public animationCtrl: AnimationController) {
+  constructor() {
     addIcons({ personOutline, exitOutline, arrowForwardOutline, closeOutline });
   }
 

@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { IonIcon, ToastController, LoadingController, AlertController, IonSpinner } from '@ionic/angular/standalone';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 import { addIcons } from 'ionicons';
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -15,7 +18,8 @@ import {
   calendarOutline, rocketOutline, personAddOutline,
   searchOutline, downloadOutline, eyeOutline, eyeOffOutline,
   bookmarkOutline, bookmarkSharp, flameOutline, filterOutline,
-  chevronUpOutline
+  chevronUpOutline, cameraOutline, logoMarkdown, sparklesOutline,
+  readerOutline, pricetagsOutline, documentTextOutline
 } from 'ionicons/icons';
 
 import { DiarioService } from 'src/app/services/diario.service';
@@ -59,6 +63,15 @@ export class UserDiaryPage implements OnInit {
   racha = 0;
   pinnedEntradas = new Set<number>();
   mostrarFormCrear = false;
+  escanendoIA = false;
+
+  reviewMap: Record<number, string> = {};
+  cargandoReviewIds = new Set<number>();
+  etiquetasSugeridas: string[] = [];
+  cargandoEtiquetas = false;
+  resumenTema: string | null = null;
+  cargandoResumen = false;
+  mostrarResumen = false;
 
   private readonly themeColors = [
     'linear-gradient(135deg, #7c3aed, #4f46e5)',
@@ -94,6 +107,12 @@ export class UserDiaryPage implements OnInit {
       'flame-outline': flameOutline,
       'filter-outline': filterOutline,
       'chevron-up-outline': chevronUpOutline,
+      'camera-outline': cameraOutline,
+      'logo-markdown': logoMarkdown,
+      'sparkles-outline': sparklesOutline,
+      'reader-outline': readerOutline,
+      'pricetags-outline': pricetagsOutline,
+      'document-text-outline': documentTextOutline,
     });
   }
 
@@ -194,24 +213,48 @@ export class UserDiaryPage implements OnInit {
     return this.pinnedEntradas.has(entradaId);
   }
 
-  exportarRepo() {
+  async exportarRepo() {
     if (!this.temaSeleccionado) return;
-    const entradas = this.entradasFiltradas;
-    let md = `# ${this.temaSeleccionado.titulo}\n`;
-    if (this.temaSeleccionado.descripcion) md += `> ${this.temaSeleccionado.descripcion}\n`;
-    md += `\nExportado el ${new Date().toLocaleDateString('es-ES')}\n\n---\n\n`;
-    entradas.forEach((e, i) => {
-      const fecha = new Date(e.fechaCreacion).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
-      md += `## Entrada ${i + 1} — ${fecha}\n*${e.visibilidad}*\n\n${e.contenido}\n\n---\n\n`;
+    const titulo = this.temaSeleccionado.titulo;
+    const alert = await this.alertCtrl.create({
+      header: 'Exportar CSV',
+      message: `Se exportarán todas las entradas de "${titulo}" como archivo CSV.`,
+      cssClass: 'custom-alert',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel', cssClass: 'alert-button-cancel' },
+        {
+          text: 'Exportar',
+          cssClass: 'alert-button-confirm',
+          handler: () => this.ejecutarExportCsv()
+        }
+      ]
     });
-    const blob = new Blob([md], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${this.temaSeleccionado.titulo.replace(/\s+/g, '-')}.md`;
-    a.click();
-    URL.revokeObjectURL(url);
+    await alert.present();
   }
+
+  private ejecutarExportCsv() {
+    const tema = this.temaSeleccionado!;
+    const filename = `${tema.titulo.replace(/\s+/g, '-') || 'diario'}.csv`;
+    this.diarioService.exportarTemaCsv(tema.id).subscribe({
+      next: (blob) => {
+        if (Capacitor.isNativePlatform()) {
+          this.exportarNativo(blob, filename, `Exportar ${tema.titulo}`);
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          this.presentToast('Exportación CSV completada', 'success');
+        }
+      },
+      error: () => this.presentToast('No se pudo exportar el CSV', 'danger')
+    });
+  }
+
 
   get heatmapWeeks(): { date: Date, level: number, count: number }[][] {
     const weeks: { date: Date, level: number, count: number }[][] = [];
@@ -294,10 +337,11 @@ export class UserDiaryPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: '¿Eliminar repositorio?',
       message: `Se borrarán permanentemente todas las notas de "${tema.titulo}".`,
+      cssClass: 'custom-alert',
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        { 
-          text: 'Eliminar', role: 'destructive',
+        { text: 'Cancelar', role: 'cancel', cssClass: 'alert-button-cancel' },
+        {
+          text: 'Eliminar', role: 'destructive', cssClass: 'alert-button-confirm',
           handler: () => this.diarioService.borrarTema(tema.id).subscribe(() => {
             if (this.temaSeleccionado?.id === tema.id) this.temaSeleccionado = null;
             this.cargarDatos();
@@ -312,9 +356,13 @@ export class UserDiaryPage implements OnInit {
   async borrarEntrada(id: number) {
     const alert = await this.alertCtrl.create({
       header: '¿Borrar entrada?',
+      cssClass: 'custom-alert',
       buttons: [
-        { text: 'No', role: 'cancel' },
-        { text: 'Sí', handler: () => this.diarioService.borrarEntrada(id).subscribe(() => { this.cargarDatos(); this.cdr.markForCheck(); }) }
+        { text: 'No', role: 'cancel', cssClass: 'alert-button-cancel' },
+        {
+          text: 'Sí', cssClass: 'alert-button-confirm',
+          handler: () => this.diarioService.borrarEntrada(id).subscribe(() => { this.cargarDatos(); this.cdr.markForCheck(); })
+        }
       ]
     });
     await alert.present();
@@ -422,6 +470,184 @@ export class UserDiaryPage implements OnInit {
         console.error(err);
         const msg = err.error?.message || 'Error al enviar invitación';
         this.presentToast(msg, 'danger');
+      }
+    });
+  }
+
+  solicitarCodeReview(entrada: any) {
+    if (this.cargandoReviewIds.has(entrada.id)) return;
+    if (this.reviewMap[entrada.id]) {
+      delete this.reviewMap[entrada.id];
+      this.cdr.markForCheck();
+      return;
+    }
+    this.cargandoReviewIds.add(entrada.id);
+    this.cdr.markForCheck();
+
+    this.diarioService.codeReview(entrada.id).subscribe({
+      next: ({ review }) => {
+        this.reviewMap[entrada.id] = review;
+        this.cargandoReviewIds.delete(entrada.id);
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.cargandoReviewIds.delete(entrada.id);
+        this.presentToast('No se pudo obtener el code review', 'danger');
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  sugerirEtiquetas() {
+    if (!this.nuevaEntradaTexto.trim() || this.cargandoEtiquetas) return;
+    this.cargandoEtiquetas = true;
+    this.etiquetasSugeridas = [];
+    this.cdr.markForCheck();
+
+    this.diarioService.sugerirEtiquetas(this.nuevaEntradaTexto).subscribe({
+      next: ({ etiquetas }) => {
+        this.etiquetasSugeridas = etiquetas;
+        this.cargandoEtiquetas = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.cargandoEtiquetas = false;
+        this.presentToast('No se pudieron sugerir etiquetas', 'danger');
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  aplicarEtiqueta(tag: string) {
+    const hashtag = `#${tag}`;
+    this.nuevaEntradaTexto = this.nuevaEntradaTexto.trim()
+      ? `${this.nuevaEntradaTexto}\n${hashtag}`
+      : hashtag;
+    this.cdr.markForCheck();
+  }
+
+  resumirProyecto() {
+    if (!this.temaSeleccionado || this.cargandoResumen) return;
+    if (this.mostrarResumen && this.resumenTema) {
+      this.mostrarResumen = false;
+      this.cdr.markForCheck();
+      return;
+    }
+    this.cargandoResumen = true;
+    this.mostrarResumen = false;
+    this.cdr.markForCheck();
+
+    this.diarioService.resumirTema(this.temaSeleccionado.id).subscribe({
+      next: ({ resumen }) => {
+        this.resumenTema = resumen;
+        this.cargandoResumen = false;
+        this.mostrarResumen = true;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.cargandoResumen = false;
+        this.presentToast('No se pudo generar el resumen', 'danger');
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  exportarMd() {
+    const tema = this.temaSeleccionado;
+    if (!tema) return;
+
+    const entradas = this.entradasFiltradas;
+    const filename = `${tema.titulo.replace(/\s+/g, '-') || 'diario'}.md`;
+
+    const contenido = [
+      `# ${tema.titulo}`,
+      tema.descripcion ? `\n${tema.descripcion}` : '',
+      '',
+      ...entradas.map(e => {
+        const fecha = new Date(e.fechaCreacion).toLocaleString('es-ES');
+        return `---\n\n**${fecha}** · ${e.visibilidad === 'PUBLICO' ? 'Público' : 'Privado'}\n\n${e.contenido ?? ''}\n`;
+      })
+    ].join('\n');
+
+    const blob = new Blob([contenido], { type: 'text/markdown;charset=utf-8' });
+
+    if (Capacitor.isNativePlatform()) {
+      this.exportarNativo(blob, filename, `Exportar ${tema.titulo}`);
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      this.presentToast('Exportación Markdown completada', 'success');
+    }
+  }
+
+  private exportarNativo(blob: Blob, filename: string, shareTitle: string) {
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64 = (reader.result as string).split(',')[1];
+      try {
+        await Filesystem.writeFile({ path: filename, data: base64, directory: Directory.Cache });
+        const { uri } = await Filesystem.getUri({ path: filename, directory: Directory.Cache });
+        try {
+          await Share.share({ title: shareTitle, files: [uri], dialogTitle: 'Guardar archivo' });
+          this.presentToast('Exportación completada', 'success');
+        } catch {
+          this.presentToast(`Archivo guardado: ${filename}`, 'success');
+        }
+      } catch {
+        this.presentToast('No se pudo exportar el archivo', 'danger');
+      }
+    };
+    reader.readAsDataURL(blob);
+  }
+
+  abrirCamaraIA() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    if (Capacitor.isNativePlatform()) {
+      input.setAttribute('capture', 'environment');
+    }
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    input.onchange = (event: Event) => {
+      if (document.body.contains(input)) document.body.removeChild(input);
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result as string;
+        const base64 = dataUrl.split(',')[1];
+        const mimeType = file.type || 'image/jpeg';
+        this.procesarImagenIA(base64, mimeType);
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }
+
+  private procesarImagenIA(imageBase64: string, mimeType: string) {
+    this.escanendoIA = true;
+    this.cdr.markForCheck();
+
+    this.diarioService.extraerCodigoDeImagen(imageBase64, mimeType).subscribe({
+      next: ({ texto }) => {
+        this.nuevaEntradaTexto = this.nuevaEntradaTexto
+          ? `${this.nuevaEntradaTexto}\n\n\`\`\`\n${texto}\n\`\`\``
+          : `\`\`\`\n${texto}\n\`\`\``;
+        this.escanendoIA = false;
+        this.presentToast('Código extraído correctamente', 'success');
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.escanendoIA = false;
+        this.presentToast('No se pudo procesar la imagen', 'danger');
+        this.cdr.markForCheck();
       }
     });
   }

@@ -138,6 +138,40 @@ class DiarioService(
     }
 
     @Transactional(readOnly = true)
+    fun exportarTemaCsv(temaId: Int): ByteArray {
+        val tema = diarioTemaRepo.findById(temaId)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Tema no encontrado") }
+
+        val diarios = if (securityService.hasRole("ADMIN", "STAFF")) {
+            repo.findAllByTemaIdOrderByFechaCreacionDesc(temaId)
+        } else {
+            val principal = securityService.getUserPrincipal()
+            val userId = principal.userId ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no identificado")
+            repo.findPermitidosByTemaId(userId, temaId)
+        }
+
+        val csv = buildString {
+            appendLine("tema_id,tema_titulo,diario_id,fecha_creacion,visibilidad,usuario_id,usuario_nombre,contenido")
+            diarios.forEach { d ->
+                appendLine(
+                    listOf(
+                        tema.id ?: "",
+                        escapeCsv(tema.titulo ?: "Sin titulo"),
+                        d.id ?: "",
+                        d.fechaCreacion,
+                        d.visibilidad.name,
+                        d.usuario.id ?: "",
+                        escapeCsv(d.usuario.nombre),
+                        escapeCsv(d.contenido ?: "")
+                    ).joinToString(",")
+                )
+            }
+        }
+
+        return csv.toByteArray(Charsets.UTF_8)
+    }
+
+    @Transactional(readOnly = true)
     fun listarComentarios(diarioId: Int): List<DiarioComentarioDto> {
         return comentarioRepo.findByDiarioIdOrderByFechaAsc(diarioId).map {
             DiarioComentarioDto(
@@ -179,4 +213,9 @@ class DiarioService(
         usuarioNombre = this.usuario.nombre,
         temaTitulo = this.tema?.titulo
     )
+
+    private fun escapeCsv(value: String): String {
+        val escaped = value.replace("\"", "\"\"")
+        return "\"$escaped\""
+    }
 }

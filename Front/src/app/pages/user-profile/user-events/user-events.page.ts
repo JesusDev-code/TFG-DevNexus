@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ScheduleModule, DayService, WeekService, WorkWeekService, MonthService, AgendaService } from '@syncfusion/ej2-angular-schedule';
 import { IonIcon, AlertController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { 
-  addOutline, calendarOutline, timeOutline, locationOutline, 
+import {
+  addOutline, calendarOutline, timeOutline, locationOutline,
   peopleOutline, trashOutline, lockClosedOutline, personOutline,
-  addCircleOutline, calendarNumberOutline // Nuevos iconos para el diseño
+  calendarNumberOutline
 } from 'ionicons/icons';
 import { EventsService } from 'src/app/services/events.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -34,10 +34,10 @@ export class UserEventsPage implements OnInit {
   public esAdminOStaff = false;
 
   constructor() {
-    addIcons({ 
-      addOutline, calendarOutline, timeOutline, locationOutline, 
+    addIcons({
+      addOutline, calendarOutline, timeOutline, locationOutline,
       peopleOutline, trashOutline, lockClosedOutline, personOutline,
-      addCircleOutline, calendarNumberOutline
+      calendarNumberOutline
     });
   }
 

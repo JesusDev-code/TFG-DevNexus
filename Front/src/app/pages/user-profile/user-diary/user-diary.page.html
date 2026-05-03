@@ -102,13 +102,34 @@
           <ion-icon name="arrow-back-outline"></ion-icon> Proyectos
         </button>
         <div class="detail-topbar-actions">
-          <button class="btn-icon-action export" (click)="exportarRepo()" title="Exportar a Markdown">
+          <button class="btn-icon-action export" (click)="exportarRepo()" title="Exportar CSV">
             <ion-icon name="download-outline"></ion-icon>
+            <span class="btn-label">CSV</span>
+          </button>
+          <button class="btn-icon-action export-md" (click)="exportarMd()" title="Exportar Markdown">
+            <ion-icon name="logo-markdown"></ion-icon>
+            <span class="btn-label">MD</span>
+          </button>
+          <button class="btn-icon-action resumen-ia" (click)="resumirProyecto()" [disabled]="cargandoResumen" title="Resumen IA del proyecto">
+            <ion-spinner *ngIf="cargandoResumen" name="crescent" class="scan-spinner"></ion-spinner>
+            <ion-icon *ngIf="!cargandoResumen" name="sparkles-outline"></ion-icon>
+            <span class="btn-label">{{ cargandoResumen ? '...' : (mostrarResumen ? 'Ocultar' : 'Resumen IA') }}</span>
           </button>
           <button class="btn-invite-glass" (click)="abrirInvitacion()">
             <ion-icon name="person-add-outline"></ion-icon>
             <span>Invitar</span>
           </button>
+        </div>
+      </div>
+
+      <div class="ai-summary-panel" *ngIf="mostrarResumen && resumenTema">
+        <div class="ai-summary-header">
+          <ion-icon name="sparkles-outline"></ion-icon>
+          <span>Resumen IA — {{ temaSeleccionado?.titulo }}</span>
+          <button class="ai-close-btn" (click)="mostrarResumen = false">✕</button>
+        </div>
+        <div class="ai-summary-body">
+          <markdown [data]="resumenTema"></markdown>
         </div>
       </div>
 
@@ -133,6 +154,23 @@
           <button class="chip-btn preview-toggle" (click)="togglePreview()">
             <ion-icon [name]="mostrarPreview ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
             {{ mostrarPreview ? 'Editor' : 'Preview' }}
+          </button>
+          <button class="chip-btn scan-ia" (click)="abrirCamaraIA()" [disabled]="escanendoIA" title="Fotografiar código y extraer con IA">
+            <ion-spinner *ngIf="escanendoIA" name="crescent" class="scan-spinner"></ion-spinner>
+            <ion-icon *ngIf="!escanendoIA" name="camera-outline"></ion-icon>
+            {{ escanendoIA ? 'Procesando...' : 'Scan IA' }}
+          </button>
+          <button class="chip-btn sugerir-tags" (click)="sugerirEtiquetas()" [disabled]="cargandoEtiquetas || !nuevaEntradaTexto.trim()" title="Sugerir etiquetas con IA">
+            <ion-spinner *ngIf="cargandoEtiquetas" name="crescent" class="scan-spinner"></ion-spinner>
+            <ion-icon *ngIf="!cargandoEtiquetas" name="pricetags-outline"></ion-icon>
+            {{ cargandoEtiquetas ? '...' : 'Etiquetas IA' }}
+          </button>
+        </div>
+
+        <div class="etiquetas-sugeridas" *ngIf="etiquetasSugeridas.length > 0">
+          <span class="label-tiny">Sugeridas:</span>
+          <button *ngFor="let tag of etiquetasSugeridas" class="tag-chip" (click)="aplicarEtiqueta(tag)">
+            #{{ tag }}
           </button>
         </div>
 
@@ -208,12 +246,28 @@
                 <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
                 <span class="badge-dot" *ngIf="e.listaComentarios?.length"></span>
               </button>
-              <button class="action-btn edit" (click)="iniciarEdicion(e)">
+              <button class="action-btn review-ia" (click)="solicitarCodeReview(e)"
+                      [class.active]="reviewMap[e.id]"
+                      [disabled]="cargandoReviewIds.has(e.id)"
+                      title="Code Review IA">
+                <ion-spinner *ngIf="cargandoReviewIds.has(e.id)" name="crescent" class="scan-spinner"></ion-spinner>
+                <ion-icon *ngIf="!cargandoReviewIds.has(e.id)" name="sparkles-outline"></ion-icon>
+              </button>
+              <button class="action-btn edit" (click)="iniciarEdicion(e)" title="Editar">
                 <ion-icon name="create-outline"></ion-icon>
               </button>
-              <button class="action-btn delete" (click)="borrarEntrada(e.id)">
+              <button class="action-btn delete" (click)="borrarEntrada(e.id)" title="Eliminar">
                 <ion-icon name="trash-outline"></ion-icon>
               </button>
+            </div>
+
+            <div class="ai-review-panel" *ngIf="reviewMap[e.id]">
+              <div class="ai-review-header">
+                <ion-icon name="sparkles-outline"></ion-icon> Code Review IA
+              </div>
+              <div class="ai-review-body">
+                <markdown [data]="reviewMap[e.id]"></markdown>
+              </div>
             </div>
           </div>
 

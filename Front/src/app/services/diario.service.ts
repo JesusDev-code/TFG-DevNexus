@@ -87,4 +87,26 @@ export class DiarioService {
     const body: DiarioCreateDto = { contenido, visibilidad, temaId };
     return this.http.put<any>(`${this.url}/diarios/${id}`, body);
   }
+
+  exportarTemaCsv(temaId: number): Observable<Blob> {
+    return this.http.get(`${this.url}/diarios/tema/${temaId}/export.csv`, {
+      responseType: 'blob'
+    });
+  }
+
+  extraerCodigoDeImagen(imageBase64: string, mimeType: string): Observable<{ texto: string }> {
+    return this.http.post<{ texto: string }>(`${this.url}/vision/extraer-codigo`, { imageBase64, mimeType });
+  }
+
+  codeReview(diarioId: number): Observable<{ review: string }> {
+    return this.http.post<{ review: string }>(`${this.url}/diario-ai/code-review/${diarioId}`, {});
+  }
+
+  sugerirEtiquetas(contenido: string): Observable<{ etiquetas: string[] }> {
+    return this.http.post<{ etiquetas: string[] }>(`${this.url}/diario-ai/sugerir-etiquetas`, { contenido });
+  }
+
+  resumirTema(temaId: number): Observable<{ resumen: string }> {
+    return this.http.post<{ resumen: string }>(`${this.url}/diario-ai/resumir-tema/${temaId}`, {});
+  }
 }

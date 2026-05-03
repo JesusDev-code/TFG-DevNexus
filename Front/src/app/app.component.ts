@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject, effect, ChangeDetectionStrategy } from '@angular/core'; // ✅ Añadido inject
+import { Component, ViewChild, inject, effect, ChangeDetectionStrategy } from '@angular/core';
 import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { App } from '@capacitor/app';
 import { StatusBar } from '@capacitor/status-bar';
@@ -21,8 +21,9 @@ export class AppComponent {
   // Inyectamos los servicios
   private authService = inject(AuthService);
   private fcmService = inject(FcmService);
+  private platform = inject(Platform);
 
-  constructor(private platform: Platform) {
+  constructor() {
     // 🔔 Effect para observar el login de usuario (Signals)
     effect(() => {
       const user = this.authService.currentUser();
@@ -43,11 +44,11 @@ export class AppComponent {
   }
 
   private inicializarApp() {
-    this.platform.ready().then(() => {
+    this.platform.ready().then(async () => {
       // Configuración visual (StatusBar, etc.)
       try {
+        await StatusBar.setOverlaysWebView({ overlay: true });
         SafeAreaController.injectCSSVariables();
-        StatusBar.setOverlaysWebView({ overlay: true }).catch(() => { });
       } catch (e) {
         console.warn('Error visual menor:', e);
       }

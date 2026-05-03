@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject, effect, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // ✅ Necesario para ngModel
 import { HttpClient } from '@angular/common/http';
@@ -20,7 +20,7 @@ import { AuthService } from 'src/app/services/auth.service';
   imports: [CommonModule, FormsModule, IonContent, IonSpinner, IonIcon, IonGrid, IonRow, IonCol],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BlogPage implements OnInit {
+export class BlogPage {
   private diarioService = inject(DiarioService);
   public authService = inject(AuthService);
   private http = inject(HttpClient);
@@ -48,8 +48,6 @@ export class BlogPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-  }
 
   cargarNoticias() {
     this.cargando.set(true);

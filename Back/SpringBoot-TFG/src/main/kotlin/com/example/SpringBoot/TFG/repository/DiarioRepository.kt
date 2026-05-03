@@ -37,4 +37,24 @@ interface DiarioRepository : JpaRepository<Diario, Int> {
            (c.usuario.id = :userId AND c.estado = 'ACEPTADA')
     """)
     fun findAllPermitidos(@Param("userId") userId: Int, pageable: Pageable): Page<Diario>
+
+    @EntityGraph(attributePaths = ["usuario", "tema", "revisadoPor"])
+    fun findAllByTemaIdOrderByFechaCreacionDesc(temaId: Int): List<Diario>
+
+    @EntityGraph(attributePaths = ["usuario", "tema", "revisadoPor"])
+    @Query("""
+        SELECT DISTINCT d FROM Diario d
+        LEFT JOIN d.tema t
+        LEFT JOIN DiarioColaboracion c ON c.tema = t
+        WHERE t.id = :temaId AND (
+            d.usuario.id = :userId
+            OR t.usuario.id = :userId
+            OR (c.usuario.id = :userId AND c.estado = 'ACEPTADA')
+        )
+        ORDER BY d.fechaCreacion DESC
+    """)
+    fun findPermitidosByTemaId(
+        @Param("userId") userId: Int,
+        @Param("temaId") temaId: Int
+    ): List<Diario>
 }

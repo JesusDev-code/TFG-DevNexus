@@ -20,3 +20,6 @@ server:
 
 firebase:
   sa-b64: ${FIREBASE_SA_B64}
+
+groq:
+  api-key: ${GROQ_API_KEY}

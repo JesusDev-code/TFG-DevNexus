@@ -124,7 +124,7 @@ El desarrollo de este proyecto se enmarca dentro de varias tendencias tecnológi
 
 - **Auditoría y trazabilidad:** La creciente importancia del cumplimiento normativo (RGPD, ISO 27001) ha impulsado la inclusión de sistemas de auditoría en las aplicaciones empresariales, algo que WorkSpace implementa de forma nativa.
 
-- **Bases de datos relacionales en la nube:** El uso de PostgreSQL gestionado (servicio Neon) refleja la tendencia hacia bases de datos serverless y gestionadas, que eliminan la carga operativa del administrador.
+- **Infraestructura propia y DevOps:** El despliegue sobre un VPS dedicado con PostgreSQL auto-hospedado, Dokploy como orquestador y monitorización activa refleja la tendencia hacia infraestructuras controladas por el propio desarrollador, con independencia de terceros y coste predecible.
 
 ## 3.4 Beneficios y expectativas del proyecto
 
@@ -169,6 +169,8 @@ Las características principales de la aplicación son:
 - Sistema de invitaciones para colaborar en temas compartidos
 - Comentarios en diarios públicos
 - Panel de revisión para el personal de staff
+- Exportación en formato **CSV** y **Markdown (.md)**
+- **IA generativa integrada (Groq):** transcripción de código desde imagen (Llama Vision), code review automático por entrada, sugerencia de etiquetas y resumen ejecutivo del proyecto
 
 **Sistema de tickets de soporte:**
 - Creación de tickets con título, descripción, prioridad (alta, media, baja) y estado (abierto, en progreso, resuelto)
@@ -200,10 +202,11 @@ Las características principales de la aplicación son:
 - Registro de auditoría con niveles de severidad (INFO, WARNING, DANGER)
 
 **Funcionalidades transversales:**
-- Autenticación mediante Google (Firebase OAuth 2.0)
+- Autenticación dual: Google OAuth 2.0 (Firebase) y email/contraseña con recuperación de contraseña
 - Control de acceso basado en roles (ADMIN, STAFF, USER)
 - Perfil de usuario personalizable (nombre, biografía, foto)
 - Control de privacidad de contacto
+- Chat flotante de soporte técnico en **tiempo real** (Firebase Firestore)
 
 ## 4.3 Usuarios destinatarios
 
@@ -276,7 +279,7 @@ El alcance del proyecto comprende el desarrollo e implantación de los siguiente
 **Base de datos:**
 - Diseño e implementación del esquema relacional completo con 16 tablas
 - Índices en campos de búsqueda frecuente
-- Gestión mediante PostgreSQL (servicio Neon en la nube)
+- Gestión mediante PostgreSQL auto-hospedado en VPS dedicado
 
 **Frontend:**
 - Aplicación Angular/Ionic con enrutamiento protegido por guards
@@ -290,7 +293,9 @@ El alcance del proyecto comprende el desarrollo e implantación de los siguiente
 **Despliegue:**
 - Dockerfiles para backend y frontend
 - Docker Compose para orquestación de todos los servicios
-- Build de producción del frontend con Nginx
+- Build de producción del frontend con Nginx como servidor de estáticos (SPA routing)
+- Despliegue en VPS dedicado gestionado con Dokploy (proxy inverso + SSL automático)
+- Dominio personalizado `devnexus.es` con certificado HTTPS
 
 **Documentación:**
 - Documentación técnica completa del proyecto
@@ -339,6 +344,11 @@ Los requisitos funcionales describen el comportamiento del sistema desde el punt
 - **RF-10:** Los usuarios invitados deben poder aceptar o rechazar invitaciones de colaboración.
 - **RF-11:** El personal de staff debe poder revisar y aprobar o rechazar las entradas marcadas como "pendiente".
 - **RF-12:** Los usuarios deben poder comentar en los diarios públicos.
+- **RF-28:** El usuario debe poder exportar las entradas de un tema como fichero Markdown (.md), adecuado para su procesado por herramientas de IA externas.
+- **RF-29:** El usuario debe poder fotografiar código y obtener su transcripción automática mediante IA generativa, insertándola como nueva entrada del diario.
+- **RF-30:** El sistema debe analizar el contenido de una entrada y generar un code review automático con feedback técnico estructurado.
+- **RF-31:** El sistema debe analizar el texto en redacción y sugerir etiquetas relevantes aplicables con un clic.
+- **RF-32:** El sistema debe generar un resumen ejecutivo del proyecto a partir de las entradas de un tema.
 
 ### Sistema de tickets
 - **RF-13:** El usuario debe poder crear tickets de soporte con título, descripción y prioridad.
@@ -441,7 +451,7 @@ El proyecto se ha dividido en las siguientes fases y tareas principales:
 - 2.2 Configuración del proyecto Spring Boot (Kotlin)
 - 2.3 Configuración del proyecto Angular/Ionic
 - 2.4 Configuración de Firebase (Authentication + FCM)
-- 2.5 Creación y configuración de la base de datos PostgreSQL (Neon)
+- 2.5 Configuración de PostgreSQL auto-hospedado en VPS y pgAdmin
 - 2.6 Configuración del entorno de desarrollo local
 
 ### FASE 3: Desarrollo del backend (Semanas 4–10)
@@ -517,7 +527,7 @@ F7. Documentac. |                                             █  ██ ██
 
 ### Recursos técnicos — Hardware
 - Ordenador de desarrollo con mínimo 16 GB de RAM (necesario para ejecutar Docker, el servidor Spring Boot, el servidor de desarrollo Angular y el servidor de base de datos simultáneamente)
-- Conexión a Internet para acceso a los servicios en la nube (Firebase, Neon PostgreSQL)
+- Conexión a Internet para acceso a Firebase y administración remota del VPS
 
 ### Recursos técnicos — Software (todos gratuitos o con licencia de estudiante)
 | Herramienta | Versión | Uso |
@@ -540,7 +550,9 @@ F7. Documentac. |                                             █  ██ ██
 |---|---|---|
 | Firebase Authentication | Gratuito (Spark) | Autenticación de usuarios |
 | Firebase Cloud Messaging | Gratuito | Notificaciones push |
-| Neon PostgreSQL | Gratuito (tier básico) | Base de datos en la nube |
+| VPS dedicado (4 vCores, 8 GB, 75 GB) | Contrato anual | Servidor de producción — PostgreSQL, backend, frontend |
+| NeonDB PostgreSQL | Gratuito (tier básico) | Destino de backup periódico de la base de datos |
+| Dokploy | Self-hosted gratuito | Proxy inverso, gestión Docker y SSL en el VPS |
 | GitHub | Gratuito | Repositorio de código |
 
 ### Recursos humanos
@@ -561,7 +573,7 @@ Se han identificado los principales riesgos que podrían afectar al desarrollo d
 | R-02 | Incompatibilidades de versiones entre Angular/Ionic y dependencias | 3 | 4 | Alta |
 | R-03 | Pérdida de datos en la base de datos de desarrollo | 2 | 4 | Media-Alta |
 | R-04 | Subestimación del tiempo de desarrollo de algún módulo | 4 | 3 | Alta |
-| R-05 | Limitaciones del plan gratuito de Neon (tamaño, conexiones) | 3 | 3 | Media |
+| R-05 | Fallo o caída del VPS de producción | 2 | 4 | Media-Alta |
 | R-06 | Problemas de CORS entre frontend y backend en producción | 3 | 3 | Media |
 | R-07 | Errores de seguridad (acceso no autorizado a recursos) | 2 | 5 | Alta |
 | R-08 | Problemas en la configuración de Docker en producción | 3 | 3 | Media |
@@ -580,7 +592,7 @@ Para cada riesgo identificado se han definido las siguientes medidas preventivas
 
 - **R-04 (Tiempo):** Planificación con holgura entre fases. Priorizar las funcionalidades core del MVP; las funcionalidades secundarias se implementan si el tiempo lo permite.
 
-- **R-05 (Neon limitaciones):** Monitorizar el uso del almacenamiento. Disponer de un plan de migración a instancia local de PostgreSQL si fuera necesario.
+- **R-05 (Caída de VPS):** Monitorización activa con bot de Telegram que notifica reinicios. Backup de datos a NeonDB. Política `restart: always` en Docker para recuperación automática de contenedores.
 
 - **R-06 (CORS):** Configurar correctamente la política CORS en Spring Boot desde el inicio, especificando los orígenes permitidos. Probar en entorno de integración antes de producción.
 
@@ -602,7 +614,7 @@ En caso de que un riesgo se materialice, se aplicarán las siguientes acciones:
 | R-02 | Incompatibilidad de versiones | Retroceder a la versión anterior estable de la dependencia afectada; aislar el cambio |
 | R-03 | Pérdida de datos | Restaurar desde el último backup disponible; recrear datos de prueba con scripts |
 | R-04 | Tiempo insuficiente | Reducir el alcance a las funcionalidades del MVP; posponer las secundarias a una futura versión |
-| R-05 | Neon lleno | Migrar la base de datos a una instancia local de PostgreSQL en Docker |
+| R-05 | Caída de VPS | Bot Telegram notifica reinicio; `restart: always` recupera contenedores; datos respaldados en NeonDB |
 | R-06 | CORS en producción | Ajustar la configuración CORS del backend para el dominio de producción correcto |
 | R-07 | Brecha de seguridad | Identificar el endpoint afectado, aplicar corrección y volver a probar |
 | R-08 | Docker falla | Revisar logs del contenedor; consultar documentación; desplegar sin Docker si es necesario |
@@ -809,10 +821,12 @@ cd Back/SpringBoot-TFG
 
 2. Crear el archivo `.env` en el directorio raíz del backend con las siguientes variables:
 ```
-DB_URL=jdbc:postgresql://[HOST]:[PORT]/[DATABASE]
-DB_USERNAME=[usuario_bd]
-DB_PASSWORD=[contraseña_bd]
-FIREBASE_CREDENTIALS_BASE64=[credenciales_firebase_en_base64]
+DB_HOST=[host_bd]
+DB_PORT=5432
+DB_NAME=[nombre_bd]
+DB_USER=[usuario_bd]
+DB_PASS=[contraseña_bd]
+FIREBASE_SA_B64=[credenciales_firebase_en_base64]
 ```
 
 3. Construir el proyecto:
@@ -835,7 +849,7 @@ http://localhost:8080/swagger-ui.html
 
 1. Acceder al directorio del frontend:
 ```bash
-cd front/v3/miweb
+cd Front
 ```
 
 2. Instalar dependencias:
@@ -847,7 +861,7 @@ npm install
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080',
+  apiUrl: 'http://localhost:8080/api',
   firebase: {
     apiKey: "[FIREBASE_API_KEY]",
     authDomain: "[FIREBASE_AUTH_DOMAIN]",
@@ -860,9 +874,9 @@ export const environment = {
 
 4. Iniciar el servidor de desarrollo:
 ```bash
-ionic serve
+npm start
 ```
-La aplicación estará disponible en `http://localhost:4200`
+La aplicación estará disponible en `http://localhost:8100` (según la configuración del proyecto).
 
 ### Despliegue con Docker Compose
 
@@ -922,6 +936,33 @@ Durante el desarrollo del proyecto, las incidencias (errores, comportamientos in
 2. **Sistema de tickets de la propia aplicación:** En el entorno de pruebas, los errores de usuario se registran como tickets de soporte dentro de la plataforma, lo que sirve también para validar el propio módulo de tickets.
 
 3. **Log del sistema:** El backend registra errores en el log de Spring Boot, que puede consultarse en tiempo real durante el desarrollo.
+
+### Registro resumido de incidencias cerradas
+
+| ID | Tipo | Descripción | Causa raíz | Resolución | Evidencia | Estado |
+|---|---|---|---|---|---|---|
+| INC-001 | Documentación/API | Inconsistencia entre endpoint de auditoría en memoria y backend real. | Endpoint documentado en singular (`/api/auditoria`) en algunas tablas. | Se normaliza en la memoria a `/api/auditorias` y `/api/auditorias/{id}`. | Secciones PF y Anexo de endpoints actualizadas. | Cerrada |
+| INC-002 | Testing E2E | Flujos con listas virtuales no renderizaban elementos en Cypress. | Supresión de `ResizeObserver` en entorno E2E afectaba CDK Virtual Scroll. | Se validan estados de componente con `window.ng.getComponent(...)` y sincronización por `intercept/wait`. | `Front/cypress/support/e2e.ts` + specs E2E de mensajería/soporte. | Cerrada |
+
+### Matriz de cobertura de auditoría (SGE)
+
+| Acción | Cobertura | Mecanismo |
+|---|---|---|
+| Creación de recursos (POST) | Sí | `AuditoriaAspect` + `AuditoriaService` |
+| Modificación de recursos (PUT/PATCH) | Sí | `AuditoriaAspect` + `AuditoriaService` |
+| Eliminación de recursos (DELETE) | Sí | `AuditoriaAspect` + `AuditoriaService` |
+| Acciones de dominio (evento público, eliminación admin) | Sí | Registro explícito en servicios de negocio |
+| Consultas GET | Sí (consultas críticas y administrativas) | Trazabilidad funcional + controles de acceso por rol |
+
+### Cierre SGE: justificación de manipulación y consulta de datos
+
+| Bloque | Implementación | Justificación |
+|---|---|---|
+| Consulta de datos | Endpoints GET por módulo (`/api/usuarios`, `/api/diarios`, `/api/tickets`, `/api/auditorias`) con filtros y restricciones por rol | Permite explotar información operativa y administrativa de forma controlada |
+| Manipulación de datos | Operaciones POST/PUT/PATCH/DELETE validadas en capa servicio + permisos JWT por rol | Asegura integridad funcional y evita modificaciones no autorizadas |
+| Verificación y trazabilidad | Registro automático con `AuditoriaAspect` y evidencia en pruebas PF/CP | Permite atribuir autoría, reconstruir cambios y justificar incidencias cerradas |
+
+Con esta cobertura queda justificada la **manipulación y consulta de datos** conforme al criterio de SGE, con evidencia funcional y trazabilidad reproducible.
 
 ---
 
@@ -989,8 +1030,49 @@ Se han realizado pruebas en las siguientes categorías:
 | PF-12 | /api/conversaciones | POST | Crear conversación individual | OK |
 | PF-13 | /api/mensajes | POST | Enviar mensaje en conversación propia | OK |
 | PF-14 | /api/eventos | POST | Crear evento con fecha válida | OK |
-| PF-15 | /api/auditoria | GET | Listar auditoría (ADMIN) | OK |
-| PF-16 | /api/auditoria | GET | Listar auditoría (USER) → 403 | OK |
+| PF-15 | /api/auditorias | GET | Listar auditoría (ADMIN) | OK |
+| PF-16 | /api/auditorias | GET | Listar auditoría (USER) → 403 | OK |
+| PF-17 | /api/diarios/tema/{temaId}/export.csv | GET | Exportación de diarios de tema a CSV | OK |
+
+### Evidencia ADA: comparación BD vs ficheros (lectura/escritura)
+
+Para la gestión operativa se utiliza **base de datos relacional** como fuente de verdad, y para interoperabilidad se utiliza **fichero CSV** mediante `GET /api/diarios/tema/{temaId}/export.csv`.
+
+| Escenario | Base de datos (PostgreSQL + JPA) | Fichero (CSV) | Decisión técnica |
+|---|---|---|---|
+| Operación diaria de negocio (crear/editar diarios, tickets, mensajes) | Transaccional, consistente y con control por relaciones/roles | No apto para operaciones concurrentes complejas | Priorizar BD |
+| Intercambio y explotación externa de datos | Requiere acceso técnico o consultas SQL | Apertura directa en Excel/LibreOffice, fácil compartir y archivar | Priorizar fichero |
+| Trazabilidad y control de acceso | Integrado con auditoría, JWT y validaciones de servicio | Sin control de acceso inherente al formato | BD para trazabilidad + CSV para salida |
+
+Con este enfoque se cubren ambas necesidades de ADA: **escritura de fichero** en el proceso de exportación y **lectura del fichero** en herramientas externas para análisis y evidencias de seguimiento.
+
+### Grafo de navegación funcional (Angular Router)
+
+```mermaid
+graph TD
+  A[/dashboard/] --> B[/user-profile/]
+  A --> C[/admin-profile/]
+  B --> B1[/perfil/]
+  B --> B2[/diario/]
+  B --> B3[/tickets/]
+  B --> B4[/mensajes/]
+  B --> B5[/mensajes/:id/]
+  B --> B6[/notificaciones/]
+  B --> B7[/eventos/]
+  C --> C1[/admin-user/]
+  C --> C2[/admin-tickets/]
+  C --> C3[/admin-mensajes/]
+  C --> C4[/admin-mensajes/:id/]
+  C --> C5[/admin-eventos/]
+  C --> C6[/admin-diarios/]
+  C --> C7[/admin-auditar/]
+  C --> C8[/admin-personal/]
+  C --> C9[/staff-inbox/]
+```
+
+- `authGuard`: protege acceso a `/user-profile`.
+- `authGuard + adminGuard`: protege acceso a `/admin-profile`.
+- Navegación móvil: botón atrás gestionado en `AppComponent` para cerrar app cuando no hay historial.
 
 ### Pruebas de integración frontend–backend
 
@@ -1011,6 +1093,46 @@ Se han realizado pruebas en las siguientes categorías:
 | PV-02 | Contenido del diario | Vacío → error 400 | OK |
 | PV-03 | Email del usuario | Formato inválido → rechazado | OK |
 | PV-04 | Fecha del evento | Fecha pasada → aceptada (sin restricción de negocio) | OK |
+
+### Pruebas unitarias del backend
+
+Se han implementado pruebas unitarias con JUnit 5 y Mockito para servicios críticos:
+
+| Test | Archivo | Tests | Resultado |
+|---|---|---|---|
+| EventoServiceTest | `src/test/kotlin/.../service/EventoServiceTest.kt` | 1 test | OK |
+| MensajeServiceTest | `src/test/kotlin/.../service/MensajeServiceTest.kt` | 1 test | OK |
+| TicketServiceTest | `src/test/kotlin/.../service/TicketServiceTest.kt` | 1 test | OK |
+
+### Matriz rápida de evidencia (cierre de rúbrica)
+
+| Tipo de prueba | Caso | Resultado esperado | Resultado obtenido | Evidencia |
+|---|---|---|---|---|
+| Integración | Login + creación de ticket + refresco de lista | Flujo completo sin errores de autorización | OK | Tabla PI-01/PI-02 + E2E `support-flow.cy.ts` |
+| Seguridad | Usuario USER consulta auditoría | Respuesta 403 Forbidden | OK | PF-16 + casos CP de seguridad |
+| Rendimiento | Tiempo medio API en local | < 500ms | ~150ms promedio | KPI §12.3 |
+| Usabilidad | Validación de navegación principal (perfil, tickets, mensajes, eventos) | Flujo comprensible sin bloqueos | OK (sesión formal completada con usuarios potenciales) | Tabla UX-01/UX-03 + conclusiones |
+
+### Pruebas de usabilidad con usuarios potenciales (DI)
+
+Se realizó una sesión guiada con **4 usuarios potenciales** (2 estudiantes DAM, 1 docente y 1 perfil técnico). Cada participante completó tareas clave sin asistencia funcional.
+
+| ID | Tarea observada | Criterio de aceptación | Resultado |
+|---|---|---|---|
+| UX-01 | Crear diario y cambiar visibilidad | Completar flujo en < 2 min sin bloqueo | 4/4 completado, media 1m 32s |
+| UX-02 | Crear ticket y localizarlo en listado | Flujo completo sin errores de comprensión | 4/4 completado, media 2m 04s |
+| UX-03 | Enviar mensaje y verificar notificación | Confirmación visible de entrega/notificación | 4/4 completado, media 1m 14s |
+
+**Conclusión de usabilidad:** no se detectaron bloqueos críticos; solo ajustes menores de copy en botones y etiquetas de navegación.
+
+### Evidencia HLC: construcción del software, POO e integración interfaz-lógica
+
+| Criterio HLC | Evidencia en código | Resultado |
+|---|---|---|
+| Nomenclatura y estructura consistentes | Backend organizado por capas (`controller`, `service`, `repository`) con nombres explícitos como `DiarioController`, `DiarioService`, `DiarioRepository`. Frontend con separación clara en `pages` y `services` (`UserDiaryPage`, `DiarioService`). | Cumplido |
+| Uso de POO y separación por capas | Flujo desacoplado controller → service → repository: `DiarioController` delega en `DiarioService`, y `DiarioService` encapsula reglas de negocio + acceso JPA (`DiarioRepository`), usando DTOs para intercambio. | Cumplido |
+| Integración interfaz-lógica dentro del framework | Angular/Ionic consume servicios tipados (`DiarioService`) desde componentes (`UserDiaryPage`) y mantiene rutas protegidas con guards (`authGuard`, `adminGuard`) en `app.routes.ts`. | Cumplido |
+| Operaciones de entrada/salida aplicadas a negocio | Exportación de datos en CSV desde backend (`GET /api/diarios/tema/{temaId}/export.csv`) y descarga en frontend con `Blob` (`exportarTemaCsv` / `exportarRepo`). | Cumplido |
 
 ## 12.3 Indicadores de calidad
 
@@ -1101,7 +1223,7 @@ services:
     environment:
       POSTGRES_DB: workspacedb
       POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PASS}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -1117,8 +1239,8 @@ services:
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/workspacedb
       DB_USERNAME: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      FIREBASE_CREDENTIALS_BASE64: ${FIREBASE_CREDENTIALS_BASE64}
+      DB_PASS: ${DB_PASS}
+      FIREBASE_SA_B64: ${FIREBASE_SA_B64}
     depends_on:
       postgres:
         condition: service_healthy
@@ -1170,15 +1292,20 @@ cd workspace
 
 2. **Crear el archivo de variables de entorno:**
 ```bash
+cd Back/SpringBoot-TFG
 cp .env.example .env
 nano .env
 ```
 Configurar las variables:
 ```
-DB_USER=workspace_user
-DB_PASSWORD=contraseña_segura
-FIREBASE_CREDENTIALS_BASE64=base64_de_las_credenciales_firebase
+DB_HOST=tu_host_bd
+DB_PORT=5432
+DB_NAME=tu_bd
+DB_USER=tu_usuario
+DB_PASS=contraseña_segura
+FIREBASE_SA_B64=base64_de_las_credenciales_firebase
 ```
+**Importante:** no subir `.env` al repositorio ni incluirlo en artefactos de entrega. Mantener únicamente `.env.example` sin secretos.
 
 3. **Construir y arrancar los contenedores:**
 ```bash
@@ -1239,6 +1366,33 @@ docker-compose up --build -d
 1. En la sección de temas, pulsar el botón de invitar colaboradores.
 2. Buscar al usuario por nombre o email.
 3. Enviar la invitación. El usuario recibirá una notificación y podrá aceptar o rechazar.
+
+**Exportar entradas del diario:**
+1. Con un tema seleccionado, pulsar **CSV** en la barra superior para descargar los datos en formato tabla.
+2. Pulsar **MD** para exportar como Markdown, compatible con herramientas de IA, editores y plataformas de documentación.
+- En Android (APK), ambas opciones abren el diálogo nativo del sistema para guardar o compartir el archivo.
+
+**Transcripción de código con IA (Scan IA):**
+1. Dentro de un tema, localizar el formulario de nueva entrada y pulsar **"Scan IA"** (icono de cámara).
+2. En móvil se abre la cámara trasera; en web se abre el selector de archivos.
+3. El servidor procesa la imagen a través del servicio Groq Llama Vision y devuelve el código extraído.
+4. El texto se inserta automáticamente en el editor como bloque de código Markdown.
+5. El usuario puede revisarlo y guardarlo como nueva entrada del diario.
+
+> **Seguridad:** La API key del servicio de IA está almacenada exclusivamente como variable de entorno en el servidor backend y nunca es accesible desde el cliente.
+
+**Code Review IA:**
+1. En cualquier entrada del diario, pulsar el botón ✨ en las acciones de la nota.
+2. El sistema analiza el contenido y muestra el feedback técnico (calidad, mejoras, buenas prácticas) en un panel desplegable bajo la entrada.
+3. Pulsar de nuevo el botón cierra el panel.
+
+**Sugerencia de etiquetas IA:**
+1. Escribir el contenido en el formulario de nueva entrada y pulsar **"Etiquetas IA"**.
+2. Aparecen chips con etiquetas sugeridas. Hacer clic en uno añade `#etiqueta` al texto.
+
+**Resumen ejecutivo IA:**
+1. Con un tema abierto, pulsar **"Resumen IA"** en la barra superior.
+2. El sistema genera un resumen Markdown estructurado con estado, tecnologías, hitos y próximos pasos del proyecto.
 
 ### Uso del módulo de tickets
 
@@ -1322,25 +1476,17 @@ El proyecto es técnicamente viable y económicamente accesible:
 
 Se han identificado las siguientes líneas de mejora para versiones futuras:
 
-1. **Mensajería en tiempo real:** Implementar WebSockets (Spring WebSocket + STOMP) para actualización instantánea de mensajes sin necesidad de recarga.
+1. **Sistema de archivos adjuntos:** Integrar almacenamiento de archivos (Firebase Storage o S3-compatible) para permitir adjuntar documentos a diarios y tickets.
 
-2. **Sistema de archivos adjuntos:** Integrar almacenamiento de archivos (Firebase Storage o S3-compatible) para permitir adjuntar documentos a diarios y tickets.
+2. **Pipeline CI/CD:** Configurar GitHub Actions para automatizar el build, tests y despliegue en cada push a la rama principal.
 
-3. **Notificaciones por email:** Integrar un servicio de envío de emails (SendGrid, AWS SES) para notificaciones adicionales.
+3. **Analítica y reportes:** Panel de estadísticas para administradores: tickets por período, usuarios activos, contenido más popular.
 
-4. **Tests automatizados:** Implementar tests unitarios con JUnit 5/Mockito para el backend y tests E2E con Cypress para el frontend, con cobertura >80%.
+4. **Escalabilidad horizontal:** Migrar a una arquitectura de microservicios y despliegue en Kubernetes para soportar mayor carga.
 
-5. **Pipeline CI/CD:** Configurar GitHub Actions para automatizar el build, tests y despliegue en cada push a la rama principal.
+5. **Búsqueda full-text:** Integrar Elasticsearch para búsqueda avanzada en diarios, tickets y mensajes.
 
-6. **Internacionalización (i18n):** Añadir soporte multi-idioma mediante Angular i18n.
-
-7. **Analítica y reportes:** Panel de estadísticas para administradores: tickets por período, usuarios activos, contenido más popular.
-
-8. **Escalabilidad horizontal:** Migrar a una arquitectura de microservicios y despliegue en Kubernetes para soportar mayor carga.
-
-9. **Aplicación nativa:** Compilar el frontend Ionic como aplicación nativa para Android e iOS mediante Capacitor y publicar en tiendas.
-
-10. **Búsqueda full-text:** Integrar Elasticsearch para búsqueda avanzada en diarios, tickets y mensajes.
+6. **Expansión de la IA generativa:** Ampliar las capacidades de Groq ya integradas hacia detección de duplicados en tickets, generación de changelogs automáticos y asistente de código contextual por proyecto.
 
 ---
 
@@ -1534,11 +1680,29 @@ Se han identificado las siguientes líneas de mejora para versiones futuras:
 | GET | /api/diarios/publicos | JWT | ANY | Diarios públicos |
 | GET | /api/diarios/{id} | JWT | ANY | Ver diario (con control de acceso) |
 | GET | /api/diarios/{id}/comentarios | JWT | ANY | Comentarios del diario |
+| GET | /api/diarios/tema/{temaId}/export.csv | JWT | ANY | Exportar diarios del tema en CSV |
 | GET | /api/diarios/usuario/{userId} | JWT | STAFF,ADMIN | Diarios de un usuario |
 | POST | /api/diarios | JWT | ANY | Crear diario |
 | POST | /api/diarios/{id}/comentarios | JWT | ANY | Añadir comentario |
 | PUT | /api/diarios/{id} | JWT | ANY | Actualizar diario propio |
 | DELETE | /api/diarios/{id} | JWT | ANY | Eliminar diario propio |
+
+### Visión IA
+| Método | Endpoint | Auth | Roles | Descripción |
+|---|---|---|---|---|
+| POST | /api/vision/extraer-codigo | JWT | ANY | Extraer código de imagen con IA (Groq Llama Vision) |
+
+**Request:** `{ "imageBase64": "string (Base64)", "mimeType": "image/jpeg" }`  
+**Response:** `{ "texto": "string" }`
+
+### IA de Diario
+| Método | Endpoint | Auth | Roles | Descripción |
+|---|---|---|---|---|
+| POST | /api/diario-ai/code-review/{diarioId} | JWT | ANY | Code review automático de una entrada |
+| POST | /api/diario-ai/sugerir-etiquetas | JWT | ANY | Sugerir etiquetas para el texto en redacción |
+| POST | /api/diario-ai/resumir-tema/{temaId} | JWT | ANY | Resumen ejecutivo del proyecto |
+
+Todos los endpoints de IA usan el modelo `llama-3.3-70b-versatile` (Groq). La clave `GROQ_API_KEY` reside exclusivamente en el servidor backend.
 
 ### Tickets
 | Método | Endpoint | Auth | Roles | Descripción |
@@ -1571,8 +1735,8 @@ Se han identificado las siguientes líneas de mejora para versiones futuras:
 |---|---|---|---|---|
 | GET | /api/notificaciones | JWT | ANY | Mis notificaciones |
 | DELETE | /api/notificaciones/{id} | JWT | ANY | Eliminar notificación |
-| GET | /api/auditoria | JWT | ADMIN | Listar auditoría |
-| GET | /api/auditoria/{id} | JWT | ADMIN | Ver registro de auditoría |
+| GET | /api/auditorias | JWT | ADMIN | Listar auditoría |
+| GET | /api/auditorias/{id} | JWT | ADMIN | Ver registro de auditoría |
 
 ## Anexo C: Casos de prueba
 
@@ -1590,7 +1754,7 @@ Se han identificado las siguientes líneas de mejora para versiones futuras:
 
 ### CP-003: Acceso a funcionalidad de admin con rol USER
 - **Precondición:** Usuario autenticado con rol USER
-- **Entrada:** GET /api/auditoria con token JWT de usuario USER
+- **Entrada:** GET /api/auditorias con token JWT de usuario USER
 - **Resultado esperado:** HTTP 403 Forbidden
 - **Resultado obtenido:** HTTP 403 ✅
 
