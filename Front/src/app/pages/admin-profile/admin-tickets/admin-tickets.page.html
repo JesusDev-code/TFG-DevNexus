@@ -112,14 +112,16 @@
                 <ion-icon name="close-outline"></ion-icon>
               </button>
             </div>
-            <div class="modal-tabs" [hidden]="!isMobile()">
-              <button class="modal-tab" [class.active]="modalTab() === 'chat'" (click)="modalTab.set('chat')">
-                <ion-icon name="chatbubbles-outline"></ion-icon> Chat
-              </button>
-              <button class="modal-tab" [class.active]="modalTab() === 'info'" (click)="modalTab.set('info')">
-                <ion-icon name="information-circle-outline"></ion-icon> Info
-              </button>
-            </div>
+            @if (isMobile()) {
+              <div class="modal-tabs">
+                <button class="modal-tab" [class.active]="modalTab() === 'chat'" (click)="modalTab.set('chat')">
+                  <ion-icon name="chatbubbles-outline"></ion-icon> Chat
+                </button>
+                <button class="modal-tab" [class.active]="modalTab() === 'info'" (click)="modalTab.set('info')">
+                  <ion-icon name="information-circle-outline"></ion-icon> Info
+                </button>
+              </div>
+            }
           </div>
 
           <div class="modal-body-split">
