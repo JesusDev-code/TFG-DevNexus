@@ -107,3 +107,88 @@
   .header-actions { flex-direction: column; align-items: stretch; }
   .actions-right { width: 100%; }
 }
+
+// ── MOBILE CARDS ──────────────────────────────────────────
+.mobile-card-list { display: none; }
+
+@media (max-width: 600px) {
+  .desktop-only { display: none !important; }
+  .header-actions { flex-direction: column; align-items: stretch; }
+  .actions-right { width: 100%; flex-direction: column; }
+  .search-glass-wrapper { max-width: 100%; }
+
+  .mobile-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .audit-mobile-card {
+    background: #05071a;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .amc-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .amc-date {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    .amc-date-day { font-weight: 600; color: #cbd4e6; font-size: 0.85rem; }
+    .amc-date-time { font-size: 0.75rem; color: #475569; }
+  }
+
+  .amc-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    .mono-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+  }
+
+  .amc-user-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    ion-icon { color: #a855f7; opacity: 0.7; font-size: 0.9rem; }
+  }
+
+  .amc-details {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #64748b;
+    line-height: 1.5;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+    border-left: 2px solid rgba(168, 85, 247, 0.3);
+  }
+
+  .amc-empty {
+    text-align: center;
+    color: #475569;
+    padding: 40px;
+    font-style: italic;
+  }
+}

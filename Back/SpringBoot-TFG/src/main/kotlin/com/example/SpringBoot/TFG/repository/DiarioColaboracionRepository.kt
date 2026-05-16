@@ -18,6 +18,9 @@ interface DiarioColaboracionRepository : JpaRepository<DiarioColaboracion, Long>
     // Para listar invitaciones pendientes
     fun findByUsuarioIdAndEstado(usuarioId: Int, estado: InvitacionEstado): List<DiarioColaboracion>
 
+    // Colaboradores activos de un tema
+    fun findByTemaIdAndEstado(temaId: Int, estado: InvitacionEstado): List<DiarioColaboracion>
+
     // Obtener IDs de temas donde soy colaborador (para filtros futuros)
     @Query("SELECT c.tema.id FROM DiarioColaboracion c WHERE c.usuario.id = :usuarioId AND c.estado = 'ACEPTADA'")
     fun findTemaIdsByColaborador(usuarioId: Int): List<Int>

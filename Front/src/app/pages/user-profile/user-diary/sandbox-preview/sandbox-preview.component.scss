@@ -1,0 +1,103 @@
+:host { display: block; height: 100%; }
+
+.sandbox-shell {
+  display: grid;
+  grid-template-rows: 44px 1fr 120px;
+  height: 100%;
+  background: #020617;
+  overflow: hidden;
+}
+
+.sandbox-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 16px;
+  background: #05071a;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.sandbox-dots {
+  display: flex; gap: 6px;
+  .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    &.red    { background: #f34d5c; }
+    &.yellow { background: #fb923c; }
+    &.green  { background: #20d77c; }
+  }
+}
+
+.sandbox-url {
+  flex: 1; display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; padding: 5px 12px;
+  ion-icon { color: #475569; font-size: 0.85rem; }
+  span { font-size: 0.8rem; color: #64748b; font-family: 'Consolas', monospace; }
+}
+
+.sandbox-actions {
+  display: flex; gap: 6px;
+}
+
+.sb-btn {
+  background: transparent; border: none; color: #64748b;
+  cursor: pointer; padding: 5px; border-radius: 6px;
+  display: flex; font-size: 1rem; transition: 0.15s;
+  ion-icon { font-size: 1rem; }
+  &:hover { color: white; background: rgba(255,255,255,0.06); }
+  &.close:hover { color: #f34d5c; }
+}
+
+.sandbox-frame-wrap {
+  position: relative; overflow: hidden; background: white;
+}
+
+.sandbox-frame {
+  width: 100%; height: 100%; border: none;
+  background: white;
+}
+
+.sandbox-console {
+  background: #05071a;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+
+  &.has-errors { border-top-color: rgba(243,77,92,0.3); }
+}
+
+.console-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 14px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.75rem; color: #64748b;
+  ion-icon { color: #f34d5c; font-size: 0.85rem; }
+  span:first-of-type { font-weight: 700; }
+
+  .error-count { color: #f34d5c; font-weight: 700; flex: 1; }
+
+  .console-clear {
+    background: transparent; border: none; color: #475569;
+    font-size: 0.7rem; cursor: pointer;
+    &:hover { color: white; }
+  }
+}
+
+.console-body {
+  flex: 1; overflow-y: auto; padding: 6px 14px;
+  display: flex; flex-direction: column; gap: 4px;
+  &::-webkit-scrollbar { width: 3px; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); }
+}
+
+.console-error {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 0.78rem; color: #f34d5c; font-family: 'Consolas', monospace;
+  ion-icon { font-size: 0.85rem; flex-shrink: 0; margin-top: 1px; }
+}
+
+.console-ok {
+  font-size: 0.75rem; color: #20d77c; font-style: italic;
+}
+
+/* Modal fullscreen */
+:host-context(.fullscreen-modal) {
+  height: 100vh;
+}

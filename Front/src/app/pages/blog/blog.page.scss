@@ -1,182 +1,460 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
 
-:host { 
-  background: transparent !important; 
-  display: block; 
-  height: 100%;
-}
+:host { background: transparent !important; display: block; height: 100%; }
 
-// --- HEADER COMPACTO ---
 .blog-hero-container {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 10px 24px 20px; 
+  padding: 10px 24px 20px;
   text-align: center;
 }
 
-.blog-title {
-  font-size: 2.2rem; 
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 10px; 
-  letter-spacing: -1px;
+.blog-title { font-size: 2.2rem; font-weight: 800; line-height: 1.1; margin-bottom: 10px; letter-spacing: -1px; }
+.blog-description { color: #94a3b8; font-size: 1rem; line-height: 1.5; max-width: 600px; margin: 0 auto 20px; }
+
+.blog-grid-container { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+.loading-box { text-align: center; margin-top: 50px; }
+
+.empty-state {
+  text-align: center; color: #94a3b8; padding: 60px 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  ion-icon { font-size: 2.5rem; color: #334155; }
+  p { font-size: 1.1rem; margin: 0; }
+  small { font-size: 0.85rem; opacity: 0.6; }
 }
 
-.blog-description {
-  color: #94a3b8;
-  font-size: 1rem; 
-  line-height: 1.5;
-  max-width: 600px;
-  margin: 0 auto 20px; 
-}
-
-// --- GRID DE BLOG ---
-.blog-grid-container {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-// --- TARJETA PREMIUM ---
-.premium-blog-card {
+// ── PROJECT CARD ──
+.project-card {
   background: #1e2336;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   border-radius: 20px;
   overflow: hidden;
-  height: 100%; /* Para que ocupe altura en grid */
-  display: flex;
-  flex-direction: column;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  margin-bottom: 16px;
 
   &:hover {
-    transform: translateY(-5px);
-    background: #232840;
-    border-color: rgba(168, 85, 247, 0.4);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-    .card-image { filter: saturate(1.2); transform: scale(1.03); }
+    transform: translateY(-4px);
+    border-color: rgba(168, 85, 247, 0.35);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
   }
 
-  .card-image {
-    height: 160px; 
-    background-size: cover;
-    background-position: center;
-    transition: 0.6s ease;
+  .card-banner {
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
-    padding: 16px;
+    padding: 14px;
 
-    &.bg1 { background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80'); }
-    &.bg2 { background-image: url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80'); }
-    &.bg3 { background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80'); }
-    &.bg6 { background-image: url('https://images.unsplash.com/photo-1482062364825-616fd23b8fc1?auto=format&fit=crop&w=600&q=80'); }
-  }
-
-  .blog-chip {
-    padding: 4px 12px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: white;
-    &.tutorial { background: linear-gradient(90deg, #b224ef, #7567ec); }
-    &.design { background: linear-gradient(90deg, #3c7ee7, #ae3ecd); }
-    &.perf { background: linear-gradient(90deg, #2bc1fc, #19efd4); }
-    &.backend { background: linear-gradient(90deg, #fa984e, #d94b57); }
-  }
-
-  .card-content {
-    padding: 20px; display: flex; flex-direction: column; flex-grow: 1;
-
-    .meta-row {
-      margin-bottom: 8px;
-      .date-badge { font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center; gap: 5px; }
+    .project-initial {
+      font-size: 3rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.25);
+      position: absolute;
+      right: 20px;
+      bottom: 8px;
+      line-height: 1;
     }
 
-    h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; line-height: 1.3; color: #fff; }
-    p { color: #94a3b8; font-size: 0.9rem; margin-bottom: 16px; line-height: 1.5; }
-  }
-
-  .card-footer {
-    display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 12px; margin-top: auto;
-
-    .author { font-size: 0.8rem; color: #64748b; display: flex; align-items: center; gap: 6px; ion-icon { color: #a855f7; } }
-
-    .action-btn {
-      background: transparent; border: none; color: #3b82f6; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 1.2rem;
-      transition: 0.2s;
-      &:hover { color: white; transform: scale(1.1); }
-      .count { font-size: 0.8rem; font-weight: 700; }
+    .card-chip {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: white;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(4px);
+      &.tutorial { background: rgba(178,36,239,0.6); }
+      &.design   { background: rgba(60,126,231,0.6); }
+      &.perf     { background: rgba(43,193,252,0.6); }
+      &.backend  { background: rgba(250,152,78,0.6); }
     }
   }
 
-  /* --- SECCIÓN DE COMENTARIOS --- */
-  .comments-section {
-    background: rgba(0,0,0,0.2);
-    margin: 15px -20px -20px; /* Expandir a los bordes */
-    padding: 15px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+  .card-body {
+    padding: 16px 18px;
 
-    .spinner-box { text-align: center; padding: 10px; }
+    .card-title { font-size: 1rem; font-weight: 700; color: #fff; margin: 0 0 6px; line-height: 1.3; }
+    .card-desc { font-size: 0.85rem; color: #64748b; margin: 0 0 14px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .comments-list {
-      max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
-      
-      .empty-msg { text-align: center; font-size: 0.8rem; color: #64748b; font-style: italic; }
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 10px;
 
-      .comment-bubble {
-        padding: 8px 12px; border-radius: 12px; font-size: 0.85rem; max-width: 90%;
-        display: flex; flex-direction: column; 
-        
-        .bubble-author { font-size: 0.7rem; font-weight: 700; margin-bottom: 2px; opacity: 0.8; }
-        .bubble-text { line-height: 1.4; }
-
-        &.staff { 
-          align-self: flex-start; background: rgba(168, 85, 247, 0.15); color: #e2e8f0; 
-          .bubble-author { color: #a855f7; }
-        }
-        &.me { 
-          align-self: flex-end; background: rgba(255, 255, 255, 0.1); color: white; 
-          .bubble-author { color: #94a3b8; text-align: right; }
-        }
-      }
-    }
-
-    .comment-input-area {
-      display: flex; gap: 8px;
-      input { 
-        flex: 1; background: rgba(255,255,255,0.05); border: none; border-radius: 20px; 
-        padding: 8px 14px; color: white; font-size: 0.9rem; outline: none;
-        &:focus { background: rgba(255,255,255,0.1); }
-      }
-      button {
-        background: #3b82f6; border: none; width: 34px; height: 34px; border-radius: 50%;
-        color: white; display: flex; align-items: center; justify-content: center; cursor: pointer;
-        &:hover { transform: scale(1.1); }
-      }
+      .author { font-size: 0.78rem; color: #64748b; display: flex; align-items: center; gap: 5px; ion-icon { color: #a855f7; } }
+      .open-hint { font-size: 0.75rem; color: #3b82f6; font-weight: 600; }
     }
   }
 }
 
-// --- TARJETA LOCKED ---
+// ── MODAL ──
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.project-modal {
+  background: #1a1f35;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 780px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  animation: slideUp 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  flex-shrink: 0;
+
+  .modal-header-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .modal-initial {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .modal-title { font-size: 1.1rem; font-weight: 700; color: white; margin: 0 0 3px; }
+
+  .modal-author {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .modal-play {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(16,185,129,0.2);
+    border: 1px solid rgba(16,185,129,0.4);
+    color: #10b981;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 700;
+    transition: 0.2s;
+    ion-icon { font-size: 0.9rem; }
+    &:hover { background: #10b981; color: white; border-color: #10b981; }
+  }
+
+  .modal-close {
+    background: rgba(0,0,0,0.25);
+    border: none;
+    color: white;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    transition: 0.2s;
+    &:hover { background: rgba(0,0,0,0.4); }
+  }
+}
+
+.modal-desc {
+  padding: 10px 20px;
+  font-size: 0.88rem;
+  color: #94a3b8;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+// Entradas del proyecto
+.modal-feed {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.spinner-box { text-align: center; padding: 16px; }
+
+.empty-feed {
+  text-align: center;
+  color: #475569;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  ion-icon { font-size: 2rem; }
+  p { margin: 0; font-size: 0.9rem; }
+}
+
+.files-section-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #818cf8;
+  padding: 2px 0 6px;
+
+  ion-icon { font-size: 0.85rem; }
+
+  .files-count {
+    background: rgba(99,102,241,0.2);
+    color: #818cf8;
+    border-radius: 100px;
+    padding: 1px 7px;
+    font-size: 0.68rem;
+  }
+
+  &.log-label {
+    color: #64748b;
+    margin-top: 4px;
+    ion-icon { color: #64748b; }
+  }
+}
+
+.entrada-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 14px 16px;
+
+  &.file-card {
+    background: rgba(15, 17, 32, 0.6);
+    border-color: rgba(99, 102, 241, 0.2);
+
+    .file-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+
+      ion-icon { color: #818cf8; font-size: 0.9rem; }
+
+      .filename {
+        font-family: 'Fira Code', monospace;
+        font-size: 0.82rem;
+        color: #a5b4fc;
+        font-weight: 600;
+        flex: 1;
+      }
+
+      .file-lang {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #4f46e5;
+        background: rgba(99,102,241,0.15);
+        padding: 2px 7px;
+        border-radius: 100px;
+        letter-spacing: 0.05em;
+      }
+
+      .file-date {
+        font-size: 0.7rem;
+        color: #475569;
+      }
+    }
+
+    .entrada-content ::ng-deep pre {
+      margin: 0;
+      border-radius: 8px;
+      background: #0a0d1a;
+    }
+  }
+
+  .entrada-meta {
+    font-size: 0.72rem;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+    ion-icon { color: #7c3aed; }
+  }
+
+  .entrada-content {
+    ::ng-deep {
+      color: #e2e8f0;
+      font-size: 0.92rem;
+      line-height: 1.7;
+
+      h1, h2, h3 { color: #f1f5f9; margin: 0.8em 0 0.4em; font-weight: 700; }
+      h1 { font-size: 1.2rem; } h2 { font-size: 1.05rem; } h3 { font-size: 0.95rem; }
+      p { margin: 0 0 0.8em; }
+
+      code:not(pre code) {
+        background: rgba(168,85,247,0.15); color: #c084fc;
+        padding: 1px 6px; border-radius: 4px; font-size: 0.85em;
+        font-family: 'Fira Code', monospace;
+      }
+
+      pre {
+        background: #0d1117;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 10px;
+        padding: 14px 16px;
+        overflow-x: auto;
+        margin: 0.8em 0;
+        code {
+          font-family: 'Fira Code', 'Cascadia Code', monospace;
+          font-size: 0.85rem;
+          line-height: 1.6;
+          color: #e2e8f0;
+        }
+      }
+
+      blockquote { border-left: 3px solid #7c3aed; padding-left: 12px; color: #94a3b8; margin: 0.8em 0; }
+      ul, ol { padding-left: 1.4em; margin: 0.4em 0 0.8em; }
+      li { margin-bottom: 3px; }
+      strong { color: #f1f5f9; } em { color: #cbd5e1; }
+      hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 1em 0; }
+    }
+  }
+}
+
+// Comentarios
+.modal-comments {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 16px 20px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.2);
+
+  .comments-title {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.82rem; font-weight: 700; color: #64748b; margin: 0 0 10px;
+    ion-icon { color: #3b82f6; }
+  }
+
+  .empty-msg { font-size: 0.8rem; color: #475569; font-style: italic; padding: 6px 0; }
+
+  .comments-list {
+    max-height: 140px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 7px; margin-bottom: 10px;
+
+    .comment-bubble {
+      padding: 7px 11px; border-radius: 10px; font-size: 0.83rem;
+      display: flex; flex-direction: column; max-width: 82%;
+      background: rgba(255,255,255,0.06); align-self: flex-end;
+
+      &.staff {
+        align-self: flex-start;
+        background: rgba(168,85,247,0.12);
+        border: 1px solid rgba(168,85,247,0.2);
+        .bubble-author { color: #a855f7; }
+      }
+
+      .bubble-author { font-size: 0.68rem; font-weight: 700; color: #64748b; margin-bottom: 2px; }
+      .bubble-text { color: #e2e8f0; line-height: 1.4; }
+    }
+  }
+
+  .comment-input-area {
+    display: flex; gap: 8px; align-items: center;
+
+    input {
+      flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 8px 15px; color: white; font-size: 0.86rem; outline: none;
+      transition: 0.2s;
+      &:focus { background: rgba(255,255,255,0.1); border-color: rgba(59,130,246,0.4); }
+      &::placeholder { color: #475569; }
+    }
+
+    button {
+      background: #3b82f6; border: none; width: 34px; height: 34px;
+      border-radius: 50%; color: white; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; flex-shrink: 0; transition: 0.2s;
+      &:hover:not(:disabled) { background: #2563eb; transform: scale(1.08); }
+      &:disabled { opacity: 0.4; cursor: not-allowed; }
+    }
+  }
+}
+
+// Locked
 .full-height-center { min-height: 20vh; display: flex; align-items: center; justify-content: center; padding-bottom: 40px; }
 
 .locked-compact-card {
   width: 100%; max-width: 550px; background: #1e2336;
-  border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 16px; padding: 20px 24px;
+  border: 1px solid rgba(168,85,247,0.2); border-radius: 16px; padding: 20px 24px;
   display: flex; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 
   .icon-side .glow-circle {
-    width: 50px; height: 50px; border-radius: 50%; background: rgba(168, 85, 247, 0.1);
-    border: 1px solid rgba(168, 85, 247, 0.3); display: flex; align-items: center; justify-content: center;
+    width: 50px; height: 50px; border-radius: 50%; background: rgba(168,85,247,0.1);
+    border: 1px solid rgba(168,85,247,0.3); display: flex; align-items: center; justify-content: center;
     ion-icon { font-size: 24px; color: #a855f7; }
   }
   .text-side {
-    text-align: left;
-    h2 { font-size: 1.1rem; font-weight: 700; color: white; margin: 0 0 4px 0; }
-    p { font-size: 0.9rem; color: #94a3b8; margin: 0 0 10px 0; }
-    .status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; color: #3b82f6; background: rgba(59, 130, 246, 0.1); padding: 4px 10px; border-radius: 6px; }
+    h2 { font-size: 1.1rem; font-weight: 700; color: white; margin: 0 0 4px; }
+    p { font-size: 0.9rem; color: #94a3b8; margin: 0 0 10px; }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem;
+      font-weight: 600; color: #3b82f6; background: rgba(59,130,246,0.1); padding: 4px 10px; border-radius: 6px;
+    }
   }
 }
 
 @media (max-width: 450px) {
-  .locked-compact-card { flex-direction: column; text-align: center; .text-side { text-align: center; .status-badge { justify-content: center; } } }
+  .locked-compact-card { flex-direction: column; text-align: center; }
+  .project-modal { max-height: 95vh; border-radius: 16px 16px 0 0; }
+  .modal-overlay { align-items: flex-end; padding: 0; }
 }
 
 @media (max-width: 768px) { .blog-title { font-size: 1.8rem; } }

@@ -6,6 +6,14 @@
   padding: 20px;
   font-family: 'Plus Jakarta Sans', sans-serif;
   color: white;
+
+  // Bloquea toda interacción táctil con el listado cuando el modal está abierto.
+  // ion-modal renderiza en un portal fuera de este div, por eso no se ve afectado.
+  &.modal-is-open {
+    pointer-events: none;
+    touch-action: none;
+    user-select: none;
+  }
 }
 
 /* --- ESTILOS DE CABECERA Y TABLA --- */
@@ -103,17 +111,44 @@ $ticket-cols: 100px 1fr 1.5fr 110px 160px 70px;
 }
 
 .modal-header {
-  padding: 24px 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 20px 24px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex; flex-direction: column; flex-shrink: 0;
+}
+
+.modal-header-top {
   display: flex; justify-content: space-between; align-items: center;
-  
+  padding-bottom: 20px;
   h2 { margin: 0; font-size: 1.5rem; font-weight: 800; }
-  
-  .close-modal-btn {
-    background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white; width: 40px; height: 40px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
-    cursor: pointer; transition: 0.3s;
-    &:hover { background: rgba(243, 77, 92, 0.2); border-color: #f34d5c; color: #f34d5c; transform: rotate(90deg); }
+}
+
+.close-modal-btn {
+  background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white; width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+  cursor: pointer; transition: 0.3s; flex-shrink: 0;
+  &:hover { background: rgba(243, 77, 92, 0.2); border-color: #f34d5c; color: #f34d5c; transform: rotate(90deg); }
+}
+
+.modal-tabs {
+  display: flex;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modal-tab {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px;
+  background: transparent; border: none;
+  border-bottom: 3px solid transparent;
+  color: #64748b; font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; transition: 0.2s;
+  ion-icon { font-size: 1.1rem; }
+
+  &.active {
+    color: #a855f7;
+    border-bottom-color: #a855f7;
+    background: rgba(168, 85, 247, 0.04);
   }
 }
 
@@ -259,7 +294,84 @@ $ticket-cols: 100px 1fr 1.5fr 110px 160px 70px;
   &.solicitud_reapertura { color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); background: rgba(251, 191, 36, 0.1); }
 }
 
-.action-btn.chat { 
-  width: 36px; height: 36px; border-radius: 10px; background: rgba(168, 85, 247, 0.1); color: #a855f7; border: none; cursor: pointer; transition: 0.3s; 
-  &:hover { background: #a855f7; color: white; transform: scale(1.1); } 
+.action-btn.chat {
+  width: 36px; height: 36px; border-radius: 10px; background: rgba(168, 85, 247, 0.1); color: #a855f7; border: none; cursor: pointer; transition: 0.3s;
+  &:hover { background: #a855f7; color: white; transform: scale(1.1); }
+}
+
+// ── MOBILE CARDS ──────────────────────────────────────────
+.mobile-card-list { display: none; }
+
+@media (max-width: 600px) {
+  .desktop-only { display: none !important; }
+  .header-actions { flex-direction: column; align-items: stretch; }
+
+  .mobile-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .ticket-mobile-card {
+    background: #05071a;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 20px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    &:active { border-color: rgba(168, 85, 247, 0.4); }
+  }
+
+  .tmc-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .tmc-subject {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.4;
+  }
+
+  .tmc-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .tmc-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #64748b;
+    font-size: 0.8rem;
+    ion-icon { font-size: 0.9rem; color: #475569; }
+  }
+
+  .tmc-chat-btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    color: #a855f7;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: 0.2s;
+    ion-icon { font-size: 1.1rem; }
+    &:active { background: rgba(168, 85, 247, 0.2); }
+  }
 }

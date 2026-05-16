@@ -1,11 +1,10 @@
 <ion-content [fullscreen]="true" class="bg-transparent">
-
   <div class="main-content-wrapper">
 
     <div class="blog-hero-container">
       <h1 class="blog-title">Comunidad & <span class="text-gradient">Updates.</span></h1>
       <p class="blog-description">
-        Descubre en qué están trabajando otros desarrolladores. Las notas públicas de los diarios aparecen aquí.
+        Proyectos publicados por la comunidad. Explorá en qué están trabajando otros desarrolladores.
       </p>
     </div>
 
@@ -14,118 +13,197 @@
       <ng-container *ngIf="authService.currentUser(); else guestTemplate">
 
         @if (cargando()) {
-          <div style="text-align: center; margin-top: 50px;">
+          <div class="loading-box">
             <ion-spinner name="crescent" color="primary"></ion-spinner>
           </div>
         }
 
-        @if (!cargando() && posts().length === 0) {
-          <div style="text-align: center; color: #94a3b8; padding: 40px;">
-            <p style="font-size: 1.1rem;">Aún no hay publicaciones públicas.</p>
-            <p style="font-size: 0.9rem; opacity: 0.7;">Ve a tu Diario y pon una nota como "Pública" para estrenar el
-              blog.</p>
+        @if (!cargando() && temas().length === 0) {
+          <div class="empty-state">
+            <ion-icon name="globe-outline"></ion-icon>
+            <p>Aún no hay proyectos publicados.</p>
+            <small>Publicá un proyecto desde tu Diario para que aparezca aquí.</small>
           </div>
         }
 
-        @if (!cargando() && posts().length > 0) {
+        @if (!cargando() && temas().length > 0) {
           <ion-grid>
-          <ion-row>
-            @for (post of posts(); track post.id) {
-              <ion-col size="12" size-md="6" size-lg="4">
-              <div class="premium-blog-card">
+            <ion-row>
+              @for (tema of temas(); track tema.id) {
+                <ion-col size="12" size-md="6" size-lg="4">
+                  <div class="project-card" (click)="abrirTema(tema)">
 
-                <div class="card-image" [ngClass]="getClassAleatoria(post.id)">
-                  <span class="blog-chip" [ngClass]="getClassChip(post)">
-                    {{ getCategoria(post) }}
-                  </span>
-                </div>
-
-                <div class="card-content">
-                  <div class="meta-row">
-                    <div class="date-badge">
-                      <ion-icon name="time-outline"></ion-icon>
-                      {{ post.fechaCreacion | date:'d MMM' }}
-                    </div>
-                  </div>
-
-                  <h3>{{ post.temaTitulo || 'Actualización General' }}</h3>
-
-                  <p>
-                    {{ post.contenido.length > 140 ? (post.contenido | slice:0:140) + '...' : post.contenido }}
-                  </p>
-
-                  <div class="card-footer">
-                    <span class="author">
-                      <ion-icon name="person-outline"></ion-icon>
-                      {{ post.usuarioNombre || 'Dev' }}
-                    </span>
-
-                    <button class="action-btn comment" (click)="toggleComentarios(post)">
-                      <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-                      <span *ngIf="post.listaComentarios?.length" class="count">{{ post.listaComentarios.length
-                        }}</span>
-                    </button>
-                  </div>
-
-                  <div class="comments-section" *ngIf="post.mostrarComentarios">
-
-                    <div *ngIf="post.cargandoComentarios" class="spinner-box">
-                      <ion-spinner name="dots" color="light"></ion-spinner>
+                    <div class="card-banner" [style.background]="getGradient(tema.id)">
+                      <span class="project-initial">{{ getInitial(tema.titulo) }}</span>
+                      <span class="card-chip" [ngClass]="getChipClass(tema.id)">Dev Log</span>
                     </div>
 
-                    <div class="comments-list" *ngIf="!post.cargandoComentarios">
-                      <div *ngFor="let c of post.listaComentarios" class="comment-bubble" [class.staff]="c.esAdmin"
-                        [class.me]="!c.esAdmin">
-                        <span class="bubble-author">{{ c.esAdmin ? 'Staff' : c.autorNombre }}</span>
-                        <span class="bubble-text">{{ c.texto }}</span>
+                    <div class="card-body">
+                      <h3 class="card-title">{{ tema.tituloPublicacion || tema.titulo }}</h3>
+                      <p class="card-desc">{{ tema.descripcionPublicacion || tema.descripcion || 'Sin descripción' }}</p>
+
+                      <div class="card-footer">
+                        <span class="author">
+                          <ion-icon name="person-outline"></ion-icon>
+                          {{ tema.usuarioNombre || 'Dev' }}
+                        </span>
+                        <span class="open-hint">Ver proyecto →</span>
                       </div>
-                      <div *ngIf="!post.listaComentarios?.length" class="empty-msg">Sé el primero en opinar.</div>
                     </div>
 
-                    <div class="comment-input-area">
-                      <input [(ngModel)]="post.nuevoComentario" placeholder="Escribe feedback..."
-                        (keyup.enter)="enviarComentario(post)">
-                      <button (click)="enviarComentario(post)">
-                        <ion-icon name="send-outline"></ion-icon>
-                      </button>
-                    </div>
                   </div>
-
-                </div>
-
-              </div>
-              </ion-col>
-            }
-          </ion-row>
+                </ion-col>
+              }
+            </ion-row>
           </ion-grid>
         }
+
       </ng-container>
 
       <ng-template #guestTemplate>
         <div class="full-height-center">
           <div class="locked-compact-card">
-
             <div class="icon-side">
               <div class="glow-circle">
                 <ion-icon name="lock-closed-outline"></ion-icon>
               </div>
             </div>
-
             <div class="text-side">
               <h2>Acceso Restringido</h2>
-              <p>Historial de proyectos visible solo para la comunidad.</p>
-
+              <p>Proyectos visibles solo para la comunidad.</p>
               <div class="status-badge">
                 <ion-icon name="lock-closed-outline"></ion-icon>
                 <span>Privacy Protected</span>
               </div>
             </div>
-
           </div>
         </div>
       </ng-template>
 
     </div>
-
   </div>
+
+  <!-- ══ MODAL DEL PROYECTO ══ -->
+  @if (selectedTema()) {
+    <div class="modal-overlay" (click)="cerrarModal()">
+      <div class="project-modal" (click)="$event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="modal-header" [style.background]="getGradient(selectedTema()!.id)">
+          <div class="modal-header-info">
+            <span class="modal-initial">{{ getInitial(selectedTema()!.tituloPublicacion || selectedTema()!.titulo) }}</span>
+            <div>
+              <h2 class="modal-title">{{ selectedTema()!.tituloPublicacion || selectedTema()!.titulo }}</h2>
+              <span class="modal-author">
+                <ion-icon name="person-outline"></ion-icon>
+                {{ selectedTema()!.usuarioNombre || 'Dev' }}
+              </span>
+            </div>
+          </div>
+          <div class="modal-header-actions">
+            @if (!cargandoEntradas() && tienePreview()) {
+              <button class="modal-play" (click)="abrirPreview()" title="Ver resultado">
+                <ion-icon name="play-outline"></ion-icon>
+                <span>Preview</span>
+              </button>
+            }
+            <button class="modal-close" (click)="cerrarModal()">
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-desc" *ngIf="selectedTema()!.descripcionPublicacion || selectedTema()!.descripcion">
+          {{ selectedTema()!.descripcionPublicacion || selectedTema()!.descripcion }}
+        </div>
+
+        <!-- Entradas -->
+        <div class="modal-feed">
+
+          @if (cargandoEntradas()) {
+            <div class="spinner-box"><ion-spinner name="dots" color="primary"></ion-spinner></div>
+          }
+
+          @if (!cargandoEntradas() && entradas().length === 0) {
+            <div class="empty-feed">
+              <ion-icon name="document-text-outline"></ion-icon>
+              <p>Este proyecto no tiene entradas públicas aún.</p>
+            </div>
+          }
+
+          <!-- ── Archivos de código (IDE) ── -->
+          @if (entradasArchivos(entradas()).length > 0) {
+            <div class="files-section-label">
+              <ion-icon name="code-slash-outline"></ion-icon>
+              Archivos del proyecto
+              <span class="files-count">{{ entradasArchivos(entradas()).length }}</span>
+            </div>
+          }
+
+          @for (entrada of entradasArchivos(entradas()); track entrada.id) {
+            <div class="entrada-card file-card">
+              <div class="file-header">
+                <span class="file-dot" [attr.data-ext]="entrada.filename?.split('.').pop()"></span>
+                <ion-icon name="code-slash-outline"></ion-icon>
+                <span class="filename">{{ entrada.filename || 'archivo' }}</span>
+                <span class="file-lang">{{ getLanguage(entrada.filename) || 'text' }}</span>
+                <span class="file-date">{{ entrada.fechaCreacion | date:'d MMM' }}</span>
+              </div>
+              <div class="entrada-content" markdown [data]="getCodeBlock(entrada)"></div>
+            </div>
+          }
+
+          <!-- ── Entradas de diario (logs) ── -->
+          @if (entradasLog(entradas()).length > 0 && entradasArchivos(entradas()).length > 0) {
+            <div class="files-section-label log-label">
+              <ion-icon name="time-outline"></ion-icon>
+              Dev log
+            </div>
+          }
+
+          @for (entrada of entradasLog(entradas()); track entrada.id) {
+            <div class="entrada-card">
+              <div class="entrada-meta">
+                <ion-icon name="time-outline"></ion-icon>
+                {{ entrada.fechaCreacion | date:'d MMM yyyy, HH:mm' }}
+              </div>
+              <div class="entrada-content" markdown [data]="entrada.contenido"></div>
+            </div>
+          }
+        </div>
+
+        <!-- Comentarios de la comunidad — solo si hay entradas públicas -->
+        <div class="modal-comments" *ngIf="!cargandoEntradas() && entradas().length > 0">
+          <h4 class="comments-title">
+            <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+            Comentarios de la comunidad
+          </h4>
+
+          <div *ngIf="cargandoComentarios()" class="spinner-box">
+            <ion-spinner name="dots" color="primary"></ion-spinner>
+          </div>
+
+          <div class="comments-list" *ngIf="!cargandoComentarios()">
+            <div *ngIf="!comentarios().length" class="empty-msg">Sé el primero en comentar.</div>
+            <div *ngFor="let c of comentarios()" class="comment-bubble" [class.me]="!c.esAdmin">
+              <span class="bubble-author">{{ c.autorNombre }}</span>
+              <span class="bubble-text">{{ c.texto }}</span>
+            </div>
+          </div>
+
+          <div class="comment-input-area">
+            <input [ngModel]="nuevoComentario()"
+                   (ngModelChange)="nuevoComentario.set($event)"
+                   placeholder="Dejá tu opinión sobre este proyecto..."
+                   (keyup.enter)="enviarComentario()">
+            <button (click)="enviarComentario()" [disabled]="!nuevoComentario().trim()">
+              <ion-icon name="send-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
 </ion-content>

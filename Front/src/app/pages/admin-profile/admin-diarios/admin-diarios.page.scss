@@ -52,9 +52,27 @@
 }
 
 /* --- VISTA DIARIOS --- */
+.premium-back-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 100px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 700;
+
+  &:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: white;
+  }
+}
+
 .header-diaries-nav {
   display: flex; align-items: center; gap: 30px; margin-bottom: 40px; flex-wrap: wrap;
-  .premium-back-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 10px 20px; border-radius: 100px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; &:hover { background: rgba(255,255,255,0.1); border-color: white; } }
   h2 { font-size: 1.8rem; font-weight: 800; margin: 0; }
 }
 
@@ -70,9 +88,8 @@
 }
 
 .card-top-accent {
-  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-  .topic-pill { background: rgba(168, 85, 247, 0.15); color: #d8b4fe; padding: 5px 14px; border-radius: 10px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; }
-  .date-tag { display: flex; align-items: center; gap: 6px; color: #475569; font-size: 0.85rem; font-weight: 600; }
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; flex-wrap: wrap;
+  .date-tag { display: flex; align-items: center; gap: 6px; color: #475569; font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
 }
 
 .diario-body { flex: 1; p { margin: 0; color: #e2e8f0; font-style: italic; line-height: 1.7; font-size: 1.05rem; } }
@@ -112,9 +129,150 @@
 
 .empty-feedback { text-align: center; color: #475569; padding: 20px; font-size: 0.9rem; font-style: italic; }
 
+/* --- GRUPOS POR TEMA --- */
+.tema-group-header {
+  display: flex; align-items: center; gap: 10px;
+  margin: 32px 0 16px;
+  padding: 10px 18px;
+  background: rgba(168, 85, 247, 0.08);
+  border-left: 3px solid #a855f7;
+  border-radius: 0 12px 12px 0;
+  font-size: 0.9rem; font-weight: 800; color: #d8b4fe; letter-spacing: 0.05em; text-transform: uppercase;
+  ion-icon { font-size: 1.1rem; }
+  .group-count { margin-left: auto; font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: none; }
+  &:first-child { margin-top: 0; }
+}
+
+/* --- META ROW (autor + visibilidad) --- */
+.card-meta-row {
+  display: flex; align-items: center; gap: 8px; flex: 1;
+  ion-icon { color: #64748b; font-size: 1rem; }
+  .author-tag { font-size: 0.8rem; font-weight: 700; color: #94a3b8; flex: 1; }
+}
+
+.visibility-pill {
+  display: flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  background: rgba(100, 116, 139, 0.15); color: #64748b;
+  ion-icon { font-size: 0.75rem; }
+  &.publico { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
+  &.pendiente { background: rgba(234, 179, 8, 0.12); color: #facc15; }
+}
+
+/* --- ENTRADAS TIPO FILE --- */
+.file-entry {
+  margin: 0; font-style: normal;
+  code { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; font-family: 'Courier New', monospace; }
+}
+
+.file-preview {
+  margin: 12px 0 0; padding: 12px; border-radius: 12px;
+  background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.78rem; color: #94a3b8; white-space: pre-wrap; word-break: break-all;
+  max-height: 120px; overflow: hidden; font-family: 'Courier New', monospace;
+}
+
+.empty-content { color: #334155; font-style: italic; font-size: 0.9rem; margin: 0; }
+
+.spinner-center { display: flex; justify-content: center; padding: 20px; }
+
+/* --- CARD CLICKABLE --- */
+.diario-glass-card.clickable {
+  cursor: pointer;
+  &:hover { border-color: rgba(168, 85, 247, 0.5); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(168, 85, 247, 0.1); }
+}
+
+.contenido-preview { margin: 0; color: #cbd5e1; line-height: 1.6; font-size: 0.95rem; }
+
+.card-click-hint {
+  display: flex; align-items: center; gap: 8px; margin-top: 18px; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  color: #a855f7; font-size: 0.82rem; font-weight: 700;
+  ion-icon:last-child { margin-left: auto; font-size: 1rem; }
+}
+
+/* --- VISTA DETALLE --- */
+.detalle-wrapper {
+  display: flex; flex-direction: column; gap: 24px; max-width: 860px; margin: 0 auto;
+}
+
+.detalle-meta-bar {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding: 14px 20px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px;
+  .date-tag { flex: 1; display: flex; align-items: center; gap: 6px; color: #475569; font-size: 0.85rem; }
+  .action-btn.delete-btn { margin-left: auto; display: flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 0.85rem; }
+}
+
+.detalle-contenido-card {
+  background: #05071a; border: 1px solid rgba(255,255,255,0.07); border-radius: 24px; padding: 28px;
+  .detalle-texto { margin: 0; color: #e2e8f0; font-size: 1.05rem; line-height: 1.8; white-space: pre-wrap; }
+}
+
+.detalle-feedback-section {
+  background: #05071a; border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 24px; padding: 28px;
+}
+
+.feedback-title {
+  display: flex; align-items: center; gap: 10px; margin: 0 0 20px;
+  font-size: 1.1rem; font-weight: 800; color: #d8b4fe;
+  ion-icon { font-size: 1.3rem; }
+}
+
+.tema-breadcrumb { color: #64748b; font-weight: 600; font-size: 1.1rem; }
+
+/* --- IDE MODE --- */
+.admin-content-wrapper.ide-mode {
+  max-width: min(1500px, calc(100vw - 48px));
+  padding: 0 12px 24px;
+
+  .ide-embed-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ide-embed-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .ide-embed-subtitle {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  app-ide-view {
+    display: block;
+    height: clamp(520px, calc(100vh - 250px), 820px);
+  }
+}
+
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 768px) {
   .header-actions { flex-direction: column; align-items: stretch; }
   .users-glass-grid, .diarios-premium-grid { grid-template-columns: 1fr; }
+  .card-top-accent { flex-direction: column; align-items: flex-start; gap: 8px; }
+
+  .admin-content-wrapper.ide-mode {
+    max-width: 100%;
+    padding: 0 6px 16px;
+
+    .ide-embed-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    app-ide-view {
+      height: calc(100vh - 220px);
+      min-height: 480px;
+    }
+  }
 }

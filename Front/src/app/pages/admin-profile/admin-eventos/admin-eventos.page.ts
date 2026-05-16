@@ -83,7 +83,10 @@ export class AdminEventosPage implements OnInit {
       buttons: [
         { text: 'Cancelar', role: 'cancel' },
         { text: 'Eliminar', role: 'destructive', handler: () => {
-          this.eventsService.eliminarEvento(evento.id!).subscribe(() => { this.presentToast('Eliminado', 'success'); this.cargarEventos(); this.cdr.markForCheck(); });
+          this.eventsService.eliminarEvento(evento.id!).subscribe({
+            next: () => { this.presentToast('Eliminado', 'success'); this.cargarEventos(); this.cdr.markForCheck(); },
+            error: (err) => { this.presentToast(`Error al eliminar: ${err.status} ${err.error?.message ?? ''}`, 'danger'); }
+          });
         }}
       ]
     });

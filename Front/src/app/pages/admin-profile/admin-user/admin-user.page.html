@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <div class="table-glass-container">
+  <div class="table-glass-container desktop-only">
     <table class="premium-table">
       <thead>
         <tr>
@@ -73,6 +73,50 @@
         }
       </tbody>
     </table>
+  </div>
+
+  <!-- ── MOBILE CARDS (< 600px) ── -->
+  <div class="mobile-card-list">
+    @for (u of usuariosFiltrados(); track u.id) {
+      <div class="user-mobile-card">
+        <div class="umc-header">
+          <div class="avatar-glow">
+            @if (u.foto_perfil) {
+              <img [src]="u.foto_perfil">
+            } @else {
+              <span>{{ u.nombre.charAt(0) }}</span>
+            }
+          </div>
+          <div class="umc-info">
+            <span class="umc-name">{{ u.nombre }}</span>
+            <span class="umc-email">{{ u.email }}</span>
+          </div>
+          <span class="role-pill" [ngClass]="u.rolNombre.toLowerCase()">{{ u.rolNombre }}</span>
+        </div>
+
+        <div class="umc-row">
+          <span class="umc-label">Departamento</span>
+          <span class="umc-value">{{ u.departamentoNombre || 'Sin asignar' }}</span>
+        </div>
+
+        <div class="umc-row">
+          <span class="umc-label">Estado</span>
+          <div class="status-indicator" [class.busy]="!u.permiteContacto">
+            <ion-icon [name]="u.permiteContacto ? 'checkmark-circle' : 'ban'"></ion-icon>
+            <span>{{ u.permiteContacto ? 'Disponible' : 'Ocupado' }}</span>
+          </div>
+        </div>
+
+        <div class="umc-actions">
+          <button class="umc-btn edit" (click)="abrirModalEditar(u)">
+            <ion-icon name="create-outline"></ion-icon> Editar
+          </button>
+          <button class="umc-btn delete" (click)="confirmarBorrado(u)">
+            <ion-icon name="trash-outline"></ion-icon> Eliminar
+          </button>
+        </div>
+      </div>
+    }
   </div>
 
   <ion-modal [isOpen]="modalAbierto()" (didDismiss)="cerrarModal()" class="premium-modal">

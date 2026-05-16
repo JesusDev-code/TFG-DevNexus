@@ -107,10 +107,17 @@ export class AdminMensajesPage implements OnInit {
 
   buscarUsuarios(event: any) {
     this.busquedaUsuario = event.target.value;
-    if (this.busquedaUsuario.length < 3) { this.usuariosEncontrados = []; return; }
-    this.usuarioService.buscar(this.busquedaUsuario).subscribe(res => {
-      this.usuariosEncontrados = res;
+    if (this.busquedaUsuario.length < 3) {
+      this.usuariosEncontrados = [];
       this.cd.markForCheck();
+      return;
+    }
+    this.usuarioService.buscar(this.busquedaUsuario).subscribe({
+      next: (res) => {
+        this.usuariosEncontrados = res;
+        this.cd.markForCheck();
+      },
+      error: () => this.presentToast('Error al buscar usuarios', 'danger')
     });
   }
 

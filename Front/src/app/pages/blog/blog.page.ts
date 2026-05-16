@@ -1,109 +1,106 @@
 import { Component, ChangeDetectionStrategy, inject, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // ✅ Necesario para ngModel
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { IonContent, IonGrid, IonRow, IonCol, IonIcon, IonSpinner, IonText, ToastController } from '@ionic/angular/standalone';
+import { FormsModule } from '@angular/forms';
+import { IonContent, IonGrid, IonRow, IonCol, IonIcon, IonSpinner, ToastController, ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   personOutline, timeOutline, lockClosedOutline,
-  chatbubbleEllipsesOutline, sendOutline // ✅ Nuevos iconos
+  chatbubbleEllipsesOutline, sendOutline, closeOutline, codeSlashOutline,
+  documentTextOutline, globeOutline, playOutline
 } from 'ionicons/icons';
+import { MarkdownModule } from 'ngx-markdown';
 import { DiarioService } from 'src/app/services/diario.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { DiarioTemaDto } from 'src/app/core/models/models';
+import { SandboxPreviewComponent } from '../user-profile/user-diary/sandbox-preview/sandbox-preview.component';
 
 @Component({
   selector: 'app-blog',
   templateUrl: './blog.page.html',
   styleUrls: ['./blog.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonContent, IonSpinner, IonIcon, IonGrid, IonRow, IonCol],
+  imports: [CommonModule, FormsModule, IonContent, IonSpinner, IonIcon, IonGrid, IonRow, IonCol, MarkdownModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlogPage {
   private diarioService = inject(DiarioService);
   public authService = inject(AuthService);
-  private http = inject(HttpClient);
   private toastCtrl = inject(ToastController);
-  private apiUrl = environment.apiUrl;
+  private modalCtrl = inject(ModalController);
 
-  posts = signal<any[]>([]);
+  temas = signal<DiarioTemaDto[]>([]);
   cargando = signal(false);
 
+  selectedTema = signal<DiarioTemaDto | null>(null);
+  entradas = signal<any[]>([]);
+  comentarios = signal<any[]>([]);
+  cargandoEntradas = signal(false);
+  cargandoComentarios = signal(false);
+  nuevoComentario = signal('');
+
   constructor() {
-    // Registramos los iconos de comentarios
     addIcons({
       personOutline, timeOutline, lockClosedOutline,
-      chatbubbleEllipsesOutline, sendOutline
+      chatbubbleEllipsesOutline, sendOutline, closeOutline,
+      codeSlashOutline, documentTextOutline, globeOutline, playOutline
     });
 
     effect(() => {
       const user = this.authService.currentUser();
       if (user) {
-        this.cargarNoticias();
+        this.cargarTemas();
       } else {
-        this.posts.set([]);
+        this.temas.set([]);
         this.cargando.set(false);
       }
     });
   }
 
-
-  cargarNoticias() {
+  cargarTemas() {
     this.cargando.set(true);
-    this.diarioService.getEntradasPublicas().subscribe({
-      next: (res) => {
-        this.posts.set(res.content || []);
-        this.cargando.set(false);
-      },
-      error: (err) => {
-        console.error('Error cargando blog', err);
-        this.cargando.set(false);
-      }
+    this.diarioService.getTemaPublicos().subscribe({
+      next: (res) => { this.temas.set(res); this.cargando.set(false); },
+      error: () => this.cargando.set(false)
     });
   }
 
-  // --- LÓGICA DE COMENTARIOS (Copiada de UserDiary) ---
+  abrirTema(tema: DiarioTemaDto) {
+    this.selectedTema.set(tema);
+    this.entradas.set([]);
+    this.comentarios.set([]);
+    this.nuevoComentario.set('');
 
-  toggleComentarios(post: any) {
-    post.mostrarComentarios = !post.mostrarComentarios;
-    this.posts.set([...this.posts()]);
-
-    // Si abrimos y no hay comentarios cargados, los pedimos
-    if (post.mostrarComentarios && !post.listaComentarios) {
-      post.cargandoComentarios = true;
-      this.posts.set([...this.posts()]);
-      this.http.get<any[]>(`${this.apiUrl}/diarios/${post.id}/comentarios`).subscribe({
-        next: (comentarios) => {
-          post.listaComentarios = comentarios;
-          post.cargandoComentarios = false;
-          this.posts.set([...this.posts()]);
-        },
-        error: () => {
-          post.cargandoComentarios = false;
-          this.posts.set([...this.posts()]);
-          this.presentToast('Error cargando comentarios', 'danger');
-        }
-      });
-    }
+    this.cargandoEntradas.set(true);
+    this.diarioService.getEntradasPublicasDeTema(tema.id).subscribe({
+      next: (res) => {
+        this.entradas.set(res);
+        this.cargandoEntradas.set(false);
+        this.cargarComentariosBlog(tema.id);
+      },
+      error: () => this.cargandoEntradas.set(false)
+    });
   }
 
-  enviarComentario(post: any) {
-    if (!post.nuevoComentario?.trim()) return;
-    const texto = post.nuevoComentario;
-    post.nuevoComentario = ''; // Limpiar input visualmente rápido
-    this.posts.set([...this.posts()]);
+  private cargarComentariosBlog(temaId: number) {
+    this.cargandoComentarios.set(true);
+    this.diarioService.getComentariosComunidad(temaId).subscribe({
+      next: (res) => { this.comentarios.set(res); this.cargandoComentarios.set(false); },
+      error: () => this.cargandoComentarios.set(false)
+    });
+  }
 
-    this.http.post<any>(`${this.apiUrl}/diarios/${post.id}/comentarios`, { texto }).subscribe({
-      next: (nuevo) => {
-        if (!post.listaComentarios) post.listaComentarios = [];
-        post.listaComentarios.push(nuevo);
-        this.posts.set([...this.posts()]);
-      },
+  cerrarModal() { this.selectedTema.set(null); }
+
+  enviarComentario() {
+    const tema = this.selectedTema();
+    const texto = this.nuevoComentario().trim();
+    if (!tema || !texto) return;
+    this.nuevoComentario.set('');
+    this.diarioService.agregarComentarioComunidad(tema.id, texto).subscribe({
+      next: (nuevo) => this.comentarios.set([...this.comentarios(), nuevo]),
       error: () => {
-        post.nuevoComentario = texto; // Restaurar si falla
-        this.posts.set([...this.posts()]);
-        this.presentToast('Error al enviar comentario', 'danger');
+        this.nuevoComentario.set(texto);
+        this.presentToast('Error al comentar', 'danger');
       }
     });
   }
@@ -113,19 +110,73 @@ export class BlogPage {
     toast.present();
   }
 
-  // --- Funciones de estilo ---
-
-  getClassAleatoria(id: number) {
-    const clases = ['bg1', 'bg2', 'bg3', 'bg6'];
-    const safeId = id || 0;
-    return clases[safeId % clases.length];
+  getGradient(id: number): string {
+    const gradients = [
+      'linear-gradient(135deg, #7c3aed, #4f46e5)',
+      'linear-gradient(135deg, #2563eb, #0891b2)',
+      'linear-gradient(135deg, #059669, #0d9488)',
+      'linear-gradient(135deg, #d97706, #b45309)',
+      'linear-gradient(135deg, #dc2626, #9f1239)',
+      'linear-gradient(135deg, #7c3aed, #db2777)',
+    ];
+    return gradients[(id || 0) % gradients.length];
   }
 
-  getCategoria(post: any) { return post.temaTitulo || 'Update'; }
+  getInitial(titulo: string): string {
+    return titulo?.charAt(0).toUpperCase() || '?';
+  }
 
-  getClassChip(post: any) {
-    const id = post.id || 0;
+  getChipClass(id: number): string {
     const clases = ['tutorial', 'design', 'perf', 'backend'];
-    return clases[id % clases.length];
+    return clases[(id || 0) % clases.length];
+  }
+
+  getLanguage(filename: string): string {
+    const ext = filename?.split('.').pop()?.toLowerCase() ?? '';
+    const map: Record<string, string> = {
+      ts: 'typescript', js: 'javascript', html: 'html', css: 'css', scss: 'scss',
+      kt: 'kotlin', java: 'java', py: 'python', go: 'go', rs: 'rust',
+      sql: 'sql', json: 'json', yaml: 'yaml', yml: 'yaml', xml: 'xml',
+      sh: 'bash', md: 'markdown', tf: 'hcl', dockerfile: 'dockerfile',
+      cpp: 'cpp', c: 'c', cs: 'csharp', rb: 'ruby', php: 'php',
+      swift: 'swift', dart: 'dart', r: 'r',
+    };
+    return map[ext] ?? '';
+  }
+
+  getCodeBlock(entrada: any): string {
+    const lang = this.getLanguage(entrada.filename ?? '');
+    return '```' + lang + '\n' + (entrada.contenido ?? '') + '\n```';
+  }
+
+  entradasArchivos(entradas: any[]): any[] {
+    return entradas.filter(e => e.tipo === 'FILE');
+  }
+
+  entradasLog(entradas: any[]): any[] {
+    return entradas.filter(e => e.tipo !== 'FILE');
+  }
+
+  tienePreview(): boolean {
+    return this.entradasArchivos(this.entradas()).some(e =>
+      /\.(html?|css|js)$/i.test(e.filename ?? '')
+    );
+  }
+
+  async abrirPreview() {
+    const tema = this.selectedTema();
+    if (!tema) return;
+    const archivos = this.entradasArchivos(this.entradas());
+    const modal = await this.modalCtrl.create({
+      component: SandboxPreviewComponent,
+      componentProps: {
+        archivos,
+        archivoActivoId: archivos[0]?.id,
+        archivoActivoFilename: archivos[0]?.filename,
+        nombreProyecto: tema.tituloPublicacion || tema.titulo
+      },
+      cssClass: 'fullscreen-modal'
+    });
+    await modal.present();
   }
 }

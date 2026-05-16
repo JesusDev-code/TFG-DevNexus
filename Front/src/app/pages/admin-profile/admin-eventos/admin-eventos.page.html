@@ -24,7 +24,7 @@
     </button>
   </div>
 
-  <div class="table-glass-container">
+  <div class="table-glass-container desktop-only">
     <table class="premium-table">
       <thead>
         <tr>
@@ -76,6 +76,52 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <!-- ── MOBILE CARDS (< 600px) ── -->
+  <div class="mobile-card-list">
+    <ng-container *ngFor="let ev of eventosFiltrados">
+      <div class="evento-mobile-card">
+        <div class="emc-header">
+          <div class="event-icon-box" [class.public]="ev.visibilidad === 'PUBLICO'">
+            <ion-icon name="calendar-outline"></ion-icon>
+          </div>
+          <div class="emc-info">
+            <span class="emc-title">{{ ev.titulo }}</span>
+            <span class="emc-desc">{{ ev.descripcion || 'Sin descripción' }}</span>
+          </div>
+        </div>
+
+        <div class="emc-row">
+          <span class="emc-label">Fecha</span>
+          <div class="emc-date">
+            <span>{{ ev.fechaEvento | date:'dd MMM yyyy' }}</span>
+            <span class="emc-time">{{ ev.horaEvento }}</span>
+          </div>
+        </div>
+
+        <div class="emc-row">
+          <span class="emc-label">Visibilidad</span>
+          <span class="visibility-pill" [class.is-public]="ev.visibilidad === 'PUBLICO'">
+            <ion-icon [name]="ev.visibilidad === 'PUBLICO' ? 'globe-outline' : 'lock-closed-outline'"></ion-icon>
+            {{ ev.visibilidad === 'PUBLICO' ? 'Público' : 'Privado' }}
+          </span>
+        </div>
+
+        <div class="emc-row">
+          <span class="emc-label">Creador</span>
+          <span class="creator-tag">{{ ev.usuario?.nombre || 'Admin' }}</span>
+        </div>
+
+        <button class="emc-delete-btn" (click)="confirmarBorrado(ev)">
+          <ion-icon name="trash-outline"></ion-icon>
+          Eliminar evento
+        </button>
+      </div>
+    </ng-container>
+    <div *ngIf="eventosFiltrados.length === 0" class="emc-empty">
+      No se encontraron eventos con estos parámetros.
+    </div>
   </div>
 
   <ion-modal [isOpen]="modalAbierto" (didDismiss)="cerrarModal()" class="premium-modal-small">

@@ -43,7 +43,14 @@ data class Diario(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tema_id")
-    var tema: DiarioTema? = null
+    var tema: DiarioTema? = null,
+
+    // IDE feature: "FILE" = archivo de código, "LOG" = entrada de diario (null = LOG legacy)
+    @Column(length = 20, nullable = true)
+    var tipo: String? = null,
+
+    @Column(length = 255, nullable = true)
+    var filename: String? = null
 )
 @JsonIgnoreProperties(value = ["hibernateLazyInitializer", "handler"])
 enum class Visibilidad {

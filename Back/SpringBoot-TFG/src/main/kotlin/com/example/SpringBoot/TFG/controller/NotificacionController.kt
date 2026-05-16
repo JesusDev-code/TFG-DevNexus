@@ -22,4 +22,7 @@ class NotificacionController(private val service: NotificacionService) {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(@PathVariable id: Int) = service.eliminar(id)
+
+    @PostMapping("/test-push")
+    fun testPush(): String = service.testPush()
 }

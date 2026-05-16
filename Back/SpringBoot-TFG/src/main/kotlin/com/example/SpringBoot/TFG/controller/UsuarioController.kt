@@ -48,16 +48,14 @@ class UsuarioController(
 
         if (query.length < 3) return emptyList()
 
-        // Admin busca en todo, Usuario solo en su departamento
+        // Admin ve a todos (incluyendo los que bloquearon contacto)
         if (principal.authorities.any { it.authority == "ROLE_ADMIN" }) {
             return usuarioRepo.findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query)
                 .map { it.toDto(mostrarMotivo = true) }
         }
 
-        val deptoId = miUsuario.departamento?.id
-            ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "No tienes departamento asignado")
-
-        return usuarioRepo.buscarContactosEnDepartamento(query, deptoId, miUsuario.id!!)
+        // Usuario regular: ve a todos los que permiten contacto, sin restricción de especialidad
+        return usuarioRepo.buscarContactosGlobal(query, miUsuario.id!!)
             .map { it.toDto(mostrarMotivo = false) }
     }
 

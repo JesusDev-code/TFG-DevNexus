@@ -21,6 +21,9 @@
 
 <body>
   <app-root></app-root>
+  <!-- Monaco Editor loader — cargado de forma lazy solo cuando el IDE está activo -->
+  <script>var require = { paths: { 'vs': 'assets/monaco/vs' } };</script>
+  <script src="assets/monaco/vs/loader.js" defer></script>
 </body>
 
 </html>

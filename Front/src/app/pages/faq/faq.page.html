@@ -1,23 +1,63 @@
 <ion-content [fullscreen]="true" class="bg-transparent">
-  
   <div class="main-content-wrapper">
-    
+
     <div class="faq-hero-container">
-      <h1 class="faq-title">Preguntas <span class="text-gradient">Frecuentes.</span></h1>
+      <div class="hero-badge">Plataforma completa</div>
+      <h1 class="faq-title">¿Cómo funciona <span class="text-gradient">DevNexus?</span></h1>
       <p class="faq-description">
-        Resuelve tus dudas sobre el funcionamiento de la plataforma, el sistema de tickets y tu privacidad.
+        Gestiona tus proyectos, conéctate con la comunidad y crece como dev — todo en un solo lugar.
       </p>
+    </div>
+
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-num purple">01</div>
+        <div class="feature-content">
+          <h3>Diario Personal</h3>
+          <p>Registra tu progreso con entradas de texto y código directamente desde el IDE. Privado por defecto, público cuando tú decides.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-num blue">02</div>
+        <div class="feature-content">
+          <h3>Blog Comunitario</h3>
+          <p>Publica tus proyectos y comparte tu evolución. La comunidad puede ver tu progreso, comentar y aprender de tu experiencia.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-num cyan">03</div>
+        <div class="feature-content">
+          <h3>IA Integrada</h3>
+          <p>Analiza tus entradas del diario con inteligencia artificial. Obtén insights, resúmenes y sugerencias de mejora al instante.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-num green">04</div>
+        <div class="feature-content">
+          <h3>Soporte & Mensajería</h3>
+          <p>Mensajes directos con otros devs y sistema de tickets para contactar al staff. Sigue el estado de tus consultas en tiempo real.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="faq-section-header">
+      <h2>Preguntas <span class="text-gradient">frecuentes</span></h2>
     </div>
 
     <div class="faq-accordion-container">
       <ion-accordion-group class="premium-accordion-group">
-        
+
         <ion-accordion value="q1" class="glass-accordion">
           <ion-item slot="header">
             <ion-label>¿Cómo funciona el sistema de Soporte Técnico?</ion-label>
           </ion-item>
           <div class="accordion-content" slot="content">
-            Si tienes una incidencia, puedes abrir un ticket directamente desde el botón flotante del chat. Nuestro equipo de Staff (Administradores) recibirá tu consulta al instante y podrás seguir el estado ("Pendiente", "Respondido" o "Resuelto") desde tu perfil.
+            Si tienes una incidencia, puedes abrir un ticket directamente desde el botón flotante del chat. Nuestro equipo de Staff recibirá tu consulta al instante y podrás seguir el estado ("Pendiente", "Respondido" o "Resuelto") desde tu perfil.
           </div>
         </ion-accordion>
 
@@ -26,8 +66,7 @@
             <ion-label>¿Es privado mi Diario Personal?</ion-label>
           </ion-item>
           <div class="accordion-content" slot="content">
-            Absolutamente. El módulo de "Diario" está diseñado para tu uso exclusivo. Toda la información que registres allí está encriptada y nadie de la comunidad lo podrá ver a no ser que decidas compartir un proyecto con la comunidad 
-            de ser así dispones de una opción para hacerlo público o mantenerlo privado.
+            Absolutamente. El módulo de Diario está diseñado para tu uso exclusivo. Toda la información que registres está encriptada y nadie de la comunidad lo puede ver, a menos que decidas compartir un proyecto — tienes una opción para hacerlo público o mantenerlo privado.
           </div>
         </ion-accordion>
 
@@ -36,16 +75,16 @@
             <ion-label>¿Cómo funciona la sección de Eventos?</ion-label>
           </ion-item>
           <div class="accordion-content" slot="content">
-          En la sección de "Eventos" de tu dashboard verás el calendario actualizado. Dispones de una opción para crear eventos personales (visibles solo para ti) o eventos públicos (visibles para toda la comunidad) los cuales serán puesto por la administración. Los eventos públicos aparecerán en el calendario general y serán notificados a todos los usuarios, no te preocupes, no te vas a peder nada importante!
+            En la sección de Eventos de tu dashboard verás el calendario actualizado. Puedes crear eventos personales (visibles solo para ti) o ver los eventos públicos que pone la administración. Los eventos públicos se notifican a todos los usuarios.
           </div>
         </ion-accordion>
 
         <ion-accordion value="q4" class="glass-accordion">
           <ion-item slot="header">
-            <ion-label>¿Tienes alguna duda de tu proyecto?</ion-label>
+            <ion-label>¿Puedo colaborar en proyectos de otros devs?</ion-label>
           </ion-item>
           <div class="accordion-content" slot="content">
-            No te preocupes, si tienes alguna duda sobre cómo gestionar o avanzar en tu proyecto, puedes abrir un ticket de soporte técnico y nuestro equipo de Staff te ayudará encantado e incluso puede dar su opinión en la sección de comentarios de tu proyecto si así lo deseas.
+            Sí. Los propietarios de proyectos pueden invitar colaboradores. Como invitado, puedes ver las entradas del proyecto, dejar comentarios y comunicarte por mensajes directos con el owner del proyecto.
           </div>
         </ion-accordion>
 
@@ -53,7 +92,7 @@
     </div>
 
     <div class="faq-links-row">
-      
+
       <div class="faq-action-card privacy" (click)="goToPrivacy()">
         <div class="card-inner">
           <div class="icon-box"><ion-icon name="shield-checkmark-outline"></ion-icon></div>

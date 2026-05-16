@@ -119,7 +119,25 @@
   .input-glass-container { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 6px 6px 6px 20px; display: flex; align-items: center; gap: 15px; input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 1rem; } .premium-send-btn { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(90deg, #a855f7, #3b82f6); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s; &:disabled { opacity: 0.3; } &:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); } } }
 }
 
+// Botón de atrás: solo visible en mobile
+.premium-back-btn.mobile-only { display: none; }
+
 @media (max-width: 768px) {
-  .chat-sidebar { width: 100%; }
-  .chat-main-view { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; &.mobile-visible { display: block; } }
+  .messages-premium-container { position: relative; }
+
+  .chat-sidebar {
+    width: 100%;
+    &.mobile-hidden { display: none !important; }
+  }
+
+  .chat-main-view {
+    display: none;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 10;
+    &.mobile-visible { display: block; }
+  }
+
+  .premium-back-btn.mobile-only { display: flex; }
 }

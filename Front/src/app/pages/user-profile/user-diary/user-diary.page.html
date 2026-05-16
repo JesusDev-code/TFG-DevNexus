@@ -1,5 +1,5 @@
 <div class="main-content-wrapper">
-  <div class="diary-container">
+  <div class="diary-container" [class.ide-open]="!!temaSeleccionado">
 
     <!-- ══ VISTA: LISTA DE PROYECTOS ══ -->
     <ng-container *ngIf="!temaSeleccionado">
@@ -17,11 +17,19 @@
           </div>
         </div>
 
-        <div class="heatmap-weeks">
-          <div *ngFor="let week of heatmapWeeks" class="heatmap-week">
-            <div *ngFor="let dia of week"
-                 class="day-square level-{{ dia.level }}"
-                 [title]="(dia.date | date:'dd MMM yyyy') + ': ' + dia.count + ' entradas'">
+        <div class="heatmap-weeks-wrapper">
+          <div class="heatmap-month-labels">
+            <span *ngFor="let m of heatmapMonthLabels"
+                  class="month-label-item"
+                  [style.left.px]="m.offsetPx">{{ m.label }}</span>
+          </div>
+
+          <div class="heatmap-weeks">
+            <div *ngFor="let week of heatmapWeeks" class="heatmap-week">
+              <div *ngFor="let dia of week"
+                   class="day-square level-{{ dia.level }}"
+                   [title]="(dia.date | date:'dd MMM yyyy') + ': ' + dia.count + ' entradas'">
+              </div>
             </div>
           </div>
         </div>
@@ -36,278 +44,115 @@
         </div>
       </div>
 
-      <!-- Grid de proyectos existentes -->
+      <!-- Header de proyectos -->
       <div class="section-header-row">
         <h3 class="section-title">Mis Proyectos</h3>
-        <button class="btn-toggle-crear" (click)="mostrarFormCrear = !mostrarFormCrear">
-          <ion-icon [name]="mostrarFormCrear ? 'chevron-up-outline' : 'add-outline'"></ion-icon>
-          {{ mostrarFormCrear ? 'Cancelar' : 'Nuevo proyecto' }}
+        <button class="btn-toggle-crear" (click)="abrirModalCrear()">
+          <ion-icon name="add-outline"></ion-icon>
+          Nuevo proyecto
         </button>
       </div>
 
+      <!-- Empty state -->
       <div *ngIf="temas.length === 0 && !mostrarFormCrear" class="empty-projects-state">
         <ion-icon name="git-branch-outline"></ion-icon>
-        <p>Todavía no tienes proyectos.</p>
-        <button class="btn-gradient-action" (click)="mostrarFormCrear = true">
+        <p>Todavía no tenés proyectos</p>
+        <small>Creá tu primer proyecto para empezar a registrar tu trabajo</small>
+        <button class="btn-gradient-action" (click)="abrirModalCrear()">
           <ion-icon name="add-outline"></ion-icon> Crear primer proyecto
         </button>
       </div>
 
+      <!-- Grid de proyectos 2 columnas -->
       <div class="themes-grid" *ngIf="temas.length > 0">
-        <div *ngFor="let tema of temas" class="theme-glass-card">
+        <div *ngFor="let tema of temas" class="theme-glass-card" (click)="seleccionarTema(tema)">
 
-          <div class="theme-initial-box" [ngStyle]="{'background': getThemeColor(tema.id)}">
-            {{ getThemeInitial(tema.titulo) }}
+          <div class="theme-card-top">
+            <div class="theme-initial-box" [ngStyle]="{'background': getThemeColor(tema.id)}">
+              {{ getThemeInitial(tema.titulo) }}
+            </div>
+            <div class="theme-content">
+              <h4 class="theme-title">{{ tema.titulo }}</h4>
+              <p class="theme-desc">{{ tema.descripcion || 'Sin descripción' }}</p>
+            </div>
           </div>
 
-          <div class="theme-content">
-            <h4 class="theme-title">{{ tema.titulo }}</h4>
-            <p class="theme-desc">{{ tema.descripcion || 'Sin descripción' }}</p>
+          <div class="theme-card-footer" (click)="$event.stopPropagation()">
+            <div class="tema-metrics">
+              <span class="metric-item">
+                <ion-icon name="document-text-outline"></ion-icon>
+                {{ getEntradasCountForTema(tema.titulo) }}
+                {{ getEntradasCountForTema(tema.titulo) === 1 ? 'entrada' : 'entradas' }}
+              </span>
+              <span class="metric-divider" *ngIf="getLastEntradaRelative(tema.titulo)"></span>
+              <span class="metric-item" *ngIf="getLastEntradaRelative(tema.titulo)">
+                <ion-icon name="time-outline"></ion-icon>
+                {{ getLastEntradaRelative(tema.titulo) }}
+              </span>
+            </div>
             <div class="theme-actions">
               <button class="btn-icon-action enter" (click)="seleccionarTema(tema)" title="Abrir">
                 <ion-icon name="code-slash-outline"></ion-icon>
+              </button>
+              <button class="btn-icon-action visibility"
+                      (click)="toggleVisibilidadTema(tema)"
+                      [title]="tema.visibilidad === 'PUBLICO' ? 'Hacer privado' : 'Hacer público'">
+                <ion-icon [name]="tema.visibilidad === 'PUBLICO' ? 'globe-outline' : 'lock-closed-outline'"></ion-icon>
               </button>
               <button class="btn-icon-action delete" (click)="borrarTema(tema)" title="Eliminar">
                 <ion-icon name="trash-outline"></ion-icon>
               </button>
             </div>
           </div>
+
         </div>
       </div>
 
-      <!-- Formulario de creación (colapsable) -->
-      <div class="glass-card create-section" *ngIf="mostrarFormCrear">
-        <div class="card-header">
-          <ion-icon name="git-branch-outline" class="header-icon"></ion-icon>
-          <h3>Nuevo Proyecto</h3>
+    </ng-container>
+
+    <!-- ══ VISTA: IDE DE PROYECTO ══ -->
+    <ng-container *ngIf="temaSeleccionado">
+      <app-ide-view
+        [tema]="temaSeleccionado"
+        (volver)="volverATemas()"
+        (irAMensajes)="navegarAMensajes($event)">
+      </app-ide-view>
+    </ng-container>
+
+    <!-- ══ MODAL: CREAR PROYECTO ══ -->
+    <div class="modal-overlay" *ngIf="mostrarFormCrear" (click)="cerrarModalCrear()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <ion-icon name="git-branch-outline"></ion-icon>
+            <h3>Nuevo Proyecto</h3>
+          </div>
+          <button class="modal-close-btn" (click)="cerrarModalCrear()" title="Cerrar">
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
         </div>
+        <p class="modal-subtitle">Creá el proyecto y empezá a registrar avances en el diario.</p>
         <div class="input-group">
-          <input [(ngModel)]="nuevoTemaTitulo" placeholder="Nombre del proyecto" class="glass-input"/>
-          <textarea [(ngModel)]="nuevoTemaDescripcion" placeholder="Descripción breve..." class="glass-input desc-area"></textarea>
+          <label class="input-label">Nombre</label>
+          <input [(ngModel)]="nuevoTemaTitulo"
+                 placeholder="Nombre del proyecto"
+                 class="glass-input"
+                 (keydown.enter)="crearTema()"/>
+          <label class="input-label">Descripción</label>
+          <textarea [(ngModel)]="nuevoTemaDescripcion"
+                    placeholder="Descripción breve..."
+                    class="glass-input desc-area"></textarea>
         </div>
-        <div class="action-footer">
-          <button (click)="crearTema()" [disabled]="!nuevoTemaTitulo.trim()" class="btn-gradient-action">
+        <div class="modal-actions">
+          <button class="btn-ghost-action" (click)="cerrarModalCrear()">Cancelar</button>
+          <button class="btn-gradient-action"
+                  (click)="crearTema()"
+                  [disabled]="!nuevoTemaTitulo.trim()">
             <ion-icon name="git-branch-outline"></ion-icon> Crear
           </button>
         </div>
       </div>
-
-    </ng-container>
-
-    <!-- ══ VISTA: DETALLE DE PROYECTO ══ -->
-    <ng-container *ngIf="temaSeleccionado">
-
-      <div class="detail-topbar">
-        <button class="btn-back-glass" (click)="volverATemas()">
-          <ion-icon name="arrow-back-outline"></ion-icon> Proyectos
-        </button>
-        <div class="detail-topbar-actions">
-          <button class="btn-icon-action export" (click)="exportarRepo()" title="Exportar CSV">
-            <ion-icon name="download-outline"></ion-icon>
-            <span class="btn-label">CSV</span>
-          </button>
-          <button class="btn-icon-action export-md" (click)="exportarMd()" title="Exportar Markdown">
-            <ion-icon name="logo-markdown"></ion-icon>
-            <span class="btn-label">MD</span>
-          </button>
-          <button class="btn-icon-action resumen-ia" (click)="resumirProyecto()" [disabled]="cargandoResumen" title="Resumen IA del proyecto">
-            <ion-spinner *ngIf="cargandoResumen" name="crescent" class="scan-spinner"></ion-spinner>
-            <ion-icon *ngIf="!cargandoResumen" name="sparkles-outline"></ion-icon>
-            <span class="btn-label">{{ cargandoResumen ? '...' : (mostrarResumen ? 'Ocultar' : 'Resumen IA') }}</span>
-          </button>
-          <button class="btn-invite-glass" (click)="abrirInvitacion()">
-            <ion-icon name="person-add-outline"></ion-icon>
-            <span>Invitar</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="ai-summary-panel" *ngIf="mostrarResumen && resumenTema">
-        <div class="ai-summary-header">
-          <ion-icon name="sparkles-outline"></ion-icon>
-          <span>Resumen IA — {{ temaSeleccionado?.titulo }}</span>
-          <button class="ai-close-btn" (click)="mostrarResumen = false">✕</button>
-        </div>
-        <div class="ai-summary-body">
-          <markdown [data]="resumenTema"></markdown>
-        </div>
-      </div>
-
-      <!-- Header del proyecto -->
-      <div class="glass-card detail-header">
-        <div class="detail-initial" [ngStyle]="{'background': getThemeColor(temaSeleccionado.id)}">
-          {{ getThemeInitial(temaSeleccionado.titulo) }}
-        </div>
-        <div class="header-texts">
-          <h2>{{ temaSeleccionado.titulo }}</h2>
-          <p>{{ temaSeleccionado.descripcion || 'Sin descripción' }}</p>
-        </div>
-      </div>
-
-      <!-- Formulario de nueva entrada -->
-      <div class="glass-card entry-form">
-        <div class="templates-row">
-          <span class="label-tiny">Plantilla:</span>
-          <button class="chip-btn" (click)="usarPlantilla('daily')"><ion-icon name="calendar-outline"></ion-icon> Daily</button>
-          <button class="chip-btn" (click)="usarPlantilla('bug')"><ion-icon name="bug-outline"></ion-icon> Bug</button>
-          <button class="chip-btn" (click)="usarPlantilla('feature')"><ion-icon name="rocket-outline"></ion-icon> Feature</button>
-          <button class="chip-btn preview-toggle" (click)="togglePreview()">
-            <ion-icon [name]="mostrarPreview ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-            {{ mostrarPreview ? 'Editor' : 'Preview' }}
-          </button>
-          <button class="chip-btn scan-ia" (click)="abrirCamaraIA()" [disabled]="escanendoIA" title="Fotografiar código y extraer con IA">
-            <ion-spinner *ngIf="escanendoIA" name="crescent" class="scan-spinner"></ion-spinner>
-            <ion-icon *ngIf="!escanendoIA" name="camera-outline"></ion-icon>
-            {{ escanendoIA ? 'Procesando...' : 'Scan IA' }}
-          </button>
-          <button class="chip-btn sugerir-tags" (click)="sugerirEtiquetas()" [disabled]="cargandoEtiquetas || !nuevaEntradaTexto.trim()" title="Sugerir etiquetas con IA">
-            <ion-spinner *ngIf="cargandoEtiquetas" name="crescent" class="scan-spinner"></ion-spinner>
-            <ion-icon *ngIf="!cargandoEtiquetas" name="pricetags-outline"></ion-icon>
-            {{ cargandoEtiquetas ? '...' : 'Etiquetas IA' }}
-          </button>
-        </div>
-
-        <div class="etiquetas-sugeridas" *ngIf="etiquetasSugeridas.length > 0">
-          <span class="label-tiny">Sugeridas:</span>
-          <button *ngFor="let tag of etiquetasSugeridas" class="tag-chip" (click)="aplicarEtiqueta(tag)">
-            #{{ tag }}
-          </button>
-        </div>
-
-        <div class="editor-area">
-          <textarea *ngIf="!mostrarPreview"
-                    [(ngModel)]="nuevaEntradaTexto"
-                    placeholder="Escribe en Markdown (código, listas, etc.)"
-                    maxlength="5000"
-                    class="glass-input large-area"></textarea>
-          <div *ngIf="mostrarPreview" class="preview-box">
-            <markdown [data]="nuevaEntradaTexto || '*Nada que previsualizar aún...*'"></markdown>
-          </div>
-        </div>
-
-        <div class="form-toolbar">
-          <span class="char-counter">{{ nuevaEntradaTexto.length }} / 5000</span>
-          <div class="right-actions">
-            <div class="select-glass">
-              <ion-icon [name]="nuevaEntradaVisibilidad === 'PRIVADO' ? 'lock-closed-outline' : 'globe-outline'"></ion-icon>
-              <select [(ngModel)]="nuevaEntradaVisibilidad">
-                <option value="PRIVADO">Privado</option>
-                <option value="PUBLICO">Público</option>
-              </select>
-            </div>
-            <button (click)="crearEntrada()" [disabled]="!nuevaEntradaTexto.trim()" class="btn-gradient-action small">
-              <ion-icon name="cloud-upload-outline"></ion-icon> Push
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Filtros y búsqueda -->
-      <div class="filters-bar">
-        <div class="filter-chips">
-          <button class="filter-chip" [class.active]="filtroTipo === 'todo'" (click)="setFiltro('todo')">Todo</button>
-          <button class="filter-chip" [class.active]="filtroTipo === 'daily'" (click)="setFiltro('daily')">📅 Daily</button>
-          <button class="filter-chip" [class.active]="filtroTipo === 'bug'" (click)="setFiltro('bug')">🐛 Bug</button>
-          <button class="filter-chip" [class.active]="filtroTipo === 'feature'" (click)="setFiltro('feature')">🚀 Feature</button>
-        </div>
-        <div class="search-box">
-          <ion-icon name="search-outline"></ion-icon>
-          <input [(ngModel)]="busqueda" placeholder="Buscar en entradas..." class="search-input">
-        </div>
-      </div>
-
-      <!-- Lista de entradas -->
-      <div class="entries-list">
-        <div *ngIf="entradasFiltradas.length === 0" class="empty-entries">
-          <p>No hay entradas que coincidan.</p>
-        </div>
-
-        <div *ngFor="let e of entradasFiltradas" class="note-glass-item"
-             [class.highlight]="esPinned(e.id)">
-
-          <div class="note-content" *ngIf="notaEditandoId !== e.id">
-            <div class="note-header">
-              <div class="note-meta-left">
-                <span class="badge-status" [ngClass]="e.visibilidad.toLowerCase()">{{ e.visibilidad }}</span>
-                <span class="badge-tipo" [ngClass]="detectTipo(e.contenido)">{{ detectTipo(e.contenido) }}</span>
-              </div>
-              <span class="note-date">{{ e.fechaCreacion | date:'d MMM yyyy, HH:mm' }}</span>
-            </div>
-
-            <div class="note-body">
-              <markdown [data]="e.contenido"></markdown>
-            </div>
-
-            <div class="note-actions">
-              <button class="action-btn pin" (click)="togglePin(e.id)" [class.pinned]="esPinned(e.id)" title="Fijar">
-                <ion-icon [name]="esPinned(e.id) ? 'bookmark' : 'bookmark-outline'"></ion-icon>
-              </button>
-              <button class="action-btn comment" (click)="toggleComentarios(e)" title="Comentarios">
-                <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-                <span class="badge-dot" *ngIf="e.listaComentarios?.length"></span>
-              </button>
-              <button class="action-btn review-ia" (click)="solicitarCodeReview(e)"
-                      [class.active]="reviewMap[e.id]"
-                      [disabled]="cargandoReviewIds.has(e.id)"
-                      title="Code Review IA">
-                <ion-spinner *ngIf="cargandoReviewIds.has(e.id)" name="crescent" class="scan-spinner"></ion-spinner>
-                <ion-icon *ngIf="!cargandoReviewIds.has(e.id)" name="sparkles-outline"></ion-icon>
-              </button>
-              <button class="action-btn edit" (click)="iniciarEdicion(e)" title="Editar">
-                <ion-icon name="create-outline"></ion-icon>
-              </button>
-              <button class="action-btn delete" (click)="borrarEntrada(e.id)" title="Eliminar">
-                <ion-icon name="trash-outline"></ion-icon>
-              </button>
-            </div>
-
-            <div class="ai-review-panel" *ngIf="reviewMap[e.id]">
-              <div class="ai-review-header">
-                <ion-icon name="sparkles-outline"></ion-icon> Code Review IA
-              </div>
-              <div class="ai-review-body">
-                <markdown [data]="reviewMap[e.id]"></markdown>
-              </div>
-            </div>
-          </div>
-
-          <div class="edit-mode-box" *ngIf="notaEditandoId === e.id">
-            <textarea [(ngModel)]="textoEditando" class="glass-input edit-area"></textarea>
-            <div class="edit-footer">
-              <div class="select-glass">
-                <select [(ngModel)]="visibilidadEditando">
-                  <option value="PRIVADO">Privado</option>
-                  <option value="PUBLICO">Público</option>
-                </select>
-              </div>
-              <div class="edit-buttons">
-                <button (click)="cancelarEdicion()" class="btn-ghost">Cancelar</button>
-                <button (click)="guardarEdicion()" class="btn-gradient-action small">Guardar</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="comments-dropdown" *ngIf="e.mostrarComentarios">
-            <div *ngIf="e.cargandoComentarios" class="spinner-box">
-              <ion-spinner name="dots" color="light"></ion-spinner>
-            </div>
-            <div class="comments-scroll" *ngIf="!e.cargandoComentarios">
-              <div *ngFor="let c of e.listaComentarios" class="comment-bubble" [class.staff]="c.esAdmin" [class.me]="!c.esAdmin">
-                <div class="bubble-meta">{{ c.esAdmin ? 'Staff' : 'Tú' }}</div>
-                <div class="bubble-msg">{{ c.texto }}</div>
-              </div>
-              <div *ngIf="!e.listaComentarios?.length" class="empty-comments">Sé el primero en comentar.</div>
-            </div>
-            <div class="comment-input-row">
-              <input [(ngModel)]="e.nuevoComentario" placeholder="Code review..." (keyup.enter)="enviarComentario(e)">
-              <button (click)="enviarComentario(e)"><ion-icon name="send-outline"></ion-icon></button>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </ng-container>
+    </div>
 
   </div>
 </div>

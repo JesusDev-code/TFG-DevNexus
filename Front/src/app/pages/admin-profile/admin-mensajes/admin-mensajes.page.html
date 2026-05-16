@@ -9,7 +9,8 @@
         <div class="actions">
           <button class="btn-action-circle" (click)="mostrarBuscador = !mostrarBuscador"
             [class.active]="mostrarBuscador">
-            <ion-icon [name]="mostrarBuscador ? 'close-outline' : 'person-add-outline'"></ion-icon>
+            <ion-icon *ngIf="!mostrarBuscador" name="person-add-outline"></ion-icon>
+            <ion-icon *ngIf="mostrarBuscador" name="close-outline"></ion-icon>
           </button>
         </div>
       </div>
