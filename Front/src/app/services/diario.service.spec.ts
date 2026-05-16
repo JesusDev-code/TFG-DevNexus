@@ -12,7 +12,7 @@ describe('DiarioService', () => {
 
   // ─── Fixtures ────────────────────────────────────────────
 
-  const MOCK_TEMA: DiarioTemaDto = { id: 1, titulo: 'Reflexiones', descripcion: 'Mis notas', usuarioId: 10 };
+  const MOCK_TEMA: DiarioTemaDto = { id: 1, titulo: 'Reflexiones', descripcion: 'Mis notas', usuarioId: 10, visibilidad: 'PUBLICO' as any };
   const MOCK_TEMAS: DiarioTemaDto[] = [MOCK_TEMA];
 
   const MOCK_INVITACION: InvitacionPendienteDto = {

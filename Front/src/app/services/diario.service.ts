@@ -110,7 +110,9 @@ export class DiarioService {
     tipo?: 'LOG' | 'FILE' | null,
     filename?: string
   ): Observable<any> {
-    const body: DiarioCreateDto = { contenido, visibilidad, temaId, tipo: tipo ?? undefined, filename };
+    const body: any = { contenido, visibilidad, temaId };
+    if (tipo) body['tipo'] = tipo;
+    if (filename) body['filename'] = filename;
     return this.http.post<any>(`${this.url}/diarios`, body);
   }
 
