@@ -841,31 +841,31 @@ El diseño de la interfaz de usuario se ha planificado siguiendo un enfoque mobi
 
 Las páginas públicas siguen una estructura de landing page con barra de navegación lateral, secciones de contenido y chat flotante de soporte. El acceso a la aplicación se realiza mediante el botón de inicio de sesión con Google.
 
-![Figura 3: Captura de la landing page — sección hero con vídeo de fondo](1.png)
+![Figura 3: Captura de la landing page — sección hero con vídeo de fondo](img/1.png)
 
 *Figura 3: Landing page — sección hero*
 
-![Figura 4: Captura de la landing page — sección de características (Documenta, Mentoría, Conecta)](2.png)
+![Figura 4: Captura de la landing page — sección de características (Documenta, Mentoría, Conecta)](img/2.png)
 
 *Figura 4: Landing page — sección de características*
 
-![Figura 5: Captura de la página "Sobre la comunidad" — hero con las 4 propuestas de valor](31.png)
+![Figura 5: Captura de la página "Sobre la comunidad" — hero con las 4 propuestas de valor](img/31.png)
 
 *Figura 5: Página "Sobre la comunidad" — presentación de las 4 características principales (Diario Personal, Blog Comunitario, IA Integrada, Colaboración) con indicadores numerados y sección de descarga de la APK para Android*
 
-![Figura 5b: Captura de la página "Sobre la comunidad" en vista móvil](32.png)
+![Figura 5b: Captura de la página "Sobre la comunidad" en vista móvil](img/32.png)
 
 *Figura 5b: Página "Sobre la comunidad" — vista adaptada para dispositivos móviles*
 
-![Figura 6: Captura de la página de Contacto — Soporte & Comunidad](33.png)
+![Figura 6: Captura de la página de Contacto — Soporte & Comunidad](img/33.png)
 
 *Figura 6: Página de Contacto rediseñada — canal principal de soporte mediante sistema de tickets con estados (Pendiente, Respondido, Resuelto) y canales secundarios (GitHub, Discord)*
 
-![Figura 7: Captura de la página FAQ — ¿Cómo funciona DevNexus?](34.png)
+![Figura 7: Captura de la página FAQ — ¿Cómo funciona DevNexus?](img/34.png)
 
 *Figura 7: Página FAQ — sección superior con las 4 funcionalidades clave de la plataforma*
 
-![Figura 7b: Captura de la página FAQ — acordeón de preguntas frecuentes](35.png)
+![Figura 7b: Captura de la página FAQ — acordeón de preguntas frecuentes](img/35.png)
 
 *Figura 7b: Página FAQ — acordeón de preguntas frecuentes y accesos directos a Privacidad y Soporte*
 
@@ -880,11 +880,11 @@ Una vez autenticado, el usuario accede a su panel personal ("Panel de Usuario") 
 - **Avisos:** Centro de notificaciones con marcado masivo
 - **Eventos:** Calendario Syncfusion con vistas múltiples y panel de próximos eventos
 
-![Figura 8: Captura del Panel de Usuario — Mi Perfil](16.png)
+![Figura 8: Captura del Panel de Usuario — Mi Perfil](img/16.png)
 
 *Figura 8: Panel de Usuario — Mi Perfil*
 
-![Figura 9: Captura del Panel de Usuario — Diario de progreso (vista de proyectos)](22.png)
+![Figura 9: Captura del Panel de Usuario — Diario de progreso (vista de proyectos)](img/22.png)
 
 *Figura 9: Panel de Usuario — Diario de progreso con listado de proyectos y gráfico de actividad*
 
@@ -892,39 +892,39 @@ Una vez autenticado, el usuario accede a su panel personal ("Panel de Usuario") 
 
 El módulo de diario incluye un entorno de desarrollo integrado (IDE) accesible por proyecto, con árbol de archivos navegable, editor Monaco con resaltado de sintaxis, sistema de commits, panel de IA y previsualización en sandbox.
 
-![Figura 9a: IDE integrado — Editor de código con árbol de archivos y Monaco Editor](23.png)
+![Figura 9a: IDE integrado — Editor de código con árbol de archivos y Monaco Editor](img/23.png)
 
 *Figura 9a: IDE integrado — árbol de archivos navegable (con soporte de carpetas anidadas) y editor Monaco con resaltado de sintaxis*
 
-![Figura 9b: IDE integrado — Panel de Análisis IA con sugerencias en tiempo real](24.png)
+![Figura 9b: IDE integrado — Panel de Análisis IA con sugerencias en tiempo real](img/24.png)
 
 *Figura 9b: IDE integrado — Panel lateral de Análisis IA (code review, sugerencia de etiquetas, resumen ejecutivo y análisis del proyecto)*
 
-![Figura 9c: IDE integrado — Modal de invitación de colaboradores](25.png)
+![Figura 9c: IDE integrado — Modal de invitación de colaboradores](img/25.png)
 
 *Figura 9c: IDE integrado — Modal para invitar colaboradores al proyecto mediante correo electrónico*
 
-![Figura 9d: IDE integrado — Historial de commits y entradas de diario](26.png)
+![Figura 9d: IDE integrado — Historial de commits y entradas de diario](img/26.png)
 
 *Figura 9d: IDE integrado — Panel inferior con el historial de commits y entradas de diario del proyecto*
 
-![Figura 9e: IDE integrado — Feedback de staff sobre el proyecto](27.png)
+![Figura 9e: IDE integrado — Feedback de staff sobre el proyecto](img/27.png)
 
 *Figura 9e: IDE integrado — Sección de feedback de staff visible para el propietario del proyecto*
 
-![Figura 10: Captura del Panel de Usuario — Tickets / Centro de Soporte](18.png)
+![Figura 10: Captura del Panel de Usuario — Tickets / Centro de Soporte](img/18.png)
 
 *Figura 10: Panel de Usuario — Centro de Soporte (Tickets)*
 
-![Figura 11: Captura del Panel de Usuario — Mensajería](19.png)
+![Figura 11: Captura del Panel de Usuario — Mensajería](img/19.png)
 
 *Figura 11: Panel de Usuario — Mensajería*
 
-![Figura 12: Captura del Panel de Usuario — Centro de Notificaciones](20.png)
+![Figura 12: Captura del Panel de Usuario — Centro de Notificaciones](img/20.png)
 
 *Figura 12: Panel de Usuario — Centro de Notificaciones*
 
-![Figura 13: Captura del Panel de Usuario — Agenda y Eventos (Calendario)](21.png)
+![Figura 13: Captura del Panel de Usuario — Agenda y Eventos (Calendario)](img/21.png)
 
 *Figura 13: Panel de Usuario — Agenda y Eventos*
 
@@ -941,39 +941,39 @@ El administrador y el staff acceden a un panel diferenciado ("Panel de Administr
 - **Auditoría:** Registro de acciones del sistema con nivel, acción, recurso, usuario, detalles y fecha
 - **Perfil:** Perfil del administrador con los mismos campos que el usuario
 
-![Figura 14: Captura del Panel de Administración — Gestión de Usuarios](6.png)
+![Figura 14: Captura del Panel de Administración — Gestión de Usuarios](img/6.png)
 
 *Figura 14: Panel de Administración — Gestión de Usuarios*
 
-![Figura 15: Captura del Panel de Administración — Editar Usuario (modal)](7.png)
+![Figura 15: Captura del Panel de Administración — Editar Usuario (modal)](img/7.png)
 
 *Figura 15: Panel de Administración — Editar Usuario (modal)*
 
-![Figura 16: Captura del Panel de Administración — Chats-Servicio Técnico](8.png)
+![Figura 16: Captura del Panel de Administración — Chats-Servicio Técnico](img/8.png)
 
 *Figura 16: Panel de Administración — Chats-Servicio Técnico*
 
-![Figura 17: Captura del Panel de Administración — Gestión de Tickets](9.png)
+![Figura 17: Captura del Panel de Administración — Gestión de Tickets](img/9.png)
 
 *Figura 17: Panel de Administración — Gestión de Tickets*
 
-![Figura 18: Captura del Panel de Administración — Mensajería Pro](10.png)
+![Figura 18: Captura del Panel de Administración — Mensajería Pro](img/10.png)
 
 *Figura 18: Panel de Administración — Mensajería Pro*
 
-![Figura 19: Captura del Panel de Administración — Crear Evento (modal)](11.png)
+![Figura 19: Captura del Panel de Administración — Crear Evento (modal)](img/11.png)
 
 *Figura 19: Panel de Administración — Crear Evento (modal)*
 
-![Figura 20: Captura del Panel de Administración — Gestión de Diarios](12.png)
+![Figura 20: Captura del Panel de Administración — Gestión de Diarios](img/12.png)
 
 *Figura 20: Panel de Administración — Gestión de Diarios*
 
-![Figura 21: Captura del Panel de Administración — Registro de Auditoría](13.png)
+![Figura 21: Captura del Panel de Administración — Registro de Auditoría](img/13.png)
 
 *Figura 21: Panel de Administración — Registro de Auditoría*
 
-![Figura 22: Captura del Panel de Administración — Perfil](14.png)
+![Figura 22: Captura del Panel de Administración — Perfil](img/14.png)
 
 *Figura 22: Panel de Administración — Perfil del Administrador*
 
@@ -981,15 +981,15 @@ El administrador y el staff acceden a un panel diferenciado ("Panel de Administr
 
 El blog muestra los proyectos publicados por la comunidad como tarjetas con gradiente, título de publicación, descripción y autor. Al hacer clic se abre un modal con los archivos de código del IDE con resaltado de sintaxis, las entradas de diario y la sección de comentarios de la comunidad.
 
-![Figura 23: Captura del blog — vista de tarjetas de proyectos publicados](29.png)
+![Figura 23: Captura del blog — vista de tarjetas de proyectos publicados](img/29.png)
 
 *Figura 23: Blog — Comunidad & Updates con tarjetas de proyectos publicados*
 
-![Figura 23a: Captura del modal de publicación — título y descripción para el blog](28.png)
+![Figura 23a: Captura del modal de publicación — título y descripción para el blog](img/28.png)
 
 *Figura 23a: Modal "Publicar en el blog" — el usuario introduce un título y descripción de publicación sin modificar el nombre interno del proyecto*
 
-![Figura 23b: Captura del modal del proyecto en el blog — código e IDE y comentarios](30.png)
+![Figura 23b: Captura del modal del proyecto en el blog — código e IDE y comentarios](img/30.png)
 
 *Figura 23b: Modal de proyecto en el blog — archivos de código del IDE con syntax highlighting, etiqueta de lenguaje, botón de preview en vivo y sección de comentarios de la comunidad*
 
@@ -2399,7 +2399,7 @@ La aplicación soporta dos métodos de autenticación:
 
 *Nota: El primer acceso creará automáticamente una cuenta de usuario con rol USER.*
 
-![Figura 32: Captura del botón de acceso en la landing page](1.png)
+![Figura 32: Captura del botón de acceso en la landing page](img/1.png)
 
 *Figura 32: Landing page — botón de acceso*
 
@@ -2410,7 +2410,7 @@ La aplicación soporta dos métodos de autenticación:
 3. Configurar las preferencias de contacto (permitir/no permitir que otros usuarios inicien conversaciones, con motivo opcional).
 4. Los cambios se guardan automáticamente.
 
-![Figura 33: Captura del perfil de usuario](16.png)
+![Figura 33: Captura del perfil de usuario](img/16.png)
 
 *Figura 33: Panel de Usuario — Mi Perfil*
 
@@ -2460,27 +2460,27 @@ La aplicación soporta dos métodos de autenticación:
 2. El sistema analiza hasta las últimas 30 entradas del tema y genera un resumen estructurado con: estado general, tecnologías detectadas, hitos, problemas resueltos y próximos pasos.
 3. El resumen se muestra en un panel Markdown desplegable sobre las entradas. Pulsar "Ocultar" lo cierra.
 
-![Figura 34: Captura del módulo de diario — vista de proyectos y gráfico de actividad](22.png)
+![Figura 34: Captura del módulo de diario — vista de proyectos y gráfico de actividad](img/22.png)
 
 *Figura 34: Panel de Usuario — Diario de progreso con listado de proyectos y gráfico de actividad heatmap*
 
-![Figura 34a: IDE integrado — Editor Monaco con árbol de archivos](23.png)
+![Figura 34a: IDE integrado — Editor Monaco con árbol de archivos](img/23.png)
 
 *Figura 34a: IDE integrado — árbol de archivos navegable y editor Monaco con resaltado de sintaxis*
 
-![Figura 34b: IDE integrado — Panel de Análisis IA](24.png)
+![Figura 34b: IDE integrado — Panel de Análisis IA](img/24.png)
 
 *Figura 34b: IDE integrado — Panel lateral de herramientas IA (code review, etiquetas, resumen del proyecto)*
 
-![Figura 34c: IDE integrado — Invitar colaborador](25.png)
+![Figura 34c: IDE integrado — Invitar colaborador](img/25.png)
 
 *Figura 34c: IDE integrado — Modal para invitar colaboradores al proyecto*
 
-![Figura 34d: IDE integrado — Historial de commits](26.png)
+![Figura 34d: IDE integrado — Historial de commits](img/26.png)
 
 *Figura 34d: IDE integrado — Panel de historial de commits y entradas de diario*
 
-![Figura 34e: IDE integrado — Feedback de staff](27.png)
+![Figura 34e: IDE integrado — Feedback de staff](img/27.png)
 
 *Figura 34e: IDE integrado — Sección de feedback de staff sobre el proyecto*
 
@@ -2497,7 +2497,7 @@ La aplicación soporta dos métodos de autenticación:
 - Al expandir un ticket se muestra el chat integrado para comunicarse con el staff.
 - El estado del ticket se muestra con badges de color (ABIERTO, RESUELTO).
 
-![Figura 35: Captura del centro de soporte con chat integrado](18.png)
+![Figura 35: Captura del centro de soporte con chat integrado](img/18.png)
 
 *Figura 35: Panel de Usuario — Centro de Soporte con chat integrado*
 
@@ -2509,7 +2509,7 @@ La aplicación soporta dos métodos de autenticación:
 3. Filtrar por departamento (Todos, Backend Developer, Frontend Developer) o buscar por nombre.
 4. Seleccionar el usuario y empezar a escribir.
 
-![Figura 36: Captura de la mensajería con filtro por departamento](19.png)
+![Figura 36: Captura de la mensajería con filtro por departamento](img/19.png)
 
 *Figura 36: Panel de Usuario — Mensajería con filtro por departamento*
 
@@ -2520,7 +2520,7 @@ La aplicación soporta dos métodos de autenticación:
 3. El panel lateral derecho muestra los "Próximos Eventos".
 4. Para crear un evento: pulsar **"+"**, completar título, fecha, hora, visibilidad y descripción.
 
-![Figura 37: Captura del calendario de eventos](21.png)
+![Figura 37: Captura del calendario de eventos](img/21.png)
 
 *Figura 37: Panel de Usuario — Agenda y Eventos (Calendario Syncfusion)*
 
@@ -2531,7 +2531,7 @@ La aplicación soporta dos métodos de autenticación:
 3. Cada notificación muestra el mensaje y la hora.
 4. Pulsar **"Marcar todo leído"** para limpiar todas las alertas.
 
-![Figura 38: Captura del centro de notificaciones](20.png)
+![Figura 38: Captura del centro de notificaciones](img/20.png)
 
 *Figura 38: Panel de Usuario — Centro de Notificaciones*
 
@@ -2548,7 +2548,7 @@ En cualquier página de la aplicación, el botón flotante de chat (esquina infe
 4. Pulsar **"Publicar"**. El proyecto aparece inmediatamente en el blog público con los archivos del IDE visibles.
 5. Para despublicarlo, pulsar de nuevo el icono de globo → el proyecto vuelve a ser privado.
 
-![Figura 38a: Modal "Publicar en el blog" con título y descripción de publicación](28.png)
+![Figura 38a: Modal "Publicar en el blog" con título y descripción de publicación](img/28.png)
 
 *Figura 38a: Modal de publicación — el nombre interno del proyecto no se modifica; el título y la descripción son exclusivos del blog*
 
@@ -2557,7 +2557,7 @@ En cualquier página de la aplicación, el botón flotante de chat (esquina infe
 2. Los proyectos publicados por la comunidad aparecen como tarjetas con gradiente, título de publicación, descripción y autor.
 3. Hacer clic en una tarjeta abre el modal del proyecto.
 
-![Figura 38b: Blog — tarjetas de proyectos publicados por la comunidad](29.png)
+![Figura 38b: Blog — tarjetas de proyectos publicados por la comunidad](img/29.png)
 
 *Figura 38b: Blog "Comunidad & Updates" — cada tarjeta muestra el título de publicación, la descripción y el autor del proyecto*
 
@@ -2566,7 +2566,7 @@ En cualquier página de la aplicación, el botón flotante de chat (esquina infe
 - Si el proyecto contiene archivos web (`.html`, `.css`, `.js`), aparece el botón **"Preview"** para ejecutar el código en un sandbox en vivo.
 - La sección **"Comentarios de la comunidad"** permite a cualquier usuario registrado dejar un comentario sobre el proyecto.
 
-![Figura 38c: Modal de proyecto en el blog — código con syntax highlighting y comentarios de comunidad](30.png)
+![Figura 38c: Modal de proyecto en el blog — código con syntax highlighting y comentarios de comunidad](img/30.png)
 
 *Figura 38c: Modal del proyecto en el blog — archivos de código del IDE con syntax highlighting, botón de preview en vivo y sección de comentarios de la comunidad*
 
@@ -2585,35 +2585,35 @@ El panel de administración está accesible mediante `/admin-profile` y contiene
 | **Auditoría** | Registro completo con nivel, acción, recurso, usuario, detalles y fecha |
 | **Perfil** | Perfil del administrador |
 
-![Figura 39: Panel de Administración — Gestión de Usuarios](6.png)
+![Figura 39: Panel de Administración — Gestión de Usuarios](img/6.png)
 
 *Figura 39: Panel de Administración — Gestión de Usuarios*
 
-![Figura 40: Panel de Administración — Chats-Servicio Técnico](8.png)
+![Figura 40: Panel de Administración — Chats-Servicio Técnico](img/8.png)
 
 *Figura 40: Panel de Administración — Chats-Servicio Técnico*
 
-![Figura 41: Panel de Administración — Gestión de Tickets](9.png)
+![Figura 41: Panel de Administración — Gestión de Tickets](img/9.png)
 
 *Figura 41: Panel de Administración — Gestión de Tickets*
 
-![Figura 42: Panel de Administración — Mensajería Pro](10.png)
+![Figura 42: Panel de Administración — Mensajería Pro](img/10.png)
 
 *Figura 42: Panel de Administración — Mensajería Pro*
 
-![Figura 43: Panel de Administración — Gestión de Eventos](11.png)
+![Figura 43: Panel de Administración — Gestión de Eventos](img/11.png)
 
 *Figura 43: Panel de Administración — Gestión de Eventos*
 
-![Figura 44: Panel de Administración — Gestión de Diarios](12.png)
+![Figura 44: Panel de Administración — Gestión de Diarios](img/12.png)
 
 *Figura 44: Panel de Administración — Gestión de Diarios*
 
-![Figura 45: Panel de Administración — Registro de Auditoría](13.png)
+![Figura 45: Panel de Administración — Registro de Auditoría](img/13.png)
 
 *Figura 45: Panel de Administración — Registro de Auditoría*
 
-![Figura 46: Panel de Administración — Perfil del Administrador](14.png)
+![Figura 46: Panel de Administración — Perfil del Administrador](img/14.png)
 
 *Figura 46: Panel de Administración — Perfil del Administrador*
 
