@@ -2170,13 +2170,16 @@ Se han implementado **353 tests** con Jasmine y Karma (Chrome Headless), todos e
 
 **Total: 353 tests — 0 errores — TOTAL: 353 SUCCESS**
 
-#### Tests e2e (Cypress)
+#### Tests e2e (Cypress) — 20/20 passing contra backend de producción
 
-| Fichero | Flujo cubierto |
-|---|---|
-| `auth-flow.cy.ts` | Login exitoso, login fallido, redirección tras logout |
-| `ide-create-flow.cy.ts` | Crear proyecto IDE, añadir archivo, editar y guardar contenido |
-| `profile-edit-flow.cy.ts` | Editar nombre, departamento y foto de perfil, verificar persistencia |
+| Fichero | Flujo cubierto | Tests | Estado |
+|---|---|---|---|
+| `auth-flow.cy.ts` | Login inválido, logout completo, guard bloquea acceso post-logout | 5 | ✅ |
+| `ide-create-flow.cy.ts` | Entrar al IDE, crear archivo, ver árbol, ejecutar sandbox-preview | 6 | ✅ |
+| `profile-edit-flow.cy.ts` | Acceder a perfil, editar nombre, verificar email, toggle de contacto | 5 | ✅ |
+| `admin-flow.cy.ts` | Login admin, navegar a tickets, cargar lista, responder ticket | 4 | ✅ |
+
+**Total: 20 tests e2e — 0 errores — All specs passed (2m 54s)**
 
 ### Matriz rápida de evidencia (cierre de rúbrica)
 
@@ -2217,7 +2220,7 @@ Se realizó una sesión guiada con **4 usuarios potenciales** (2 estudiantes DAM
 | Tiempo medio de respuesta de la API (local) | < 500ms | ~150ms promedio |
 | Pruebas unitarias backend | 168 tests (11 services + 8 controllers) | 168/168 ✅ BUILD SUCCESS |
 | Pruebas unitarias frontend | 353 tests (Jasmine + Karma, Chrome Headless) | 353/353 ✅ TOTAL SUCCESS |
-| Pruebas e2e frontend | 3 flujos Cypress (auth, IDE, perfil) | ✅ Definidos y listos |
+| Pruebas e2e frontend | 4 flujos Cypress (auth, IDE, perfil, admin) — 20 tests | 20/20 ✅ All specs passed |
 | Pruebas funcionales pasadas | >95% | 100% de las definidas |
 | Validación de datos en entrada | 100% de campos obligatorios | 100% |
 | Código estructurado en capas | Arquitectura por capas completa | ✅ Cumplido |
