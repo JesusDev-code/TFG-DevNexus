@@ -1,5 +1,6 @@
 package com.example.SpringBoot.TFG.service
 
+import com.example.SpringBoot.TFG.dto.ColaboradorDto
 import com.example.SpringBoot.TFG.dto.InvitacionPendienteDto
 import com.example.SpringBoot.TFG.model.*
 import com.example.SpringBoot.TFG.repository.*
@@ -66,7 +67,14 @@ class DiarioColaboracionService(
         }
     }
 
-    // 3. Ver mis invitaciones pendientes
+    // 3. Listar colaboradores activos de un tema
+    @Transactional(readOnly = true)
+    fun getColaboradoresDeTema(temaId: Int): List<ColaboradorDto> {
+        return colaboracionRepo.findByTemaIdAndEstado(temaId, InvitacionEstado.ACEPTADA)
+            .map { ColaboradorDto(it.usuario.id!!, it.usuario.nombre, it.usuario.foto_perfil) }
+    }
+
+    // 4. Ver mis invitaciones pendientes
     @Transactional(readOnly = true)
     fun misInvitacionesPendientes(): List<InvitacionPendienteDto> {
         val currentUser = securityService.getUserPrincipal()

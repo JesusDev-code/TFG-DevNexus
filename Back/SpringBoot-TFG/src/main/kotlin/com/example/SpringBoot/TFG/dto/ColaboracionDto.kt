@@ -1,7 +1,7 @@
 package com.example.SpringBoot.TFG.dto
 
 data class InvitarUsuarioDto(
-    val email: String // Invitamos por email
+    val email: String
 )
 
 data class InvitacionPendienteDto(
@@ -9,4 +9,10 @@ data class InvitacionPendienteDto(
     val temaTitulo: String,
     val ownerNombre: String,
     val fecha: String
+)
+
+data class ColaboradorDto(
+    val id: Int,
+    val nombre: String,
+    val foto_perfil: String?
 )

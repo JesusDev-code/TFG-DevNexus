@@ -57,23 +57,24 @@ export class AppComponent {
     });
   }
 
-  // 🔄 Será llamado cuando haya un usuario autenticado por el effect
   private async iniciarSistemaNotificaciones() {
-    console.log('👤 Usuario detectado. Iniciando sistema FCM...');
+    console.log('[FCM] Iniciando sistema de notificaciones...');
 
-    // 1. Pedimos el token a FCM
+    // El SW debe registrarse ANTES de llamar a iniciarEscucha()
+    // obtenerToken() es quien registra el service worker en web
     const token = await this.fcmService.obtenerToken();
 
-    // 2. Si hay token, se lo damos a Auth para que lo guarde en la BD
-    // En MVP esto hace que FCM arranque
-    if (token) {
-      this.authService.updateUserProfile({ fcm_token: token }).subscribe({
-        next: () => console.log('✅ Token vinculado al usuario correctamente'),
-        error: (err) => console.error('❌ Error guardando token en BD:', err)
-      });
+    // Ahora sí — el SW está activo y onMessage puede recibir mensajes
+    this.fcmService.iniciarEscucha();
 
-      // 3. Activamos la escucha de mensajes
-      this.fcmService.iniciarEscucha();
+    if (token) {
+      console.log('[FCM] Guardando token en backend...');
+      this.authService.updateUserProfile({ fcm_token: token }).subscribe({
+        next: () => console.log('[FCM] ✅ Token guardado en BD correctamente'),
+        error: (err) => console.error('[FCM] ❌ Error guardando token en BD:', err)
+      });
+    } else {
+      console.warn('[FCM] ⚠️ No se obtuvo token — notificaciones push no funcionarán');
     }
   }
 

@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonGrid, IonRow, IonCol, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { rocketOutline, eyeOutline, peopleOutline, ribbonOutline, bulbOutline } from 'ionicons/icons';
 
@@ -12,9 +12,6 @@ import { rocketOutline, eyeOutline, peopleOutline, ribbonOutline, bulbOutline } 
   standalone: true,
   imports: [
     IonContent,
-    IonGrid,
-    IonRow,
-    IonCol,
     IonIcon,
     CommonModule
   ]

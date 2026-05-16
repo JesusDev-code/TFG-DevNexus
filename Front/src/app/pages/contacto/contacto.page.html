@@ -1,84 +1,55 @@
 <ion-content [fullscreen]="true" class="bg-transparent">
-  
   <div class="main-content-wrapper">
-    
+
     <div class="contact-hero-container">
-      <h1 class="contact-title">Ponte en <span class="text-gradient">contacto.</span></h1>
+      <h1 class="contact-title">Soporte & <span class="text-gradient">Comunidad.</span></h1>
       <p class="contact-description">
-        ¿Tienes alguna duda o quieres colaborar con nosotros? Elige tu canal preferido.
+        ¿Tienes un problema o quieres compartir una idea? Estas son las formas de contactarnos.
       </p>
     </div>
 
-    <div class="services-grid-container">
-      <ion-grid>
-        <ion-row>
-          <ion-col size="12" size-md="4">
-            <div class="service-box">
-              <div class="service-inner">
-                <div class="icon-glow-box"><ion-icon name="mail-outline"></ion-icon></div>
-                <h3>Email</h3>
-                <p>hola@comunidad.com</p>
-                <div class="box-light"></div>
-              </div>
-            </div>
-          </ion-col>
-
-          <ion-col size="12" size-md="4">
-            <div class="service-box">
-              <div class="service-inner">
-                <div class="icon-glow-box"><ion-icon name="call-outline"></ion-icon></div>
-                <h3>Teléfono</h3>
-                <p>+34 900 123 456</p>
-                <div class="box-light"></div>
-              </div>
-            </div>
-          </ion-col>
-
-          <ion-col size="12" size-md="4">
-            <div class="service-box">
-              <div class="service-inner">
-                <div class="icon-glow-box">
-                  <ion-icon name="chatbubbles-outline"></ion-icon>
-                </div>
-                <h3>Comunidad</h3>
-                <p>Canal de Discord oficial.</p> 
-                <div class="box-light"></div>
-              </div>
-            </div>
-          </ion-col>
-
-        </ion-row>
-      </ion-grid>
+    <div class="primary-section">
+      <div class="primary-card">
+        <div class="primary-icon">
+          <ion-icon name="call-outline"></ion-icon>
+        </div>
+        <div class="primary-body">
+          <div class="primary-label">Canal principal</div>
+          <h2>Sistema de tickets</h2>
+          <p>La forma más rápida de hablar con el staff. Abre un ticket desde el botón flotante dentro de la app y sigue el estado de tu consulta en tiempo real.</p>
+          <div class="status-row">
+            <span class="pill pending">Pendiente</span>
+            <span class="pill replied">Respondido</span>
+            <span class="pill resolved">Resuelto</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="form-container">
-      <div class="glass-form-card">
-        <form>
-          <div class="form-grid">
-            <div class="input-group">
-              <label>Nombre</label>
-              <input type="text" placeholder="Tu nombre">
-            </div>
-            <div class="input-group">
-              <label>Email</label>
-              <input type="email" placeholder="tu@email.com">
-            </div>
-            <div class="input-group full-width">
-              <label>Asunto</label>
-              <input type="text" placeholder="¿En qué podemos ayudarte?">
-            </div>
-            <div class="input-group full-width">
-              <label>Mensaje</label>
-              <textarea placeholder="Escribe tu mensaje aquí..." rows="4"></textarea>
-            </div>
+    <div class="channels-section">
+      <h3 class="channels-title">También puedes encontrarnos en</h3>
+      <div class="channels-list">
+
+        <a class="channel-card" href="https://github.com/JesusDev-code/TFG" target="_blank">
+          <div class="channel-tag github">GH</div>
+          <div class="channel-info">
+            <h4>GitHub</h4>
+            <p>Código fuente, issues y releases</p>
           </div>
-          <div class="btn-wrapper">
-            <button type="submit" class="premium-button">
-              <ion-icon name="send-outline"></ion-icon>
-              Enviar mensaje
-            </button>
+          <ion-icon name="arrow-forward-outline" class="arrow-icon"></ion-icon>
+        </a>
+
+        <div class="channel-card">
+          <div class="channel-icon discord">
+            <ion-icon name="chatbubbles-outline"></ion-icon>
           </div>
-        </form>
+          <div class="channel-info">
+            <h4>Discord</h4>
+            <p>Comunidad oficial de DevNexus</p>
+          </div>
+          <ion-icon name="arrow-forward-outline" class="arrow-icon"></ion-icon>
+        </div>
+
       </div>
     </div>
 

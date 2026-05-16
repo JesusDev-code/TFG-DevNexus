@@ -78,6 +78,7 @@
     - Anexo A: Diagrama Entidad–Relación completo
     - Anexo B: Descripción detallada de la API REST
     - Anexo C: Casos de prueba detallados
+    - Anexo D: Configuración técnica de PgBouncer
 17. Índice de tablas e imágenes
 18. Bibliografía y referencias
 
@@ -177,6 +178,7 @@ Las características principales de la aplicación son:
 - **Code Review IA:** análisis automático del contenido de cada entrada, con feedback técnico sobre calidad, mejoras y buenas prácticas generado por Groq Llama
 - **Sugerencia de etiquetas IA:** el sistema analiza el texto que el usuario está redactando y propone 3–5 etiquetas relevantes como chips interactivos
 - **Resumen ejecutivo IA:** generación automática de un resumen estructurado del proyecto a partir de todas las entradas del tema
+- **IDE de proyectos integrado:** cada proyecto/tema dispone de un entorno de edición tipo VS Code con árbol de archivos navegable, editor Monaco con sintaxis coloreada (HTML, CSS, TypeScript, JavaScript, Python, etc.), soporte de carpetas anidadas y previsualización en sandbox. La creación del proyecto abre un modal centrado; los archivos se persisten en la base de datos con campo `filename` y `tipo`
 
 **Sistema de tickets de soporte:**
 - Creación de tickets con título, descripción, prioridad (alta, media, baja) y estado (abierto, en progreso, resuelto)
@@ -313,7 +315,7 @@ Diseñar, implementar y desplegar una plataforma web colaborativa completa orien
 
 6. **Implementar control de acceso basado en roles** (ADMIN, STAFF, USER) que limite las funcionalidades disponibles para cada perfil.
 
-7. **Desarrollar el módulo de diarios** con control de visibilidad, sistema de revisión/mentoría y colaboración entre usuarios.
+7. **Desarrollar el módulo de diarios** con control de visibilidad, sistema de revisión/mentoría, colaboración entre usuarios e IDE de proyectos integrado (árbol de archivos, Monaco Editor, sandbox preview).
 
 8. **Desarrollar el módulo de tickets** con gestión de estados, prioridades, comentarios, historial de cambios y chat integrado.
 
@@ -338,9 +340,9 @@ Diseñar, implementar y desplegar una plataforma web colaborativa completa orien
 El alcance del proyecto comprende el desarrollo e implantación de los siguientes elementos:
 
 **Backend (API REST):**
-- 15 controladores REST con sus respectivos endpoints (usuarios, roles, departamentos, diarios, temas de diario, colaboraciones, tickets, comentarios de tickets, historial de tickets, conversaciones, participantes, mensajes, eventos, notificaciones, auditoría)
+- 16 controladores REST con sus respectivos endpoints (usuarios, roles, departamentos, diarios, temas de diario, colaboraciones, comentarios de tema de diario, tickets, comentarios de tickets, historial de tickets, conversaciones, participantes, mensajes, eventos, notificaciones, auditoría)
 - 13 servicios de negocio con lógica de autorización
-- 16 entidades JPA mapeadas a tablas de base de datos
+- 17 entidades JPA mapeadas a tablas de base de datos
 - Sistema de autenticación y autorización mediante Firebase JWT + Spring Security
 - Documentación automática con SpringDoc OpenAPI (Swagger UI)
 - Sistema de auditoría mediante Spring AOP (aspecto transversal)
@@ -348,13 +350,14 @@ El alcance del proyecto comprende el desarrollo e implantación de los siguiente
 - Validación de datos de entrada con Bean Validation
 
 **Base de datos:**
-- Diseño e implementación del esquema relacional completo con 16 tablas
+- Diseño e implementación del esquema relacional completo con 17 tablas
 - Índices en campos de búsqueda frecuente
 - Integridad referencial con claves foráneas
-- Gestión mediante PostgreSQL 16 auto-hospedado en VPS dedicado
+- Gestión mediante PostgreSQL 17 auto-hospedado en VPS dedicado
 - Administración visual con pgAdmin 4 (acceso web en el propio VPS)
 - Backup automático periódico a NeonDB (copia de seguridad externa)
-- Migraciones versionadas con Flyway
+- Migraciones versionadas con Flyway (V1: esquema inicial, V2: permisos de colaboración, V3: columnas `tipo` y `filename` en tabla `diario` para soporte IDE, V4: tabla `diario_tema_comentarios` para el sistema de feedback de proyecto)
+- Proxy de conexiones PgBouncer en modo `transaction`: pool estático de 20 conexiones permanentes a PostgreSQL, capacidad de hasta 10.000 conexiones cliente simultáneas y un throughput teórico de ~2.000 queries/segundo (con latencia media de 10 ms por query). PostgreSQL nunca recibe más de 25 conexiones independientemente de la carga, protegiéndolo de saturación en escenarios de alta concurrencia
 
 **Frontend:**
 - Aplicación Angular 20 / Ionic 8 con componentes standalone
@@ -370,12 +373,12 @@ El alcance del proyecto comprende el desarrollo e implantación de los siguiente
 
 **Despliegue e infraestructura:**
 - Dockerfile multi-stage para backend (Maven build + JRE runtime)
-- Dockerfile multi-stage para frontend (Node build + Nginx como servidor de estáticos)
-- Nginx configurado para SPA routing (`try_files` para rutas Angular)
+- Dockerfile multi-stage para frontend (Node build + Nginx embebido como servidor de estáticos, configurado para SPA routing con `try_files`)
 - Despliegue en VPS dedicado (4 vCores, 8 GB RAM, 75 GB almacenamiento)
 - Dokploy como PaaS self-hosted: proxy inverso, gestión de imágenes Docker y SSL automático
 - Dominio personalizado `devnexus.es` con certificado HTTPS via Let's Encrypt (gestionado por Dokploy)
 - Bot de Telegram para alertas de reinicio y monitorización del servidor
+- PgBouncer como proxy de conexiones a base de datos (contenedor Docker independiente gestionado por Dokploy): pool estático de 20 conexiones en modo `transaction`, soporta hasta 10.000 clientes concurrentes con un throughput de ~2.000 queries/segundo, preparando la arquitectura para escalado horizontal sin modificar el backend
 
 **Documentación:**
 - Documentación técnica completa del proyecto
@@ -435,6 +438,12 @@ Los requisitos funcionales describen el comportamiento del sistema desde el punt
 | RF-30 | El sistema debe analizar el contenido de una entrada del diario y generar un code review automático con feedback técnico estructurado. |
 | RF-31 | El sistema debe analizar el texto de una entrada en redacción y sugerir etiquetas relevantes como chips interactivos aplicables con un clic. |
 | RF-32 | El sistema debe generar un resumen ejecutivo del proyecto a partir del conjunto de entradas de un tema, estructurado en secciones Markdown. |
+| RF-35 | El usuario debe poder gestionar archivos de código dentro de un proyecto mediante un IDE integrado: crear archivos con nombre y ruta (soportando carpetas anidadas), editar su contenido con Monaco Editor (resaltado de sintaxis), navegar el árbol de archivos y eliminar archivos. |
+| RF-36 | El sistema debe persistir cada versión de cada archivo del IDE en base de datos, permitiendo recuperar el contenido más reciente al cargar el proyecto. |
+| RF-37 | La creación de un nuevo proyecto debe presentarse mediante un modal centrado con animación, accesible tanto desde el botón principal de la barra de herramientas como desde el estado vacío (empty state). |
+| RF-38 | El personal de staff debe poder dejar comentarios de feedback directamente sobre un tema de diario completo (a nivel de proyecto, no de entrada individual), visibles para el propietario del tema. |
+| RF-39 | El administrador debe poder acceder al IDE de un proyecto en modo solo lectura: puede navegar el árbol de archivos y visualizar el código, pero no modificar, crear ni eliminar archivos ni carpetas. Las funcionalidades de IA tampoco están disponibles en este modo. |
+| RF-40 | Las páginas de administración (tickets, usuarios, eventos, auditoría, mensajes) deben adaptarse a dispositivos móviles mostrando tarjetas individuales en lugar de tablas, con acceso al detalle mediante modal a pantalla completa. |
 
 ### Sistema de tickets
 
@@ -445,6 +454,7 @@ Los requisitos funcionales describen el comportamiento del sistema desde el punt
 | RF-15 | El personal autorizado (STAFF/ADMIN) debe poder cambiar el estado de un ticket (ABIERTO → EN_PROGRESO → RESUELTO). |
 | RF-16 | El sistema debe registrar el historial completo de cambios de estado de cada ticket. |
 | RF-17 | Los usuarios deben poder comunicarse con el staff a través del chat integrado en cada ticket. |
+| RF-41 | El usuario debe poder solicitar la reapertura de un ticket resuelto. El sistema debe cambiar el estado a `SOLICITUD_REAPERTURA` y notificar al staff, quien podrá aceptar (volviendo a `EN_PROGRESO`) o rechazar (manteniendo `RESUELTO`), generando en ambos casos un mensaje automático en el chat del ticket. |
 
 ### Mensajería
 
@@ -527,6 +537,8 @@ Los requisitos funcionales describen el comportamiento del sistema desde el punt
 |---|---|
 | RT-22 | Las peticiones protegidas deben devolver **HTTP 401** sin token válido y **HTTP 403** sin permisos suficientes. |
 | RT-23 | Todos los datos de entrada deben ser **validados** en el backend antes de procesarse. |
+| RT-24 | La arquitectura debe incorporar **PgBouncer** como proxy de conexiones a base de datos en modo `transaction`, con un pool estático de 20 conexiones a PostgreSQL y capacidad para hasta 10.000 conexiones cliente simultáneas, garantizando que PostgreSQL nunca supere las 25 conexiones activas independientemente de la carga y permitiendo escalado horizontal de instancias backend sin degradación de la base de datos. |
+| RT-25 | El panel de administración debe ser completamente **responsivo**, adaptando su interfaz mediante tarjetas en dispositivos móviles (< 600 px) y tablas con scroll virtual en escritorio. |
 
 ## 7.3 Requisitos legales y normativos
 
@@ -837,17 +849,25 @@ Las páginas públicas siguen una estructura de landing page con barra de navega
 
 *Figura 4: Landing page — sección de características*
 
-![Figura 5: Captura de la página "Sobre la comunidad" — Misión y Visión](3.png)
+![Figura 5: Captura de la página "Sobre la comunidad" — hero con las 4 propuestas de valor](31.png)
 
-*Figura 5: Página "Sobre nosotros" — Misión y Visión*
+*Figura 5: Página "Sobre la comunidad" — presentación de las 4 características principales (Diario Personal, Blog Comunitario, IA Integrada, Colaboración) con indicadores numerados y sección de descarga de la APK para Android*
 
-![Figura 6: Captura de la página de Contacto](4.png)
+![Figura 5b: Captura de la página "Sobre la comunidad" en vista móvil](32.png)
 
-*Figura 6: Página de Contacto*
+*Figura 5b: Página "Sobre la comunidad" — vista adaptada para dispositivos móviles*
 
-![Figura 7: Captura de la página FAQ / Ayuda](5.png)
+![Figura 6: Captura de la página de Contacto — Soporte & Comunidad](33.png)
 
-*Figura 7: Página FAQ / Preguntas Frecuentes*
+*Figura 6: Página de Contacto rediseñada — canal principal de soporte mediante sistema de tickets con estados (Pendiente, Respondido, Resuelto) y canales secundarios (GitHub, Discord)*
+
+![Figura 7: Captura de la página FAQ — ¿Cómo funciona DevNexus?](34.png)
+
+*Figura 7: Página FAQ — sección superior con las 4 funcionalidades clave de la plataforma*
+
+![Figura 7b: Captura de la página FAQ — acordeón de preguntas frecuentes](35.png)
+
+*Figura 7b: Página FAQ — acordeón de preguntas frecuentes y accesos directos a Privacidad y Soporte*
 
 ### Dashboard de usuario
 
@@ -864,9 +884,33 @@ Una vez autenticado, el usuario accede a su panel personal ("Panel de Usuario") 
 
 *Figura 8: Panel de Usuario — Mi Perfil*
 
-![Figura 9: Captura del Panel de Usuario — Diario de progreso](17.png)
+![Figura 9: Captura del Panel de Usuario — Diario de progreso (vista de proyectos)](22.png)
 
-*Figura 9: Panel de Usuario — Diario de progreso*
+*Figura 9: Panel de Usuario — Diario de progreso con listado de proyectos y gráfico de actividad*
+
+#### IDE de proyectos integrado
+
+El módulo de diario incluye un entorno de desarrollo integrado (IDE) accesible por proyecto, con árbol de archivos navegable, editor Monaco con resaltado de sintaxis, sistema de commits, panel de IA y previsualización en sandbox.
+
+![Figura 9a: IDE integrado — Editor de código con árbol de archivos y Monaco Editor](23.png)
+
+*Figura 9a: IDE integrado — árbol de archivos navegable (con soporte de carpetas anidadas) y editor Monaco con resaltado de sintaxis*
+
+![Figura 9b: IDE integrado — Panel de Análisis IA con sugerencias en tiempo real](24.png)
+
+*Figura 9b: IDE integrado — Panel lateral de Análisis IA (code review, sugerencia de etiquetas, resumen ejecutivo y análisis del proyecto)*
+
+![Figura 9c: IDE integrado — Modal de invitación de colaboradores](25.png)
+
+*Figura 9c: IDE integrado — Modal para invitar colaboradores al proyecto mediante correo electrónico*
+
+![Figura 9d: IDE integrado — Historial de commits y entradas de diario](26.png)
+
+*Figura 9d: IDE integrado — Panel inferior con el historial de commits y entradas de diario del proyecto*
+
+![Figura 9e: IDE integrado — Feedback de staff sobre el proyecto](27.png)
+
+*Figura 9e: IDE integrado — Sección de feedback de staff visible para el propietario del proyecto*
 
 ![Figura 10: Captura del Panel de Usuario — Tickets / Centro de Soporte](18.png)
 
@@ -935,9 +979,19 @@ El administrador y el staff acceden a un panel diferenciado ("Panel de Administr
 
 ### Blog de la comunidad
 
-![Figura 23: Captura del Blog — Comunidad & Updates con diarios públicos](15.png)
+El blog muestra los proyectos publicados por la comunidad como tarjetas con gradiente, título de publicación, descripción y autor. Al hacer clic se abre un modal con los archivos de código del IDE con resaltado de sintaxis, las entradas de diario y la sección de comentarios de la comunidad.
 
-*Figura 23: Blog — Comunidad & Updates*
+![Figura 23: Captura del blog — vista de tarjetas de proyectos publicados](29.png)
+
+*Figura 23: Blog — Comunidad & Updates con tarjetas de proyectos publicados*
+
+![Figura 23a: Captura del modal de publicación — título y descripción para el blog](28.png)
+
+*Figura 23a: Modal "Publicar en el blog" — el usuario introduce un título y descripción de publicación sin modificar el nombre interno del proyecto*
+
+![Figura 23b: Captura del modal del proyecto en el blog — código e IDE y comentarios](30.png)
+
+*Figura 23b: Modal de proyecto en el blog — archivos de código del IDE con syntax highlighting, etiqueta de lenguaje, botón de preview en vivo y sección de comentarios de la comunidad*
 
 ## 10.2 Especificaciones técnicas
 
@@ -977,7 +1031,7 @@ graph TB
     end
 
     subgraph DataLayer["Capa de Persistencia"]
-        PostgreSQL["PostgreSQL 16<br/>16 tablas | 3FN<br/>Flyway migrations"]
+        PostgreSQL["PostgreSQL 17<br/>17 tablas | 3FN<br/>Flyway migrations"]
     end
 
     subgraph InfraLayer["Infraestructura VPS"]
@@ -1424,7 +1478,7 @@ graph TB
             AuditAspect["AuditoriaAspect<br/>(Spring AOP)"]
         end
         subgraph DB["Base de Datos"]
-            PG["PostgreSQL 16<br/>16 tablas"]
+            PG["PostgreSQL 17<br/>17 tablas"]
         end
     end
 
@@ -1937,7 +1991,6 @@ El sistema en producción opera sobre un **VPS dedicado** gestionado con **Dokpl
 
 1. **PostgreSQL** — siempre disponible como servicio del sistema operativo del VPS.
 2. **Backend Spring Boot** — contenedor Docker gestionado por Dokploy; arranca con política `restart: always`.
-3. **Frontend Nginx** — contenedor Docker independiente; sirve la SPA compilada.
 
 Dokploy gestiona el proxy inverso, el enrutamiento HTTPS y la renovación de certificados SSL (Let's Encrypt) de forma automática.
 
@@ -2149,7 +2202,8 @@ Los componentes del sistema se distribuyen como imágenes Docker publicadas en D
 |---|---|---|
 | Backend | `tagoh1/springboot-tfg:latest` | Spring Boot 3.5.7 en JRE Alpine |
 | Frontend | `tagoh1/devnexus-front:latest` | Nginx Alpine (servidor de estáticos) |
-| Base de datos | PostgreSQL 16 instalado en el VPS | Auto-hospedado (no en contenedor) |
+| Base de datos | PostgreSQL 17 instalado en el VPS | Auto-hospedado (no en contenedor) |
+| Proxy conexiones | `edoburu/pgbouncer` (contenedor Docker) | PgBouncer — pool de conexiones a PostgreSQL |
 | Backup BD | NeonDB (externo) | PostgreSQL gestionado en la nube |
 
 ### Rol de cada componente de distribución
@@ -2159,6 +2213,9 @@ Nginx no actúa como proxy de la aplicación, sino exclusivamente como servidor 
 
 **Dokploy (en el VPS):**
 Dokploy es el orquestador de producción. Actúa como proxy inverso (recibe el tráfico de `devnexus.es` y lo enruta al contenedor correspondiente), gestiona los certificados SSL vía Let's Encrypt, y permite desplegar nuevas versiones desde la interfaz web sin acceso SSH directo.
+
+**PgBouncer (contenedor Docker independiente):**
+Proxy de conexiones que se sitúa entre Spring Boot y PostgreSQL. Mantiene un pool estático de 20 conexiones permanentes a PostgreSQL y acepta hasta 10.000 clientes simultáneos, evitando que la base de datos sufra saturación en escenarios de alta concurrencia. Se despliega como servicio Docker separado en Dokploy usando la imagen `edoburu/pgbouncer`. Ver **Anexo D** para la documentación técnica completa.
 
 **Bot de Telegram:**
 Bot personalizado integrado con Dokploy que envía notificaciones a Telegram sobre eventos de despliegue y estado del servidor.
@@ -2403,9 +2460,29 @@ La aplicación soporta dos métodos de autenticación:
 2. El sistema analiza hasta las últimas 30 entradas del tema y genera un resumen estructurado con: estado general, tecnologías detectadas, hitos, problemas resueltos y próximos pasos.
 3. El resumen se muestra en un panel Markdown desplegable sobre las entradas. Pulsar "Ocultar" lo cierra.
 
-![Figura 34: Captura del módulo de diario con gráfico de actividad](17.png)
+![Figura 34: Captura del módulo de diario — vista de proyectos y gráfico de actividad](22.png)
 
-*Figura 34: Panel de Usuario — Diario con gráfico de actividad*
+*Figura 34: Panel de Usuario — Diario de progreso con listado de proyectos y gráfico de actividad heatmap*
+
+![Figura 34a: IDE integrado — Editor Monaco con árbol de archivos](23.png)
+
+*Figura 34a: IDE integrado — árbol de archivos navegable y editor Monaco con resaltado de sintaxis*
+
+![Figura 34b: IDE integrado — Panel de Análisis IA](24.png)
+
+*Figura 34b: IDE integrado — Panel lateral de herramientas IA (code review, etiquetas, resumen del proyecto)*
+
+![Figura 34c: IDE integrado — Invitar colaborador](25.png)
+
+*Figura 34c: IDE integrado — Modal para invitar colaboradores al proyecto*
+
+![Figura 34d: IDE integrado — Historial de commits](26.png)
+
+*Figura 34d: IDE integrado — Panel de historial de commits y entradas de diario*
+
+![Figura 34e: IDE integrado — Feedback de staff](27.png)
+
+*Figura 34e: IDE integrado — Sección de feedback de staff sobre el proyecto*
 
 ### Uso del módulo de tickets
 
@@ -2461,6 +2538,37 @@ La aplicación soporta dos métodos de autenticación:
 ### Chat flotante de soporte
 
 En cualquier página de la aplicación, el botón flotante de chat (esquina inferior derecha) permite al usuario abrir una conversación directa con el equipo de soporte sin salir de la página actual.
+
+### Blog de la comunidad — publicar y explorar proyectos
+
+**Publicar un proyecto en el blog:**
+1. Acceder a **Diario** desde las pestañas del Panel de Usuario.
+2. En la tarjeta del proyecto, pulsar el botón de visibilidad (icono de globo).
+3. Se abre el modal **"Publicar en el blog"** — introducir un **título de publicación** y una **descripción** para la comunidad. El nombre interno del proyecto no cambia.
+4. Pulsar **"Publicar"**. El proyecto aparece inmediatamente en el blog público con los archivos del IDE visibles.
+5. Para despublicarlo, pulsar de nuevo el icono de globo → el proyecto vuelve a ser privado.
+
+![Figura 38a: Modal "Publicar en el blog" con título y descripción de publicación](28.png)
+
+*Figura 38a: Modal de publicación — el nombre interno del proyecto no se modifica; el título y la descripción son exclusivos del blog*
+
+**Explorar el blog:**
+1. Acceder a **Blog** desde el menú lateral de la aplicación.
+2. Los proyectos publicados por la comunidad aparecen como tarjetas con gradiente, título de publicación, descripción y autor.
+3. Hacer clic en una tarjeta abre el modal del proyecto.
+
+![Figura 38b: Blog — tarjetas de proyectos publicados por la comunidad](29.png)
+
+*Figura 38b: Blog "Comunidad & Updates" — cada tarjeta muestra el título de publicación, la descripción y el autor del proyecto*
+
+**Modal del proyecto en el blog:**
+- La sección **"Archivos del proyecto"** muestra el código del IDE con resaltado de sintaxis y una etiqueta con el lenguaje detectado (HTML, CSS, JS, Kotlin, etc.).
+- Si el proyecto contiene archivos web (`.html`, `.css`, `.js`), aparece el botón **"Preview"** para ejecutar el código en un sandbox en vivo.
+- La sección **"Comentarios de la comunidad"** permite a cualquier usuario registrado dejar un comentario sobre el proyecto.
+
+![Figura 38c: Modal de proyecto en el blog — código con syntax highlighting y comentarios de comunidad](30.png)
+
+*Figura 38c: Modal del proyecto en el blog — archivos de código del IDE con syntax highlighting, botón de preview en vivo y sección de comentarios de la comunidad*
 
 ### Panel de administración (solo ADMIN y STAFF)
 
@@ -2521,11 +2629,11 @@ La aplicación ha sido desplegada en un entorno real mediante Docker Compose en 
 
 ## 15.2 Resultados obtenidos
 
-- **Backend:** 15 controladores REST, 13 servicios de negocio, 16 entidades JPA, sistema de seguridad con Firebase JWT + Spring Security, auditoría con Spring AOP, migraciones con Flyway y documentación completa con Swagger/OpenAPI.
+- **Backend:** 16 controladores REST, 13 servicios de negocio, 17 entidades JPA, sistema de seguridad con Firebase JWT + Spring Security, auditoría con Spring AOP, migraciones con Flyway (V1–V4) y documentación completa con Swagger/OpenAPI.
 
 - **Frontend:** Aplicación Angular 20 / Ionic 8 con 20+ páginas, componentes standalone con ChangeDetectionStrategy.OnPush, routing con guards, interceptor HTTP, integración con Firebase (Auth + FCM), calendario Syncfusion y diseño visual profesional con tema oscuro.
 
-- **Base de datos:** Esquema PostgreSQL normalizado (3FN) con 16 tablas, índices en campos críticos, integridad referencial y migraciones versionadas con Flyway.
+- **Base de datos:** Esquema PostgreSQL 17 normalizado (3FN) con 17 tablas, índices en campos críticos, integridad referencial, migraciones versionadas con Flyway y proxy de conexiones PgBouncer en modo transaction.
 
 - **Despliegue:** Sistema containerizado con Docker Compose listo para producción, con Nginx sirviendo el frontend y Spring Boot el backend. Desplegado en producción en `devnexus.es`.
 
@@ -2778,10 +2886,10 @@ Para un entorno de producción real, el coste mensual estimado sería:
 | GET | /api/diarios/{id}/comentarios | JWT | ANY | Comentarios del diario |
 | GET | /api/diarios/tema/{temaId}/export.csv | JWT | ANY | Exportar diarios del tema en CSV |
 | GET | /api/diarios/usuario/{userId} | JWT | STAFF, ADMIN | Diarios de un usuario |
-
 | POST | /api/diarios | JWT | ANY | Crear diario |
 | POST | /api/diarios/{id}/comentarios | JWT | ANY | Añadir comentario |
 | PUT | /api/diarios/{id} | JWT | ANY | Actualizar diario propio |
+| PUT | /api/diarios/{id}/revisar | JWT | STAFF, ADMIN | Aprobar o rechazar entrada pendiente de revisión |
 | DELETE | /api/diarios/{id} | JWT | ANY | Eliminar diario propio |
 
 ### Visión IA
@@ -2805,9 +2913,17 @@ Para un entorno de producción real, el coste mensual estimado sería:
 | Método | Endpoint | Auth | Roles | Descripción |
 |---|---|---|---|---|
 | GET | /api/diario-temas | JWT | ANY | Listar temas propios |
+| GET | /api/diario-temas/usuario/{userId} | JWT | STAFF, ADMIN | Listar temas de un usuario específico |
 | POST | /api/diario-temas | JWT | ANY | Crear tema |
 | PUT | /api/diario-temas/{id} | JWT | ANY | Actualizar tema |
 | DELETE | /api/diario-temas/{id} | JWT | ANY | Eliminar tema |
+
+### Comentarios de tema de diario (feedback de proyecto)
+| Método | Endpoint | Auth | Roles | Descripción |
+|---|---|---|---|---|
+| GET | /api/diario-tema-comentarios/tema/{temaId} | JWT | ANY | Obtener comentarios de feedback de un tema |
+| POST | /api/diario-tema-comentarios | JWT | STAFF, ADMIN | Añadir comentario de feedback sobre un tema |
+| DELETE | /api/diario-tema-comentarios/{id} | JWT | STAFF, ADMIN | Eliminar comentario de feedback |
 
 ### Tickets
 | Método | Endpoint | Auth | Roles | Descripción |
@@ -2933,6 +3049,127 @@ Para un entorno de producción real, el coste mensual estimado sería:
 
 ---
 
+## Anexo D: Configuración técnica de PgBouncer
+
+### D.1 ¿Qué es PgBouncer y por qué lo necesita DevNexus?
+
+PostgreSQL gestiona cada conexión de cliente como un proceso del sistema operativo independiente. Esto tiene un coste real: en sistemas con alta concurrencia, abrir miles de conexiones directas a PostgreSQL consume RAM, descriptores de archivo y tiempo de CPU en el handshake TCP+autenticación, degradando el rendimiento incluso antes de ejecutar una sola consulta.
+
+**PgBouncer** es un proxy ligero de conexiones para PostgreSQL. Se sitúa entre la aplicación (Spring Boot) y la base de datos, manteniendo un número pequeño y fijo de conexiones abiertas a PostgreSQL mientras sirve a miles de clientes simultáneos.
+
+```
+                     ┌────────────────────────────────────────────┐
+Cliente 1 ─────────▶│                                            │
+Cliente 2 ─────────▶│  PgBouncer                                 │──▶ PostgreSQL 17
+...                  │  max_client_conn = 10.000                  │    (20 conexiones)
+Cliente 10.000 ─────▶│  default_pool_size = 20                    │
+                     └────────────────────────────────────────────┘
+```
+
+Sin PgBouncer, 10.000 clientes simultáneos implicarían 10.000 procesos activos en PostgreSQL. Con PgBouncer, PostgreSQL nunca recibe más de 25 conexiones activas, independientemente de la carga.
+
+### D.2 Modo de operación: `transaction` vs `session` vs `statement`
+
+PgBouncer ofrece tres modos de pool:
+
+| Modo | Comportamiento | Cuándo usarlo |
+|---|---|---|
+| `session` | La conexión del pool se asigna al cliente durante toda su sesión. Se libera al desconectar. | Aplicaciones con variables de sesión, cursores nombrados o `LISTEN/NOTIFY`. |
+| `transaction` | La conexión vuelve al pool tras cada transacción completa. | **La mayoría de aplicaciones web. Máxima eficiencia.** |
+| `statement` | La conexión vuelve al pool tras cada consulta individual. | Solo aplicaciones sin transacciones multi-query. |
+
+**DevNexus usa `transaction` mode** porque es el modo óptimo para Spring Boot + Hibernate: cada petición HTTP abre una transacción `@Transactional`, ejecuta sus queries y la cierra. Entre transacciones, la conexión queda libre para otros clientes, maximizando la reutilización del pool.
+
+#### Integración con Hibernate
+
+La integración de PgBouncer con Hibernate se configura mediante el parámetro `prepareThreshold=0` en la URL JDBC. Esto hace que Hibernate use el extended query protocol sin prepared statements con nombre en el servidor, plenamente compatible con `transaction` mode y con el modelo de reutilización de conexiones de PgBouncer.
+
+```
+SPRING_DATASOURCE_URL=jdbc:postgresql://tfgdevnexus-pgbouncer-bpkf6a:5432/postgres?prepareThreshold=0
+```
+
+### D.3 Autenticación: `scram-sha-256`
+
+PgBouncer está configurado con `AUTH_TYPE=scram-sha-256`, el protocolo de autenticación estándar de PostgreSQL 17. A diferencia de MD5, `scram-sha-256` implementa un protocolo de desafío-respuesta que protege las credenciales sin transmitir la contraseña en texto plano ni en forma de hash estático, garantizando la integridad de la autenticación en ambos extremos del proxy: entre la aplicación y PgBouncer, y entre PgBouncer y PostgreSQL.
+
+### D.4 Configuración completa del contenedor en Dokploy
+
+PgBouncer se despliega como un **servicio Docker independiente** en Dokploy, usando la imagen pública `edoburu/pgbouncer`. No requiere modificaciones en los archivos del proyecto ni acceso SSH directo al VPS — toda la configuración se declara mediante variables de entorno en la interfaz de Dokploy.
+
+#### Variables de entorno del servicio PgBouncer
+
+| Variable | Valor | Descripción |
+|---|---|---|
+| `DB_HOST` | `<host_postgres_interno>` | Hostname interno de PostgreSQL en la red de Dokploy |
+| `DB_PORT` | `5432` | Puerto estándar de PostgreSQL |
+| `DB_NAME` | `postgres` | Nombre de la base de datos objetivo |
+| `DB_USER` | `<usuario_postgres>` | Usuario con permisos de conexión a PostgreSQL |
+| `DB_PASSWORD` | `<contraseña>` | Contraseña del usuario de PostgreSQL |
+| `POOL_MODE` | `transaction` | Modo de pool: conexión liberada tras cada transacción |
+| `MAX_CLIENT_CONN` | `10000` | Máximo de conexiones cliente simultáneas admitidas |
+| `DEFAULT_POOL_SIZE` | `20` | Conexiones permanentes mantenidas hacia PostgreSQL |
+| `AUTH_TYPE` | `scram-sha-256` | Método de autenticación (obligatorio con PostgreSQL 17) |
+| `SERVER_RESET_QUERY` | `DISCARD ALL` | Limpia el estado de sesión al devolver la conexión al pool |
+
+#### ¿Por qué `SERVER_RESET_QUERY=DISCARD ALL`?
+
+En `transaction` mode, una conexión puede haber sido usada previamente por un cliente que dejó variables de sesión activas (`SET search_path`, tablas temporales, configuraciones locales). `DISCARD ALL` garantiza que cada transacción nueva empieza con un estado de sesión limpio, evitando filtraciones de estado entre peticiones de distintos usuarios.
+
+### D.5 Capacidad y métricas de escalabilidad
+
+| Métrica | Valor | Observación |
+|---|---|---|
+| Conexiones permanentes a PostgreSQL | 20 | PostgreSQL nunca ve más de 25 conexiones activas |
+| Conexiones cliente máximas | 10.000 | Soportadas concurrentemente por PgBouncer |
+| Throughput teórico | ~2.000 queries/s | Con latencia media de 10 ms por query |
+| Overhead por cliente adicional | ~1–2 KB RAM | PgBouncer guarda solo el estado del socket cliente, no una conexión de BD |
+
+Esta arquitectura permite **escalar el backend horizontalmente** (añadiendo más réplicas del contenedor Spring Boot) sin incrementar la carga sobre PostgreSQL, ya que todas las instancias comparten el mismo pool de conexiones a través de PgBouncer.
+
+### D.6 Flujo completo de una petición HTTP
+
+```
+Usuario (navegador)
+       │
+       ▼ HTTPS
+  Dokploy (proxy inverso + SSL)
+       │
+       ▼ HTTP interno
+  Spring Boot :8080
+       │
+  HikariCP (pool local — conexiones hacia PgBouncer)
+       │
+       ▼ TCP :5432
+  PgBouncer  ←─── max_client_conn = 10.000
+       │
+  pool de 20 conexiones estáticas
+       │
+       ▼ TCP :5432
+  PostgreSQL 17
+```
+
+Secuencia de una petición:
+
+1. El usuario hace una petición HTTP → Dokploy la enruta al contenedor Spring Boot.
+2. Spring Boot abre una transacción `@Transactional` → HikariCP toma una conexión de su pool interno (que apunta a PgBouncer).
+3. PgBouncer asigna una de sus 20 conexiones a PostgreSQL para ejecutar las queries.
+4. Al cerrar la transacción, PgBouncer ejecuta `DISCARD ALL` y devuelve la conexión al pool.
+5. Si los 20 slots están temporalmente ocupados, las peticiones esperan en la cola de PgBouncer — no en PostgreSQL.
+
+### D.7 Verificación del funcionamiento en producción
+
+El correcto arranque del sistema integrado con PgBouncer se confirma en los logs del contenedor backend:
+
+```
+HikariPool-1 - Start completed.
+Flyway Community Edition will be used.
+Database: jdbc:postgresql://tfgdevnexus-pgbouncer-bpkf6a:5432/postgres (PostgreSQL 17.x)
+Successfully validated X migrations.
+Successfully applied X migrations.
+```
+
+---
+
 # 17. ÍNDICE DE TABLAS E IMÁGENES
 
 ## Tablas
@@ -2968,7 +3205,7 @@ Para un entorno de producción real, el coste mensual estimado sería:
 | 27 | Componentes de distribución Docker | §13.1 |
 | 28 | Viabilidad económica — Desarrollo | §15.3 |
 | 29 | Viabilidad económica — Producción | §15.3 |
-| 30–45 | Tablas del modelo de datos (16 entidades) | Anexo A |
+| 30–45 | Tablas del modelo de datos (17 entidades) | Anexo A |
 | 46–56 | Tablas de endpoints de la API REST | Anexo B |
 
 ## Imágenes y figuras
@@ -2983,7 +3220,12 @@ Para un entorno de producción real, el coste mensual estimado sería:
 | 6 | Página de Contacto | §10.1 |
 | 7 | Página FAQ / Ayuda | §10.1 |
 | 8 | Panel de Usuario — Mi Perfil | §10.1 |
-| 9 | Panel de Usuario — Diario | §10.1 |
+| 9 | Panel de Usuario — Diario (vista de proyectos) | §10.1 |
+| 9a | IDE integrado — Editor Monaco con árbol de archivos | §10.1 |
+| 9b | IDE integrado — Panel de Análisis IA | §10.1 |
+| 9c | IDE integrado — Invitar colaborador | §10.1 |
+| 9d | IDE integrado — Historial de commits | §10.1 |
+| 9e | IDE integrado — Feedback de staff | §10.1 |
 | 10 | Panel de Usuario — Tickets | §10.1 |
 | 11 | Panel de Usuario — Mensajería | §10.1 |
 | 12 | Panel de Usuario — Notificaciones | §10.1 |
@@ -2997,7 +3239,9 @@ Para un entorno de producción real, el coste mensual estimado sería:
 | 20 | Panel de Administración — Diarios | §10.1 |
 | 21 | Panel de Administración — Auditoría | §10.1 |
 | 22 | Panel de Administración — Perfil | §10.1 |
-| 23 | Blog — Comunidad & Updates | §10.1 |
+| 23 | Blog — Tarjetas de proyectos publicados | §10.1 |
+| 23a | Blog — Modal de publicación (título y descripción) | §10.1 |
+| 23b | Blog — Modal de proyecto con código y comentarios | §10.1 |
 | 24 | Diagrama de arquitectura global | §10.2 |
 | 25 | Diagrama de Casos de Uso UML | §10.3 |
 | 26 | Diagrama de secuencia — Autenticación | §10.3 |

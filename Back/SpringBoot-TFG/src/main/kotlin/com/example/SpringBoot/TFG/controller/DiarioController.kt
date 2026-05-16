@@ -4,6 +4,7 @@ import com.example.SpringBoot.TFG.dto.ComentarioCreateDto
 import com.example.SpringBoot.TFG.dto.DiarioComentarioDto
 import com.example.SpringBoot.TFG.dto.DiarioCreateDto
 import com.example.SpringBoot.TFG.dto.DiarioDto
+import com.example.SpringBoot.TFG.dto.DiarioFileDto
 import com.example.SpringBoot.TFG.security.UserPrincipal
 import com.example.SpringBoot.TFG.service.DiarioService
 import jakarta.validation.Valid
@@ -95,11 +96,18 @@ class DiarioController(
     @GetMapping("/publicos")
     fun publicos(pageable: Pageable): Page<DiarioDto> = service.publicos(pageable)
 
+    @GetMapping("/tema/{temaId}/publicos")
+    fun publicosPorTema(@PathVariable temaId: Int): List<DiarioDto> = service.publicosPorTema(temaId)
+
     @GetMapping("/mis-diarios")
     fun misDiarios(pageable: Pageable, authentication: Authentication): Page<DiarioDto> {
         val principal = authentication.principal as UserPrincipal
         return service.deUsuario(principal.uid, pageable)
     }
+
+    @GetMapping("/tema/{temaId}/archivos")
+    fun getArchivosActuales(@PathVariable temaId: Int): List<DiarioDto> =
+        service.getArchivosActuales(temaId)
 
     @GetMapping("/tema/{temaId}/export.csv")
     fun exportarTemaCsv(@PathVariable temaId: Int): ResponseEntity<ByteArray> {

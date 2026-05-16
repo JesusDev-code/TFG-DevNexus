@@ -10,6 +10,7 @@ import {
   trashOutline, happyOutline, chatbubblesOutline,
   chevronBackOutline, peopleOutline, filterOutline
 } from 'ionicons/icons';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
@@ -34,6 +35,8 @@ export class UserMessagesPage {
   private toastCtrl = inject(ToastController);
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   // --- STATE MANAGEMENT (SIGNALS) ---
   conversaciones = signal<ConversacionDto[]>([]);
@@ -90,8 +93,15 @@ export class UserMessagesPage {
         this.usuariosEncontrados.set([]);
       }
     });
-  }
 
+    this.route.queryParams.subscribe(params => {
+      if (params['userId'] && params['nombre']) {
+        const usuario = { id: Number(params['userId']), nombre: params['nombre'] } as any;
+        this.abrirChatDirecto(usuario);
+        this.router.navigate([], { replaceUrl: true, queryParams: {} });
+      }
+    });
+  }
 
   cargarConversaciones() {
     this.chatService.getConversaciones().subscribe({
@@ -176,6 +186,19 @@ export class UserMessagesPage {
     }
   }
 
+  private abrirChatDirecto(u: { id: number; nombre: string }) {
+    this.chatService.crearConversacion(`Chat con ${u.nombre}`, 'individual', u.id).subscribe({
+      next: (nuevoChat) => {
+        const existe = this.conversaciones().find(c => c.id === nuevoChat.id);
+        if (!existe) {
+          this.conversaciones.update(prev => [nuevoChat, ...prev]);
+        }
+        this.seleccionarConversacion(existe ?? nuevoChat);
+      },
+      error: () => this.presentToast('Error al abrir el chat', 'danger')
+    });
+  }
+
   iniciarChatCon(u: UsuarioDto) {
     this.chatService.crearConversacion(`Chat con ${u.nombre}`, 'individual', u.id).subscribe({
       next: (nuevoChat) => {
@@ -207,18 +230,36 @@ export class UserMessagesPage {
 
     this.nuevoMensaje.set('');
 
+    const user = this.authService.currentUser();
+    const tempId = -Date.now();
+    const mensajeOptimista: MensajeDto = {
+      id: tempId,
+      texto,
+      autorId: this.miId()!,
+      autorNombre: user?.nombre ?? '',
+      autorFoto: user?.foto_perfil,
+      fechaEnvio: new Date().toISOString(),
+      esStaff: false,
+      leido: true
+    };
+
+    this.mensajes.update(prev => [...prev, mensajeOptimista]);
+    this.conversaciones.update(prev =>
+      prev.map(c => c.id === currentChat.id ? { ...c, ultimoMensaje: texto } : c)
+    );
+    setTimeout(() => this.scrollToBottom(), 150);
+
     this.chatService.enviarMensaje({
       conversacionId: currentChat.id,
-      texto: texto
+      texto
     }).subscribe({
       next: (msg) => {
-        this.mensajes.update(prev => [...prev, msg]);
-        this.conversaciones.update(prev =>
-          prev.map(c => c.id === currentChat.id ? { ...c, ultimoMensaje: texto } : c)
-        );
-        setTimeout(() => this.scrollToBottom(), 150);
+        this.mensajes.update(prev => prev.map(m => m.id === tempId ? msg : m));
       },
-      error: () => this.presentToast('Error al enviar', 'danger')
+      error: () => {
+        this.mensajes.update(prev => prev.filter(m => m.id !== tempId));
+        this.presentToast('Error al enviar', 'danger');
+      }
     });
   }
 

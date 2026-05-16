@@ -14,13 +14,23 @@ data class DiarioTema(
     val id: Int? = null,
 
     @Column(length = 100)
-    val titulo: String? = null,
+    var titulo: String? = null,
 
     @Column(length = 255)
-    val descripcion: String? = null,
+    var descripcion: String? = null,
 
     @OneToMany(mappedBy = "tema", cascade = [CascadeType.ALL], orphanRemoval = true)
     val colaboradores: MutableList<DiarioColaboracion> = mutableListOf(),
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    var visibilidad: Visibilidad = Visibilidad.PRIVADO,
+
+    @Column(length = 200)
+    var tituloPublicacion: String? = null,
+
+    @Column(length = 500)
+    var descripcionPublicacion: String? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")

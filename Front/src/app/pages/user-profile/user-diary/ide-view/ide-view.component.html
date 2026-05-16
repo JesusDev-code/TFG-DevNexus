@@ -1,0 +1,399 @@
+<div class="ide-shell" [class.with-ai]="mostrarAIPanel" [class.with-log]="panelInferior !== 'none'" [class.tree-open]="mostrarFileTree">
+
+  <!-- ── TOPBAR ── -->
+  <div class="ide-topbar">
+    <button class="btn-back" (click)="volver.emit()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      <span>Proyectos</span>
+    </button>
+
+    <div class="topbar-center">
+      <span class="project-badge">{{ tema.titulo }}</span>
+      <span class="file-breadcrumb" *ngIf="archivoActivo">
+        / {{ archivoActivo.filename }}
+        <span class="unsaved-dot" *ngIf="tienesCambios" title="Cambios sin guardar"></span>
+      </span>
+    </div>
+
+    <div class="topbar-actions">
+      <button class="btn-run" (click)="ejecutarProyecto()" [disabled]="archivos.length === 0" title="Ejecutar proyecto">
+        <ion-icon name="play-outline"></ion-icon>
+        <span>Run</span>
+      </button>
+      <button class="btn-tree-toggle" (click)="mostrarFileTree = !mostrarFileTree" title="Archivos">
+        <ion-icon name="folder-open-outline"></ion-icon>
+      </button>
+      <div class="collab-btn-wrap" *ngIf="tema.usuarioNombre || colaboradores.length > 0">
+        <button class="btn-collab" (click)="toggleCollabPanel()" title="Ver colaboradores">
+          <span class="collab-avatar-mini">{{ tema.usuarioNombre?.charAt(0)?.toUpperCase() }}</span>
+          <span class="collab-count" *ngIf="colaboradores.length > 0">+{{ colaboradores.length }}</span>
+        </button>
+        <div class="collab-panel" *ngIf="mostrarCollabPanel">
+          <div class="collab-panel-header">
+            Colaboradores
+            <button class="cp-close-btn" (click)="toggleCollabPanel()" title="Cerrar">
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+          </div>
+          <div class="collab-panel-item">
+            <div class="cp-avatar owner-av">{{ tema.usuarioNombre?.charAt(0)?.toUpperCase() }}</div>
+            <div class="cp-info">
+              <span class="cp-name">{{ tema.usuarioNombre }}</span>
+              <span class="cp-role">Propietario</span>
+            </div>
+          </div>
+          <div class="collab-panel-item" *ngFor="let c of colaboradores">
+            <div class="cp-avatar">
+              <img *ngIf="c.foto_perfil" [src]="c.foto_perfil">
+              <span *ngIf="!c.foto_perfil">{{ c.nombre.charAt(0).toUpperCase() }}</span>
+            </div>
+            <div class="cp-info">
+              <span class="cp-name">{{ c.nombre }}</span>
+              <span class="cp-role">Colaborador</span>
+            </div>
+            <button class="cp-msg-btn" (click)="irAMensajes.emit({ userId: c.id, nombre: c.nombre }); mostrarCollabPanel = false">
+              Mensaje
+            </button>
+          </div>
+        </div>
+      </div>
+      <button class="btn-invite" *ngIf="!readOnly && !staffFeedbackMode" (click)="invitarUsuario()" title="Invitar colaborador">
+        <ion-icon name="person-add-outline"></ion-icon>
+        <span>Invitar</span>
+      </button>
+      <button class="btn-ai-toggle" *ngIf="!staffFeedbackMode" [class.active]="mostrarAIPanel" (click)="abrirMenuIA()">
+        <ion-icon name="sparkles-outline"></ion-icon>
+        <span>IA</span>
+      </button>
+      <button class="btn-download" (click)="descargarCSV()" title="Descargar proyecto en CSV">
+        <ion-icon name="document-outline"></ion-icon>
+        <span>CSV</span>
+      </button>
+      <button class="btn-download" (click)="descargarMarkdown()" title="Descargar proyecto en Markdown">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <span>MD</span>
+      </button>
+      <div class="mobile-more-wrapper">
+        <button class="btn-mobile-more" (click)="abrirAccionesMovil()" title="Más acciones">
+          <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN: FILE TREE + EDITOR + AI PANEL ── -->
+  <div class="ide-main">
+
+    <!-- File Tree -->
+    <app-file-tree
+      [archivos]="archivos"
+      [archivoActivo]="archivoActivo"
+      [carpetasManual]="carpetasManual"
+      [nombreProyecto]="tema.titulo"
+      [readOnly]="readOnly"
+      (archivoSeleccionado)="seleccionarArchivo($event)"
+      (nuevoArchivo)="crearNuevoArchivo()"
+      (nuevoArchivoEnCarpeta)="crearNuevoArchivo($event)"
+      (nuevaCarpeta)="crearCarpeta()"
+      (nuevaSubcarpeta)="crearCarpeta($event)"
+      (editarCarpeta)="editarCarpeta($event)"
+      (borrarCarpeta)="borrarCarpeta($event)"
+      (borrarArchivo)="borrarArchivo($event)">
+    </app-file-tree>
+
+    <!-- Editor -->
+    <div class="editor-zone">
+      <!-- Empty state -->
+      <div class="editor-empty" *ngIf="archivos.length === 0 && !cargando">
+        <ion-icon name="code-slash-outline"></ion-icon>
+        <h3>Sin archivos aún</h3>
+        <p>Creá tu primer archivo para empezar a escribir código.</p>
+        <button class="btn-crear-first" (click)="crearNuevoArchivo()">
+          <ion-icon name="add-outline"></ion-icon> Crear index.html
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div class="editor-loading" *ngIf="cargando">
+        <ion-spinner name="crescent"></ion-spinner>
+        <span>Cargando proyecto...</span>
+      </div>
+
+      <!-- Monaco container -->
+      <div #editorContainer class="monaco-container"
+           [style.display]="archivos.length > 0 && !cargando ? 'block' : 'none'">
+      </div>
+    </div>
+
+    <!-- AI Panel -->
+    <div class="ai-panel" *ngIf="mostrarAIPanel">
+      <div class="ai-panel-drag-handle"></div>
+      <div class="ai-panel-header">
+        <ion-icon name="sparkles-outline"></ion-icon>
+        <span>Análisis IA</span>
+        <button class="ai-close" (click)="mostrarAIPanel = false">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="ai-panel-body">
+        <div class="ai-quick-actions">
+          <button class="btn-ai-quick" (click)="abrirCamaraIA()" [disabled]="cargandoVision">
+            <ion-icon name="camera-outline"></ion-icon>
+            <span>{{ cargandoVision ? 'Procesando imagen...' : 'Foto/Cámara' }}</span>
+          </button>
+          <button class="btn-ai-quick" (click)="solicitarCodeReviewArchivo()" [disabled]="cargandoCodeReview || !archivoActivo">
+            <ion-icon name="sparkles-outline"></ion-icon>
+            <span>{{ cargandoCodeReview ? 'Revisando...' : 'Code Review IA' }}</span>
+          </button>
+          <button class="btn-ai-quick" (click)="sugerirEtiquetasCommit()" [disabled]="cargandoEtiquetas || !nuevoCommitTexto.trim()">
+            <ion-icon name="pricetags-outline"></ion-icon>
+            <span>{{ cargandoEtiquetas ? 'Sugiriendo...' : 'Sugerir etiquetas commit' }}</span>
+          </button>
+          <button class="btn-ai-quick" (click)="resumirProyecto()" [disabled]="cargandoResumen">
+            <ion-icon name="reader-outline"></ion-icon>
+            <span>{{ cargandoResumen ? 'Resumiendo...' : 'Resumen IA' }}</span>
+          </button>
+        </div>
+
+        <div class="ai-section" *ngIf="etiquetasSugeridas.length">
+          <div class="ai-section-title">
+            <span>Etiquetas sugeridas</span>
+          </div>
+          <div class="tag-list">
+            <button class="tag-chip" *ngFor="let tag of etiquetasSugeridas" (click)="aplicarEtiqueta(tag)">
+              #{{ tag }}
+            </button>
+          </div>
+        </div>
+
+        <div class="ai-section" *ngIf="codeReviewActual">
+          <div class="ai-section-title">
+            <span>Code review IA</span>
+          </div>
+          <div class="ai-feedback-md">
+            <markdown [data]="codeReviewActual"></markdown>
+          </div>
+        </div>
+
+        <div class="ai-section" *ngIf="resumenTema">
+          <div class="ai-section-title">
+            <span>Resumen del proyecto</span>
+          </div>
+          <div class="ai-feedback-md">
+            <markdown [data]="resumenTema"></markdown>
+          </div>
+        </div>
+
+        <div class="ai-section" *ngIf="sintaxisErrores.length || sintaxisWarnings.length">
+          <div class="ai-section-title error">
+            <span>Sintaxis del archivo actual</span>
+          </div>
+          <ul class="ai-list" *ngIf="sintaxisErrores.length">
+            <li *ngFor="let err of sintaxisErrores">❌ {{ err }}</li>
+          </ul>
+          <ul class="ai-list" *ngIf="sintaxisWarnings.length">
+            <li *ngFor="let warning of sintaxisWarnings">⚠ {{ warning }}</li>
+          </ul>
+        </div>
+
+        <!-- Loading -->
+        <div class="ai-loading" *ngIf="cargandoAI">
+          <ion-spinner name="crescent"></ion-spinner>
+          <span>Analizando código...</span>
+        </div>
+
+        <!-- Sin análisis aún -->
+        <div class="ai-empty" *ngIf="!cargandoAI && !analisisAI">
+          <p>Pulsá <strong>Run</strong> para ejecutar el proyecto y obtener un análisis completo de la IA.</p>
+          <button class="btn-analizar" (click)="analizarConIA()">
+            <ion-icon name="sparkles-outline"></ion-icon> Analizar ahora
+          </button>
+        </div>
+
+        <!-- Resultado -->
+        <ng-container *ngIf="!cargandoAI && analisisAI">
+          <!-- Score -->
+          <div class="ai-score-row">
+            <span class="score-label">Puntuación</span>
+            <div class="score-bar-wrap">
+              <div class="score-bar" [style.width.%]="analisisAI.score"></div>
+            </div>
+            <span class="score-value" [class.high]="analisisAI.score >= 70" [class.low]="analisisAI.score < 50">
+              {{ analisisAI.score }}/100
+            </span>
+          </div>
+
+          <!-- Errores -->
+          <div class="ai-section" *ngIf="analisisAI.errores?.length">
+            <div class="ai-section-title error">
+              <span>⚠ Errores detectados</span>
+            </div>
+            <ul class="ai-list">
+              <li *ngFor="let e of analisisAI.errores">{{ e }}</li>
+            </ul>
+          </div>
+
+          <!-- Sugerencias -->
+          <div class="ai-section" *ngIf="analisisAI.sugerencias?.length">
+            <div class="ai-section-title">
+              <span>① Sugerencias</span>
+            </div>
+            <ul class="ai-list">
+              <li *ngFor="let s of analisisAI.sugerencias">{{ s }}</li>
+            </ul>
+          </div>
+
+          <!-- Feedback completo -->
+          <div class="ai-section">
+            <div class="ai-section-title">
+              <span>Análisis completo</span>
+            </div>
+            <div class="ai-feedback-md">
+              <markdown [data]="analisisAI.feedback"></markdown>
+            </div>
+          </div>
+
+          <button class="btn-reanalizar" (click)="analizarConIA()">
+            <ion-icon name="sparkles-outline"></ion-icon> Reanalizar
+          </button>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Mobile file tree backdrop -->
+    <div class="mobile-tree-backdrop" *ngIf="mostrarFileTree" (click)="mostrarFileTree = false"></div>
+  </div>
+
+  <!-- ── STATUS BAR ── -->
+  <div class="ide-statusbar">
+    <div class="status-left">
+      <span *ngIf="archivoActivo">{{ archivoActivo.filename }}</span>
+      <span class="status-divider" *ngIf="archivoActivo">·</span>
+      <span *ngIf="archivoActivo">{{ getLenguaje(archivoActivo.filename ?? '') }}</span>
+      <span class="status-divider" *ngIf="archivoActivo">·</span>
+      <span *ngIf="archivoActivo">{{ getLineCount() }} líneas</span>
+    </div>
+    <div class="status-center">
+      <span class="unsaved-indicator" *ngIf="tienesCambios">
+        ● Sin guardar — Ctrl+S para guardar
+      </span>
+    </div>
+    <div class="status-right">
+      <button class="status-btn status-save" *ngIf="!readOnly"
+              (click)="guardarArchivo()"
+              [disabled]="!archivoActivo || !tienesCambios || guardando">
+        <ion-icon name="save-outline"></ion-icon> Guardar
+      </button>
+      <button class="status-btn status-cancel" *ngIf="!readOnly"
+              (click)="descartarCambios()"
+              [disabled]="!archivoActivo || !tienesCambios || guardando">
+        <ion-icon name="close-circle-outline"></ion-icon> Cancelar
+      </button>
+      <button class="status-btn" [class.active]="panelInferior === 'commits'" (click)="toggleCommitLogPanel()">
+        <ion-icon name="git-commit-outline"></ion-icon> Commits
+      </button>
+      <button class="status-btn" [class.active]="panelInferior === 'feedback'" (click)="toggleFeedbackPanel()">
+        <ion-icon name="chatbubble-outline"></ion-icon> Feedback
+      </button>
+    </div>
+  </div>
+
+  <!-- ── COMMIT LOG ── -->
+  <div class="commit-log-panel" *ngIf="panelInferior === 'commits'">
+    <div class="commit-log-header">
+      <ion-icon name="git-commit-outline"></ion-icon>
+      <span>Commit Log</span>
+      <button (click)="cerrarPanelInferior()"><ion-icon name="close-outline"></ion-icon></button>
+    </div>
+
+    <div class="commit-input-row" *ngIf="permiteGestionCommits">
+      <input [(ngModel)]="nuevoCommitTexto"
+             placeholder="Describí qué hiciste..."
+             class="commit-input"
+             (keyup.enter)="commitLog_guardar()">
+      <button class="btn-ai-tag-suggest" (click)="sugerirEtiquetasCommit()" [disabled]="cargandoEtiquetas || !nuevoCommitTexto.trim()" title="Sugerir etiquetas con IA">
+        <ion-icon name="pricetags-outline"></ion-icon>
+      </button>
+      <button class="btn-ai-filter-tags" (click)="mostrarFiltroEtiquetas = !mostrarFiltroEtiquetas" [disabled]="!etiquetasCommitActuales.length" title="Filtrar por etiquetas">
+        <ion-icon name="funnel-outline"></ion-icon>
+      </button>
+      <button class="btn-commit" (click)="commitLog_guardar()" [disabled]="!nuevoCommitTexto.trim()">
+        <ion-icon name="cloud-upload-outline"></ion-icon> Commit
+      </button>
+    </div>
+
+    <div class="commit-tags-row" *ngIf="etiquetasSugeridosCommit?.length">
+      <div class="tag-suggestions">
+        <span class="tag-label">Etiquetas sugeridas:</span>
+        <button class="tag-chip" *ngFor="let tag of etiquetasSugeridosCommit" (click)="aplicarEtiqueta(tag)">
+          #{{ tag }}
+        </button>
+      </div>
+    </div>
+
+    <div class="commit-list">
+      <ng-container *ngFor="let c of commitLog">
+        <div class="commit-item" [class.hidden]="filtroEtiquetasActivas.length && !tieneEtiquetasCompatibles(c)">
+          <div class="commit-dot"></div>
+          <div class="commit-content">
+            <span class="commit-msg">{{ c.contenido | slice:0:100 }}</span>
+            <div class="commit-tags" *ngIf="extraerEtiquetas(c)?.length">
+              <span class="commit-tag" *ngFor="let tag of extraerEtiquetas(c)"
+                    (click)="aplicarFiltroEtiqueta(tag); $event.stopPropagation()">
+                #{{ tag }}
+              </span>
+            </div>
+            <span class="commit-date">{{ c.fechaCreacion | date:'d MMM, HH:mm' }}</span>
+          </div>
+          <button class="commit-delete-btn" *ngIf="permiteGestionCommits" (click)="borrarCommit(c)" title="Eliminar commit">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </ng-container>
+
+      <div *ngIf="!commitLog.length" class="commit-empty">
+        Sin commits aún. Describí tus cambios y dales a Commit.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FEEDBACK PANEL ── -->
+  <div class="feedback-log-panel" *ngIf="panelInferior === 'feedback'">
+    <div class="feedback-log-header">
+      <ion-icon name="chatbubble-outline"></ion-icon>
+      <span>Feedback · {{ tema.titulo }}</span>
+      <button (click)="cerrarPanelInferior()"><ion-icon name="close-outline"></ion-icon></button>
+    </div>
+
+    <!-- Chat de proyecto — visible para todos (admin y usuario) -->
+    <div class="feedback-thread">
+      <div class="cfp-loading" *ngIf="temaFeedbackLoading">
+        <ion-spinner name="crescent" style="width:18px;height:18px;"></ion-spinner>
+      </div>
+      <div class="cfp-bubbles" *ngIf="!temaFeedbackLoading">
+        <div class="cfp-bubble" *ngFor="let fb of temaFeedbackComments" [class.is-admin]="fb.esAdmin">
+          <span class="cfp-author">{{ fb.autorNombre }}</span>
+          <span class="cfp-text">{{ fb.texto }}</span>
+          <span class="cfp-date">{{ fb.fecha | date:'d MMM, HH:mm' }}</span>
+        </div>
+        <div *ngIf="!temaFeedbackComments.length" class="cfp-empty">
+          Sin mensajes todavía. Sé el primero en dejar feedback.
+        </div>
+      </div>
+      <div class="cfp-input-row">
+        <input [(ngModel)]="temaFeedbackText"
+               placeholder="Escribe tu feedback sobre el proyecto..."
+               class="cfp-input"
+               (keyup.enter)="enviarFeedbackTema()">
+        <button class="cfp-send-btn" (click)="enviarFeedbackTema()">
+          <ion-icon name="send-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+

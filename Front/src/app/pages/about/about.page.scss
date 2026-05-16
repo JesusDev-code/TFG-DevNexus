@@ -1,28 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
 
-:host { 
-  background: transparent !important; 
-  display: block; 
+:host {
+  background: transparent !important;
+  display: block;
   height: 100%;
 }
 
-// HEADER
 .about-hero-container {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 48px 24px 24px;
   text-align: center;
 }
 
-.about-title {
-  font-size: 3.5rem;
-  font-weight: 800;
-  line-height: 1.1;
+.hero-eyebrow {
+  display: inline-block;
+  padding: 6px 16px;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #c084fc;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   margin-bottom: 20px;
-  letter-spacing: -1.5px;
-  
+}
+
+.about-title {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1.05;
+  margin-bottom: 20px;
+  letter-spacing: -2px;
+
   .text-gradient {
-    background: linear-gradient(to right, #c084fc, #a855f7);
+    background: linear-gradient(135deg, #c084fc, #a855f7, #3b82f6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -30,129 +43,145 @@
 
 .about-description {
   color: #94a3b8;
-  font-size: 1.25rem;
-  line-height: 1.6;
-  max-width: 700px;
-  margin: 0 auto 40px;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  max-width: 640px;
+  margin: 0 auto;
 }
 
-// CAJAS DE MISION Y VISION
-.services-grid-container {
+// FEATURE SHOWCASE
+.features-showcase {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
   max-width: 1100px;
-  margin: 0 auto 60px; // Un poco de margen inferior antes de la línea
+  margin: 52px auto;
   padding: 0 24px;
+}
 
-  .service-box {
-    height: 100%;
-    padding: 1px; 
-    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-    border-radius: 24px;
-    transition: transform 0.3s ease;
+.showcase-card {
+  background: #1e2336;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 28px 22px;
+  transition: all 0.3s ease;
 
-    &:hover {
-      transform: translateY(-8px);
-      .box-light { opacity: 1; }
-      .icon-glow-box { transform: scale(1.1); background: rgba(168, 85, 247, 0.2); }
-    }
+  &:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
   }
 
-  .service-inner {
-    background: #1e2336; 
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    
-    border-radius: 23px;
-    padding: 45px 35px;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 14px 0 8px;
+  }
 
-    .icon-glow-box {
-      width: 56px; height: 56px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 26px;
-      color: #a855f7;
-      margin-bottom: 24px;
-      transition: all 0.3s ease;
-    }
-
-    h3 { 
-      font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; 
-      color: #ffffff; 
-    }
-    p { 
-      color: #94a3b8; font-size: 1rem; line-height: 1.6; 
-    }
-
-    .box-light {
-      position: absolute;
-      top: -50%; left: -50%;
-      width: 200%; height: 200%;
-      background: radial-gradient(circle at center, rgba(168, 85, 247, 0.05), transparent 50%);
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      pointer-events: none;
-    }
+  p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin: 0;
   }
 }
 
-// SECCION VALORES (MODIFICADA)
-.values-section {
-  text-align: center;
-  margin-top: 20px;
-  padding-bottom: 60px;
-  
-  // 🔥 CAMBIO 1: La línea ahora está aquí, separando toda la sección
-  border-top: 1px solid rgba(255,255,255,0.05); 
-  padding-top: 60px; // Espacio entre la línea y el título
-}
-
-.section-subtitle {
+.sc-num {
   font-size: 2rem;
   font-weight: 800;
-  margin-bottom: 40px;
-  .accent-text { color: #a855f7; }
+  line-height: 1;
+  margin-bottom: 14px;
+  letter-spacing: -1px;
+  &.purple { color: #a855f7; }
+  &.blue   { color: #3b82f6; }
+  &.cyan   { color: #23c6fa; }
+  &.green  { color: #20d77c; }
 }
 
-.tech-marquee {
-  display: flex; 
-  justify-content: center; 
-  gap: 80px;
-  padding: 0 24px; // Quitamos padding vertical extra
-  // 🔥 CAMBIO 2: Eliminado el border-top de aquí
-  
-  .tech-item {
-    display: flex; 
-    flex-direction: column; 
-    align-items: center;
-    color: #475569; 
-    transition: all 0.4s ease;
-    cursor: default;
+// DOWNLOAD SECTION
+.download-section {
+  max-width: 1100px;
+  margin: 0 auto 60px;
+  padding: 0 24px;
+}
 
-    ion-icon { 
-        font-size: 45px; 
-        margin-bottom: 10px; 
-        transition: 0.4s; 
-    }
-    .label { 
-        font-size: 0.9rem; 
-        font-weight: 600; 
-        opacity: 0.7; 
-        transition: 0.4s; 
-    }
+.download-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(168, 85, 247, 0.04));
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 24px;
+  padding: 36px 40px;
+  flex-wrap: wrap;
+}
 
-    &:hover {
-      color: white; 
-      transform: translateY(-5px);
-      filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.5));
-      .label { opacity: 1; color: #a855f7; }
-    }
+.download-icon {
+  font-size: 48px;
+  color: #a855f7;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.download-text {
+  flex: 1;
+  min-width: 200px;
+  text-align: center;
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
   }
+
+  p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+}
+
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 14px 28px;
+  border-radius: 14px;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.35);
+
+  ion-icon { font-size: 18px; }
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(168, 85, 247, 0.5);
+  }
+}
+
+@media (max-width: 600px) {
+  .download-inner { flex-direction: column; text-align: center; }
+  .download-btn { width: 100%; justify-content: center; }
+}
+
+
+@media (max-width: 900px) {
+  .features-showcase { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
-  .about-title { font-size: 2.5rem; }
-  .tech-marquee { gap: 30px; flex-wrap: wrap; }
+  .about-title { font-size: 3rem; }
+  .stack-row { gap: 28px; }
+}
+
+@media (max-width: 480px) {
+  .features-showcase { grid-template-columns: 1fr; }
 }

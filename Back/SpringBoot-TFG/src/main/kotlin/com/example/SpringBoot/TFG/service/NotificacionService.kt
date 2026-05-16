@@ -67,10 +67,33 @@ class NotificacionService(
                 }
 
                 fcm.send(messageBuilder.build())
-                logger.info("Push enviado con éxito a {} ({})", usuario.nombre, titulo)
+                logger.info("✅ Push enviado a {} ({})", usuario.nombre, titulo)
             } catch (e: Exception) {
-                logger.warn("Error enviando Push a {}: {}", usuario.nombre, e.message, e)
+                logger.error("❌ Error FCM enviando a {} token=[{}]: {}", usuario.nombre, token.take(20), e.message, e)
             }
+        }
+    }
+
+    fun testPush(): String {
+        val userId = securityService.getUserPrincipal().userId!!
+        val usuario = repo.findByUsuarioId(userId).firstOrNull()?.usuario
+            ?: return "Usuario no encontrado"
+
+        val token = usuario.fcmToken
+            ?: return "❌ Sin token FCM — el usuario no tiene token guardado en BD"
+
+        return try {
+            val msg = Message.builder()
+                .setToken(token)
+                .setNotification(FcmNotification.builder().setTitle("Test Push").setBody("Si ves esto, FCM funciona ✅").build())
+                .putData("tipo", "evento")
+                .putData("url", "/user-profile/eventos")
+                .build()
+            fcm.send(msg)
+            "✅ Push enviado con éxito al token ${token.take(20)}..."
+        } catch (e: Exception) {
+            logger.error("❌ testPush falló: {}", e.message, e)
+            "❌ Error FCM: ${e.message}"
         }
     }
 

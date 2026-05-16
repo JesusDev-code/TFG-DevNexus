@@ -90,6 +90,7 @@ export class AuthService {
   logout() {
     return from(signOut(this.auth)).pipe(
       tap(() => {
+        this.fcmService.resetear();
         this._currentUser.set(null);
         this.router.navigate(['/dashboard']);
       })
@@ -97,7 +98,10 @@ export class AuthService {
   }
 
   logoutNoRedirect() {
-    return from(signOut(this.auth)).pipe(tap(() => { this._currentUser.set(null); }));
+    return from(signOut(this.auth)).pipe(tap(() => {
+      this.fcmService.resetear();
+      this._currentUser.set(null);
+    }));
   }
 
   // ✅ NUEVO: RECUPERAR CONTRASEÑA
@@ -154,15 +158,8 @@ export class AuthService {
     }
   }
 
-  private async activarNotificaciones() {
-    try {
-      const token = await this.fcmService.obtenerToken();
-      if (token) {
-        this.updateUserProfile({ fcm_token: token }).subscribe();
-        this.fcmService.iniciarEscucha();
-      }
-    } catch (e) {
-      console.error('No se pudo activar notificaciones', e);
-    }
+  private activarNotificaciones() {
+    // La lógica principal vive en app.component (effect reactivo al currentUser signal)
+    // Este método queda como hook vacío para no romper los call-sites
   }
 }

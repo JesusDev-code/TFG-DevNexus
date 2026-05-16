@@ -1,57 +1,56 @@
 <ion-content [fullscreen]="true">
   <div class="main-wrapper">
-    
+
     <div class="about-hero-container">
-      <h1 class="about-title">Sobre <span class="text-gradient">nosotros.</span></h1>
+      <div class="hero-eyebrow">Plataforma para developers</div>
+      <h1 class="about-title"><span class="text-gradient">DevNexus.</span></h1>
       <p class="about-description">
-        Somos una comunidad apasionada por la tecnología y el aprendizaje colaborativo, impulsando la próxima generación de desarrolladores.
+        Gestiona tus proyectos, comparte tu progreso con la comunidad y usa IA para potenciar tu desarrollo. Todo en un solo lugar, desde el navegador o tu Android.
       </p>
     </div>
 
-    <div class="services-grid-container">
-      <ion-grid>
-        <ion-row>
-          <ion-col size="12" size-md="6">
-            <div class="service-box">
-              <div class="service-inner">
-                <div class="icon-glow-box"><ion-icon name="rocket-outline"></ion-icon></div>
-                <h3>Nuestra Misión</h3>
-                <p>Empoderar a desarrolladores a través del conocimiento compartido y la colaboración continua en proyectos reales.</p>
-                <div class="box-light"></div>
-              </div>
-            </div>
-          </ion-col>
-          <ion-col size="12" size-md="6">
-            <div class="service-box">
-              <div class="service-inner">
-                <div class="icon-glow-box"><ion-icon name="eye-outline"></ion-icon></div>
-                <h3>Nuestra Visión</h3>
-                <p>Ser la plataforma líder donde la innovación y la creatividad florezcan mediante el mentoring y el feedback experto.</p>
-                <div class="box-light"></div>
-              </div>
-            </div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
-
-    <div class="values-section">
-      <h2 class="section-subtitle">Nuestros <span class="accent-text">Valores</span></h2>
-      <div class="tech-marquee">
-        <div class="tech-item value-item">
-          <ion-icon name="people-outline"></ion-icon>
-          <span class="label">Colaboración</span>
-        </div>
-        <div class="tech-item value-item">
-          <ion-icon name="ribbon-outline"></ion-icon>
-          <span class="label">Excelencia</span>
-        </div>
-        <div class="tech-item value-item">
-          <ion-icon name="bulb-outline"></ion-icon>
-          <span class="label">Innovación</span>
-        </div>
+    <div class="features-showcase">
+      <div class="showcase-card">
+        <div class="sc-num purple">01</div>
+        <h3>Diario Personal</h3>
+        <p>Registra cada avance de tu carrera. Texto, código del IDE y control de visibilidad.</p>
+      </div>
+      <div class="showcase-card">
+        <div class="sc-num blue">02</div>
+        <h3>Blog Comunitario</h3>
+        <p>Publica tus proyectos cuando estés listo. La comunidad comenta y aprende contigo.</p>
+      </div>
+      <div class="showcase-card">
+        <div class="sc-num cyan">03</div>
+        <h3>IA Integrada</h3>
+        <p>Analiza tus entradas con inteligencia artificial y obtén insights de tu progreso.</p>
+      </div>
+      <div class="showcase-card">
+        <div class="sc-num green">04</div>
+        <h3>Colaboración</h3>
+        <p>Invita devs a tus proyectos, mensajes directos y soporte con el staff integrado.</p>
       </div>
     </div>
+
+    <div class="download-section">
+      <div class="download-inner">
+        <div class="download-icon">
+          <ion-icon name="logo-android"></ion-icon>
+        </div>
+        <div class="download-text">
+          <h2>Lleva DevNexus en tu bolsillo</h2>
+          <p>Descarga la app para Android y accede a toda la plataforma desde tu móvil.</p>
+        </div>
+        <a
+          class="download-btn"
+          href="https://github.com/JesusDev-code/TFG/releases/latest/download/devnexus.apk"
+          download>
+          <ion-icon name="download-outline"></ion-icon>
+          Descargar APK
+        </a>
+      </div>
+    </div>
+
 
   </div>
 </ion-content>

@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { IonIcon, ToastController, LoadingController, AlertController, IonSpinner } from '@ionic/angular/standalone';
+import { IonIcon, ToastController, LoadingController, AlertController } from '@ionic/angular/standalone';
 import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
@@ -19,18 +20,19 @@ import {
   searchOutline, downloadOutline, eyeOutline, eyeOffOutline,
   bookmarkOutline, bookmarkSharp, flameOutline, filterOutline,
   chevronUpOutline, cameraOutline, logoMarkdown, sparklesOutline,
-  readerOutline, pricetagsOutline, documentTextOutline
+  readerOutline, pricetagsOutline, documentTextOutline, closeOutline
 } from 'ionicons/icons';
 
 import { DiarioService } from 'src/app/services/diario.service';
 import { Visibilidad, DiarioTemaDto } from 'src/app/core/models/models';
+import { IdeViewComponent } from './ide-view/ide-view.component';
 
 @Component({
   selector: 'app-user-diary',
   templateUrl: './user-diary.page.html',
   styleUrls: ['./user-diary.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonIcon, IonSpinner, MarkdownModule],
+  imports: [CommonModule, FormsModule, IonIcon, MarkdownModule, IdeViewComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserDiaryPage implements OnInit {
@@ -41,6 +43,7 @@ export class UserDiaryPage implements OnInit {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   temas: DiarioTemaDto[] = [];
   entradas: any[] = [];
@@ -113,6 +116,7 @@ export class UserDiaryPage implements OnInit {
       'reader-outline': readerOutline,
       'pricetags-outline': pricetagsOutline,
       'document-text-outline': documentTextOutline,
+      'close-outline': closeOutline,
     });
   }
 
@@ -277,6 +281,7 @@ export class UserDiaryPage implements OnInit {
         loading.dismiss();
         this.nuevoTemaTitulo = '';
         this.nuevoTemaDescripcion = '';
+        this.mostrarFormCrear = false;
         this.cargarDatos();
         this.presentToast('Categoría creada', 'success');
         this.cdr.markForCheck();
@@ -419,11 +424,170 @@ export class UserDiaryPage implements OnInit {
     return resultado.sort((a, b) => {
       const aPinned = this.pinnedEntradas.has(a.id) ? 0 : 1;
       const bPinned = this.pinnedEntradas.has(b.id) ? 0 : 1;
-      return aPinned - bPinned;
+      if (aPinned !== bPinned) return aPinned - bPinned;
+      return new Date(b.fechaCreacion).getTime() - new Date(a.fechaCreacion).getTime();
+    });
+  }
+
+  get entradasAgrupadasPorFecha(): { label: string; entradas: any[] }[] {
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    const ayer = new Date(hoy); ayer.setDate(ayer.getDate() - 1);
+    const semanaAtras = new Date(hoy); semanaAtras.setDate(semanaAtras.getDate() - 7);
+    const dosSemanasAtras = new Date(hoy); dosSemanasAtras.setDate(dosSemanasAtras.getDate() - 14);
+
+    const buckets: { label: string; entradas: any[] }[] = [
+      { label: 'Hoy', entradas: [] },
+      { label: 'Ayer', entradas: [] },
+      { label: 'Esta semana', entradas: [] },
+      { label: 'Semana pasada', entradas: [] },
+      { label: 'Anteriores', entradas: [] },
+    ];
+
+    for (const e of this.entradasFiltradas) {
+      const f = new Date(e.fechaCreacion); f.setHours(0,0,0,0);
+      const t = f.getTime();
+      if (t === hoy.getTime()) buckets[0].entradas.push(e);
+      else if (t === ayer.getTime()) buckets[1].entradas.push(e);
+      else if (f >= semanaAtras) buckets[2].entradas.push(e);
+      else if (f >= dosSemanasAtras) buckets[3].entradas.push(e);
+      else buckets[4].entradas.push(e);
+    }
+
+    return buckets.filter(b => b.entradas.length > 0);
+  }
+
+  getEntradasCountForTema(tituloTema: string): number {
+    return this.entradas.filter(e => e.temaTitulo === tituloTema).length;
+  }
+
+  getLastEntradaRelative(tituloTema: string): string {
+    const entradasTema = this.entradas
+      .filter(e => e.temaTitulo === tituloTema)
+      .sort((a, b) => new Date(b.fechaCreacion).getTime() - new Date(a.fechaCreacion).getTime());
+    if (!entradasTema.length) return '';
+    const diffMs = Date.now() - new Date(entradasTema[0].fechaCreacion).getTime();
+    const mins = Math.floor(diffMs / 60000);
+    const hours = Math.floor(mins / 60);
+    const days = Math.floor(hours / 24);
+    if (mins < 60) return `hace ${mins}m`;
+    if (hours < 24) return `hace ${hours}h`;
+    if (days === 1) return 'ayer';
+    return `hace ${days}d`;
+  }
+
+  contarTipo(tipo: 'todo' | 'daily' | 'bug' | 'feature' | 'otro'): number {
+    if (!this.temaSeleccionado) return 0;
+    const base = this.entradas.filter(e => e.temaTitulo === this.temaSeleccionado?.titulo);
+    if (tipo === 'todo') return base.length;
+    return base.filter(e => this.detectTipo(e.contenido) === tipo).length;
+  }
+
+  get heatmapMonthLabels(): { label: string; offsetPx: number }[] {
+    const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const labels: { label: string; offsetPx: number }[] = [];
+    const cellSize = 11 + 3; // width + gap
+    let lastMonth = -1;
+    let weekIndex = 0;
+
+    for (const week of this.heatmapWeeks) {
+      if (week.length > 0) {
+        const month = week[0].date.getMonth();
+        if (month !== lastMonth) {
+          labels.push({ label: meses[month], offsetPx: weekIndex * cellSize });
+          lastMonth = month;
+        }
+      }
+      weekIndex++;
+    }
+    return labels;
+  }
+
+  async toggleVisibilidadTema(tema: DiarioTemaDto) {
+    if (tema.visibilidad === 'PUBLICO') {
+      // Hacer privado directamente
+      this.diarioService.cambiarVisibilidadTema(tema.id, 'PRIVADO').subscribe({
+        next: (actualizado) => {
+          tema.visibilidad = actualizado.visibilidad;
+          this.presentToast('Proyecto marcado como privado', 'success');
+          this.cdr.markForCheck();
+        },
+        error: (err: HttpErrorResponse) => this.presentToast(err?.error?.message || 'Error al cambiar visibilidad', 'danger')
+      });
+      return;
+    }
+
+    // Hacer público: pedir título y descripción de publicación (no toca el nombre interno del proyecto)
+    const alert = await this.alertCtrl.create({
+      header: 'Publicar en el blog',
+      message: `"${tema.titulo}" se publicará en la comunidad. Añadí un título y descripción para el blog — el nombre interno del proyecto no cambia.`,
+      cssClass: 'custom-alert',
+      inputs: [
+        {
+          name: 'tituloPublicacion',
+          type: 'text',
+          value: tema.tituloPublicacion || '',
+          placeholder: 'Título para el blog...',
+          cssClass: 'alert-input'
+        },
+        {
+          name: 'descripcionPublicacion',
+          type: 'textarea',
+          value: tema.descripcionPublicacion || '',
+          placeholder: 'Descripción breve para la comunidad...',
+          cssClass: 'alert-input'
+        }
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel', cssClass: 'alert-button-cancel' },
+        {
+          text: 'Publicar',
+          cssClass: 'alert-button-confirm',
+          handler: (data) => {
+            if (!data.tituloPublicacion?.trim()) {
+              this.presentToast('El título de publicación es obligatorio', 'warning');
+              return false;
+            }
+            if (!data.descripcionPublicacion?.trim()) {
+              this.presentToast('La descripción es obligatoria', 'warning');
+              return false;
+            }
+            this.ejecutarPublicacion(tema, data.tituloPublicacion.trim(), data.descripcionPublicacion.trim());
+            return true;
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  private ejecutarPublicacion(tema: DiarioTemaDto, tituloPublicacion: string, descripcionPublicacion: string) {
+    this.diarioService.cambiarVisibilidadTema(tema.id, 'PUBLICO', tituloPublicacion, descripcionPublicacion).subscribe({
+      next: (actualizado) => {
+        tema.visibilidad = actualizado.visibilidad;
+        tema.tituloPublicacion = actualizado.tituloPublicacion;
+        tema.descripcionPublicacion = actualizado.descripcionPublicacion;
+        this.presentToast('Proyecto publicado en el blog', 'success');
+        this.cdr.markForCheck();
+      },
+      error: (err: HttpErrorResponse) => this.presentToast(err?.error?.message || 'Error al publicar', 'danger')
     });
   }
 
   volverATemas() { this.temaSeleccionado = null; }
+
+  navegarAMensajes(data: { userId: number; nombre: string }) {
+    this.router.navigate(['/user-profile/mensajes'], { queryParams: { userId: data.userId, nombre: data.nombre } });
+  }
+
+  abrirModalCrear() {
+    this.mostrarFormCrear = true;
+    this.cdr.markForCheck();
+  }
+
+  cerrarModalCrear() {
+    this.mostrarFormCrear = false;
+    this.cdr.markForCheck();
+  }
 
   // ✅ NUEVA FUNCIONALIDAD: INVITAR COLABORADORES
   async abrirInvitacion() {
@@ -463,9 +627,15 @@ export class UserDiaryPage implements OnInit {
 
   enviarInvitacion(email: string) {
     if (!this.temaSeleccionado) return;
+    const limpio = (email ?? '').trim();
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(limpio);
+    if (!emailValido) {
+      this.presentToast('Email inválido', 'warning');
+      return;
+    }
     
-    this.diarioService.invitarColaborador(this.temaSeleccionado.id, email).subscribe({
-      next: () => this.presentToast(`Invitación enviada a ${email}`, 'success'),
+    this.diarioService.invitarColaborador(this.temaSeleccionado.id, limpio).subscribe({
+      next: () => this.presentToast(`Invitación enviada a ${limpio}`, 'success'),
       error: (err) => {
         console.error(err);
         const msg = err.error?.message || 'Error al enviar invitación';

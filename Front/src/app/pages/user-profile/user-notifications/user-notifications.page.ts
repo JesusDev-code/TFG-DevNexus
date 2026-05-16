@@ -70,12 +70,14 @@ export class UserNotificationsPage implements OnInit {
 
       // Esperamos a que terminen ambas peticiones
       const [notifsData, invitesData] = await Promise.all([notifPromise, invitesPromise]);
+      const notifs = this.normalizarLista<NotificacionDto>(notifsData);
+      const invites = this.normalizarLista<any>(invitesData);
 
       // 3. Procesar Notificaciones normales
-      const listaNotifs: NotificacionUI[] = notifsData.map(n => this.procesarNotificacion(n));
+      const listaNotifs: NotificacionUI[] = notifs.map(n => this.procesarNotificacion(n));
 
       // 4. Procesar Invitaciones (Convertirlas al formato visual de notificación)
-      const listaInvites: NotificacionUI[] = invitesData.map(inv => ({
+      const listaInvites: NotificacionUI[] = invites.map(inv => ({
         id: inv.id,
         titulo: 'Invitación a Proyecto',
         descripcion: `${inv.ownerNombre} te invita a colaborar en "${inv.temaTitulo}"`,
@@ -100,6 +102,7 @@ export class UserNotificationsPage implements OnInit {
 
     } catch (error) {
       console.error('Error al cargar datos:', error);
+      this.presentToast('No se pudieron cargar las notificaciones', 'danger');
     }
   }
 
@@ -187,5 +190,12 @@ export class UserNotificationsPage implements OnInit {
   private async presentToast(message: string, color: string) {
     const toast = await this.toastCtrl.create({ message, duration: 2000, color, position: 'bottom' });
     toast.present();
+  }
+
+  private normalizarLista<T>(payload: any): T[] {
+    if (Array.isArray(payload)) return payload as T[];
+    if (Array.isArray(payload?.content)) return payload.content as T[];
+    if (Array.isArray(payload?.data)) return payload.data as T[];
+    return [];
   }
 }

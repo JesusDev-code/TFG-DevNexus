@@ -34,8 +34,13 @@
                 "input": "src/assets",
                 "output": "assets"
               },
-              "src/favicon.ico",         
-              "src/firebase-messaging-sw.js" 
+              {
+                "glob": "**/*",
+                "input": "node_modules/monaco-editor/min/vs",
+                "output": "assets/monaco/vs"
+              },
+              "src/favicon.ico",
+              "src/firebase-messaging-sw.js"
             ],
             "styles": [
               "src/global.scss",

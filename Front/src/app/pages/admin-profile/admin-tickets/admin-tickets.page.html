@@ -1,4 +1,4 @@
-<div class="admin-content-wrapper">
+<div class="admin-content-wrapper" [class.modal-is-open]="modalAbierto()">
 
   <div class="header-actions">
     <div class="search-glass-wrapper">
@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <div class="table-glass-container">
+  <div class="table-glass-container desktop-only">
 
     <!-- Header row (div-based — replaces invalid <thead> inside virtual scroll) -->
     <div class="tickets-table-header">
@@ -66,6 +66,39 @@
 
   </div>
 
+  <!-- ── MOBILE CARDS (< 600px) ── -->
+  <div class="mobile-card-list">
+    @for (t of ticketsFiltrados(); track t.id) {
+      <div class="ticket-mobile-card" (click)="abrirModalEditar(t)">
+        <div class="tmc-top-row">
+          <span class="code-pill">#{{ t.codigo }}</span>
+          <span class="status-pill" [ngClass]="t.estado.toLowerCase()">
+            {{ t.estado === 'SOLICITUD_REAPERTURA' ? 'Reapertura' : t.estado.replace('_', ' ') }}
+          </span>
+        </div>
+
+        <p class="tmc-subject">{{ t.titulo }}</p>
+
+        <div class="tmc-meta-row">
+          <div class="tmc-meta-item">
+            <ion-icon name="person-outline"></ion-icon>
+            <span>{{ t.usuarioNombre }}</span>
+          </div>
+          <div class="tmc-meta-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ t.fechaCreacion | date:'dd/MM/yy' }}</span>
+          </div>
+          <span class="priority-tag" [ngClass]="t.prioridad.toLowerCase()">{{ t.prioridad }}</span>
+        </div>
+
+        <button class="tmc-chat-btn">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          Abrir chat
+        </button>
+      </div>
+    }
+  </div>
+
   <ion-modal [isOpen]="modalAbierto()" (didDismiss)="cerrarModal()" class="premium-modal-ticket">
     <ng-template>
       <!-- Usamos @if con alias para un código más limpio -->
@@ -73,15 +106,25 @@
         <div class="modal-wrapper-dark">
 
           <div class="modal-header">
-            <h2>Ticket <span class="text-gradient">#{{ ticket.codigo }}</span></h2>
-            <button class="close-modal-btn" (click)="cerrarModal()">
-              <ion-icon name="close-outline"></ion-icon>
-            </button>
+            <div class="modal-header-top">
+              <h2>Ticket <span class="text-gradient">#{{ ticket.codigo }}</span></h2>
+              <button class="close-modal-btn" (click)="cerrarModal()">
+                <ion-icon name="close-outline"></ion-icon>
+              </button>
+            </div>
+            <div class="modal-tabs" [hidden]="!isMobile()">
+              <button class="modal-tab" [class.active]="modalTab() === 'chat'" (click)="modalTab.set('chat')">
+                <ion-icon name="chatbubbles-outline"></ion-icon> Chat
+              </button>
+              <button class="modal-tab" [class.active]="modalTab() === 'info'" (click)="modalTab.set('info')">
+                <ion-icon name="information-circle-outline"></ion-icon> Info
+              </button>
+            </div>
           </div>
 
           <div class="modal-body-split">
 
-            <div class="info-sidebar">
+            <div class="info-sidebar" [hidden]="isMobile() && modalTab() !== 'info'">
               <div class="sidebar-card">
                 <label>Solicitante</label>
                 <p class="val">{{ ticket.usuarioNombre }}</p>
@@ -128,7 +171,7 @@
               }
             </div>
 
-            <div class="chat-main">
+            <div class="chat-main" [hidden]="isMobile() && modalTab() !== 'chat'">
               <div class="problem-desc">
                 <strong>Descripción inicial:</strong>
                 <p>{{ ticket.descripcion }}</p>

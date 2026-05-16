@@ -173,4 +173,60 @@ describe('DiarioService', () => {
     });
     req.flush({ id: 3, contenido: 'Contenido actualizado', visibilidad: 'PUBLICO', temaId: 2 });
   });
+
+  // ─── 4. IDE de Proyectos ──────────────────────────────────
+
+  it('crearArchivoIDE() → POST /diarios con tipo FILE y filename', () => {
+    service.crearArchivoIDE(1, 'src/index.html', '<!DOCTYPE html>').subscribe(res => {
+      expect(res.filename).toBe('src/index.html');
+      expect(res.tipo).toBe('FILE');
+    });
+
+    const req = httpMock.expectOne(`${API}/diarios`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({
+      contenido: '<!DOCTYPE html>',
+      visibilidad: 'PRIVADO',
+      temaId: 1,
+      tipo: 'FILE',
+      filename: 'src/index.html'
+    });
+    req.flush({
+      id: 10, contenido: '<!DOCTYPE html>', visibilidad: 'PRIVADO',
+      temaId: 1, tipo: 'FILE', filename: 'src/index.html',
+      fechaCreacion: '2026-05-04T18:00:00'
+    });
+  });
+
+  it('getArchivosActuales() → GET /diarios/tema/:id/archivos y devuelve DiarioDto con contenido', () => {
+    const MOCK_ARCHIVOS = [
+      { id: 10, filename: 'src/index.html', tipo: 'FILE', contenido: '<h1>Hola</h1>', fechaCreacion: '2026-05-04T18:00:00' },
+      { id: 11, filename: 'src/style.css',  tipo: 'FILE', contenido: 'body {}',        fechaCreacion: '2026-05-04T18:01:00' }
+    ];
+
+    service.getArchivosActuales(1).subscribe(archivos => {
+      expect(archivos.length).toBe(2);
+      expect(archivos[0].filename).toBe('src/index.html');
+      expect(archivos[0].contenido).toBe('<h1>Hola</h1>');
+      expect(archivos[1].filename).toBe('src/style.css');
+    });
+
+    const req = httpMock.expectOne(`${API}/diarios/tema/1/archivos`);
+    expect(req.request.method).toBe('GET');
+    req.flush(MOCK_ARCHIVOS);
+  });
+
+  it('crearEntrada() con tipo FILE → POST /diarios con filename', () => {
+    service.crearEntrada('// main.ts', 2, 'PRIVADO', 'FILE', 'main.ts').subscribe();
+
+    const req = httpMock.expectOne(`${API}/diarios`);
+    expect(req.request.body).toEqual({
+      contenido: '// main.ts',
+      visibilidad: 'PRIVADO',
+      temaId: 2,
+      tipo: 'FILE',
+      filename: 'main.ts'
+    });
+    req.flush({});
+  });
 });

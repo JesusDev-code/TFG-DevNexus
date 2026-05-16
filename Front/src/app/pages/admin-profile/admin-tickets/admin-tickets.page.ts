@@ -7,10 +7,12 @@ import { TicketService } from 'src/app/services/ticket.service';
 import { addIcons } from 'ionicons';
 import {
   searchOutline, chatbubblesOutline, closeOutline, sendOutline,
-  personOutline, timeOutline, alertCircleOutline
+  personOutline, timeOutline, alertCircleOutline, informationCircleOutline,
+  calendarOutline
 } from 'ionicons/icons';
 
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-admin-tickets',
@@ -23,16 +25,19 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 export class AdminTicketsPage implements OnInit {
   private ticketService = inject(TicketService);
   private toastCtrl = inject(ToastController);
+  private breakpointObserver = inject(BreakpointObserver);
 
   // --- SIGNALS STATE ---
   tickets = signal<TicketDto[]>([]);
   filtroTexto = signal('');
-  
+  isMobile = signal(false);
+
   // Modal & Chat State
   modalAbierto = signal(false);
   ticketEditando = signal<TicketDto | null>(null);
   mensajes = signal<TicketComentarioDto[]>([]);
   nuevoMensaje = signal('');
+  modalTab = signal<'chat' | 'info'>('chat');
 
   // --- COMPUTED SIGNALS ---
   ticketsFiltrados = computed(() => {
@@ -51,11 +56,17 @@ export class AdminTicketsPage implements OnInit {
   constructor() {
     addIcons({
       searchOutline, chatbubblesOutline, closeOutline, sendOutline,
-      personOutline, timeOutline, alertCircleOutline
+      personOutline, timeOutline, alertCircleOutline, informationCircleOutline,
+      calendarOutline
     });
   }
 
-  ngOnInit() { this.cargarTickets(); }
+  ngOnInit() {
+    this.cargarTickets();
+    this.breakpointObserver.observe('(max-width: 600px)').subscribe(result => {
+      this.isMobile.set(result.matches);
+    });
+  }
 
   cargarTickets() {
     // Usamos el servicio centralizado (si no existiera getTickets, lo añadimos al servicio)
@@ -71,7 +82,8 @@ export class AdminTicketsPage implements OnInit {
   }
 
   abrirModalEditar(ticket: TicketDto) {
-    this.ticketEditando.set({ ...ticket }); // Copia defensiva
+    this.ticketEditando.set({ ...ticket });
+    this.modalTab.set('chat');
     this.modalAbierto.set(true);
     this.cargarMensajes(ticket.id);
   }

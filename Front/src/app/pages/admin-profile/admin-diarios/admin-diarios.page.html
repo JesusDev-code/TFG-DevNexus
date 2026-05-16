@@ -1,12 +1,12 @@
-<ion-content>
-<div class="admin-content-wrapper">
+<div class="admin-content-wrapper" [class.ide-mode]="vista() === 'IDE'">
 
-  @if (vista() === 'USUARIOS') {
+  <!-- ===== VISTA: USUARIOS ===== -->
+  <ng-container *ngIf="vista() === 'USUARIOS'">
   <div class="view-users-fade">
     <div class="header-actions">
       <div class="title-block">
         <h2 class="section-title">Gestión de <span class="text-gradient">Diarios</span></h2>
-        <p class="section-subtitle">Selecciona un usuario para supervisar sus reflexiones.</p>
+        <p class="section-subtitle">Selecciona un usuario para supervisar sus proyectos.</p>
       </div>
       <div class="search-glass-wrapper">
         <ion-icon name="search-outline"></ion-icon>
@@ -14,12 +14,18 @@
       </div>
     </div>
 
+    <div *ngIf="cargando()" class="spinner-center" style="padding:2rem;">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+
     <div class="users-glass-grid">
-      @for (user of usuariosFiltrados(); track user.id) {
-      <div class="user-premium-card" (click)="seleccionarUsuario(user)">
+      <div class="user-premium-card"
+           *ngFor="let user of usuariosFiltrados(); trackBy: trackByUserId"
+           (click)="seleccionarUsuario(user)">
         <div class="user-card-inner">
           <div class="avatar-glow">
-            <img [src]="user.foto_perfil || 'assets/default-avatar.png'" alt="avatar">
+            <img [src]="user.foto_perfil || '/assets/avatars/avatar1.png'"
+                 (error)="onAvatarError($event, user)" alt="avatar">
           </div>
           <div class="user-details">
             <h3>{{ user.nombre }}</h3>
@@ -31,12 +37,18 @@
           <div class="card-light"></div>
         </div>
       </div>
-      }
     </div>
-  </div>
-  }
 
-  @if (vista() === 'DIARIOS') {
+    <ng-container *ngIf="!cargando() && usuariosFiltrados().length === 0">
+      <div class="empty-feedback">
+        {{ errorCargaUsuarios() || 'No hay usuarios disponibles para mostrar.' }}
+      </div>
+    </ng-container>
+  </div>
+  </ng-container>
+
+  <!-- ===== VISTA: TEMAS (proyectos del usuario) ===== -->
+  <ng-container *ngIf="vista() === 'TEMAS'">
   <div class="view-diaries-fade">
 
     <div class="header-diaries-nav">
@@ -45,78 +57,66 @@
         <span>Volver a la lista</span>
       </button>
       <div class="user-header-info">
-        <h2>Diario de <span class="text-gradient">{{ usuarioSeleccionado?.nombre }}</span></h2>
+        <h2>Proyectos de <span class="text-gradient">{{ usuarioSeleccionado?.nombre }}</span></h2>
       </div>
     </div>
 
-    <div class="diarios-premium-grid">
-      @for (d of diarios(); track d.id) {
-      <div class="diario-glass-card">
+    <div *ngIf="cargando()" class="spinner-center" style="padding:2rem;">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+
+    <div class="diarios-premium-grid" *ngIf="!cargando()">
+      <div class="diario-glass-card clickable"
+           *ngFor="let tema of temas(); trackBy: trackByTemaId"
+           (click)="seleccionarTema(tema)">
 
         <div class="card-top-accent">
-          <span class="topic-pill" *ngIf="d.temaTitulo"># {{ d.temaTitulo }}</span>
-          <div class="date-tag">
-            <ion-icon name="time-outline"></ion-icon>
-            {{ d.fechaCreacion | date:'dd MMM yyyy' }}
+          <div class="card-meta-row">
+            <ion-icon name="book-outline"></ion-icon>
+            <span class="author-tag">{{ tema.titulo }}</span>
           </div>
         </div>
 
         <div class="diario-body">
-          <p>"{{ d.contenido }}"</p>
+          <p class="contenido-preview">{{ getEntradaCount(tema.id) }} entrada{{ getEntradaCount(tema.id) !== 1 ? 's' : '' }}</p>
         </div>
 
-        <div class="diario-footer">
-          <div class="footer-actions">
-            <button class="action-btn chat-toggle" [class.active]="d.mostrarComentarios" (click)="toggleComentarios(d)">
-              <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-              <span>Feedback</span>
-              <span *ngIf="d.listaComentarios?.length" class="count-badge">{{ d.listaComentarios?.length }}</span>
-            </button>
-
-            <button class="action-btn delete-btn" (click)="borrarDiario(d.id)">
-              <ion-icon name="trash-outline"></ion-icon>
-            </button>
-          </div>
-        </div>
-
-        <div class="feedback-section" *ngIf="d.mostrarComentarios">
-          <div class="feedback-divider"></div>
-
-          <div *ngIf="d.cargandoComentarios" class="spinner-center">
-            <ion-spinner name="crescent"></ion-spinner>
-          </div>
-
-          <div class="feedback-list" *ngIf="!d.cargandoComentarios">
-            <div class="feedback-bubble" *ngFor="let c of d.listaComentarios" [class.is-admin]="c.esAdmin">
-              <div class="bubble-header">
-                <span class="author">{{ c.autorNombre }}</span>
-                <span class="time">{{ c.fecha | date:'HH:mm' }}</span>
-              </div>
-              <p class="text">{{ c.texto }}</p>
-            </div>
-
-            <div *ngIf="d.listaComentarios?.length === 0" class="empty-feedback">
-              No hay consejos todavía. Sé el primero en guiar al usuario.
-            </div>
-          </div>
-
-          <div class="feedback-input-box">
-            <input type="text" placeholder="Escribe un consejo o feedback..." [(ngModel)]="d.nuevoComentario" (keyup.enter)="enviarComentario(d)">
-            <button class="send-btn" (click)="enviarComentario(d)">
-              <ion-icon name="send-outline"></ion-icon>
-            </button>
-          </div>
+        <div class="card-click-hint">
+          <ion-icon name="eye-outline"></ion-icon>
+          <span>Ver proyecto</span>
+          <ion-icon name="chevron-forward-outline"></ion-icon>
         </div>
 
       </div>
-      }
     </div>
 
-    <ion-infinite-scroll (ionInfinite)="loadMore($event)">
-      <ion-infinite-scroll-content loadingSpinner="crescent"></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
+    <ng-container *ngIf="!cargando() && temas().length === 0">
+      <div class="empty-feedback">Este usuario no tiene proyectos todavía.</div>
+    </ng-container>
+
   </div>
-  }
+  </ng-container>
+
+  <!-- ===== VISTA: IDE (proyecto en modo lectura + feedback) ===== -->
+  <ng-container *ngIf="vista() === 'IDE' && temaSeleccionado">
+    <div class="ide-embed-wrapper">
+      <div class="ide-embed-header">
+        <button class="premium-back-btn" (click)="volverALista()">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+          <span>Volver a la lista</span>
+        </button>
+        <p class="ide-embed-subtitle">
+          Proyecto: <strong>{{ temaSeleccionado!.titulo }}</strong> · Usuario: <strong>{{ usuarioSeleccionado?.nombre }}</strong>
+        </p>
+      </div>
+      <app-ide-view
+        [tema]="temaSeleccionado!"
+        [readOnly]="true"
+        [staffFeedbackMode]="true"
+        [overrideCommits]="overrideCommitsForTema"
+        (volver)="volverATemas()">
+      </app-ide-view>
+    </div>
+  </ng-container>
 
 </div>
-</ion-content>

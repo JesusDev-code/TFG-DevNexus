@@ -38,10 +38,9 @@ describe('AdminDiariosPage', () => {
     expect(component.vista()).toBe('USUARIOS');
     expect(component.usuarios()).toEqual([]);
     expect(component.usuariosFiltrados()).toEqual([]);
+    expect(component.temas()).toEqual([]);
     expect(component.diarios()).toEqual([]);
     expect(component.cargando()).toBe(false);
-    expect(component.page()).toBe(0);
-    expect(component.totalPages()).toBe(0);
   });
 
   it('cargarUsuarios() should populate signals on success', () => {
@@ -88,7 +87,7 @@ describe('AdminDiariosPage', () => {
     expect(component.usuariosFiltrados()[0].nombre).toBe('Alice');
   });
 
-  it('seleccionarUsuario() should set vista to DIARIOS', () => {
+  it('seleccionarUsuario() should set vista to TEMAS', () => {
     fixture.detectChanges();
     // Flush the initial cargarUsuarios() request
     const initReq = httpMock.expectOne(`${environment.apiUrl}/usuarios`);
@@ -97,13 +96,13 @@ describe('AdminDiariosPage', () => {
     const mockUser = { id: 99, nombre: 'Test', email: 'test@test.com' };
     component.seleccionarUsuario(mockUser);
 
-    // Flush the cargarDiarios() request triggered by seleccionarUsuario
-    const diariosReq = httpMock.expectOne(
-      `${environment.apiUrl}/diarios/usuario/99?page=0&size=15&sort=fechaCreacion,desc`
+    // Flush the cargarTemasDelUsuario() request triggered by seleccionarUsuario
+    const temasReq = httpMock.expectOne(
+      `${environment.apiUrl}/diario-temas/usuario/99`
     );
-    diariosReq.flush({ content: [], totalPages: 0 });
+    temasReq.flush([]);
 
-    expect(component.vista()).toBe('DIARIOS');
+    expect(component.vista()).toBe('TEMAS');
     expect(component.usuarioSeleccionado).toEqual(mockUser);
   });
 
@@ -113,9 +112,9 @@ describe('AdminDiariosPage', () => {
     const initReq = httpMock.expectOne(`${environment.apiUrl}/usuarios`);
     initReq.flush([]);
 
-    // Put the component in DIARIOS view first
-    component.vista.set('DIARIOS');
-    component.diarios.set([{ id: 1, contenido: 'test' }]);
+    // Put the component in TEMAS view first
+    component.vista.set('TEMAS');
+    component.diarios.set([{ id: 1, contenido: 'test' } as any]);
     component.usuarioSeleccionado = { id: 99, nombre: 'Test' };
 
     component.volverALista();

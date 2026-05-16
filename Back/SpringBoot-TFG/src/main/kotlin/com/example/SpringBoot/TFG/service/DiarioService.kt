@@ -3,6 +3,7 @@ package com.example.SpringBoot.TFG.service
 import com.example.SpringBoot.TFG.dto.DiarioComentarioDto
 import com.example.SpringBoot.TFG.dto.DiarioCreateDto
 import com.example.SpringBoot.TFG.dto.DiarioDto
+import com.example.SpringBoot.TFG.dto.DiarioFileDto
 import com.example.SpringBoot.TFG.model.Diario
 import com.example.SpringBoot.TFG.model.DiarioComentario
 import com.example.SpringBoot.TFG.model.Visibilidad
@@ -57,13 +58,19 @@ class DiarioService(
             }
         }
 
+        println("[BACKEND-DEBUG] Creando Diario con: tipo=${dto.tipo}, filename='${dto.filename}'")
+        
         val diario = Diario(
             contenido = dto.contenido,
             visibilidad = dto.visibilidad,
             usuario = usuario,
-            tema = tema
+            tema = tema,
+            tipo = dto.tipo,
+            filename = dto.filename
         )
-        return repo.save(diario).toDto()
+        val saved = repo.save(diario)
+        println("[BACKEND-DEBUG] Diario guardado: id=${saved.id}, filename='${saved.filename}'")
+        return saved.toDto()
     }
 
     @Transactional
@@ -73,12 +80,18 @@ class DiarioService(
 
         val currentUser = securityService.getUserPrincipal()
 
-        // Autor o Staff pueden editar
         val esAutor = diario.usuario.id == currentUser.userId
         val esStaff = currentUser.authorities.any { it.authority == "ROLE_STAFF" || it.authority == "ROLE_ADMIN" }
+        val esColaborador = diario.tema?.id?.let { temaId ->
+            colaboracionRepo.existsByTemaIdAndUsuarioIdAndEstado(
+                temaId,
+                currentUser.userId!!,
+                InvitacionEstado.ACEPTADA
+            )
+        } ?: false
 
-        if (!esAutor && !esStaff) {
-            throw ResponseStatusException(HttpStatus.FORBIDDEN, "No puedes editar notas de otros usuarios")
+        if (!esAutor && !esStaff && !esColaborador) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes permiso para editar este código")
         }
 
         diario.contenido = dto.contenido
@@ -87,6 +100,8 @@ class DiarioService(
             diario.tema = diarioTemaRepo.findById(it)
                 .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Tema no encontrado") }
         }
+        dto.tipo?.let { diario.tipo = it }
+        dto.filename?.let { diario.filename = it }
         return repo.save(diario).toDto()
     }
 
@@ -110,6 +125,12 @@ class DiarioService(
     @Transactional(readOnly = true)
     fun publicos(pageable: Pageable): Page<DiarioDto> =
         repo.findAllByVisibilidad(Visibilidad.PUBLICO, pageable).map { it.toDto() }
+
+    @Transactional(readOnly = true)
+    fun publicosPorTema(temaId: Int): List<DiarioDto> =
+        repo.findAllByTemaIdOrderByFechaCreacionDesc(temaId)
+            .filter { it.visibilidad == Visibilidad.PUBLICO }
+            .map { it.toDto() }
 
     // ✅ MÉTODO ACTUALIZADO PARA COLABORACIÓN
     @Transactional(readOnly = true)
@@ -204,6 +225,22 @@ class DiarioService(
         )
     }
 
+    @Transactional(readOnly = true)
+    fun getArchivosActuales(temaId: Int): List<DiarioDto> {
+        val archivos = repo.findAllByTemaIdAndTipoOrderByFechaCreacionDesc(temaId, "FILE")
+            .groupBy { it.filename }
+            .mapNotNull { (_, versions) -> versions.firstOrNull() }
+            .sortedBy { it.filename }
+            .map { it.toDto() }
+
+        println("[BACKEND-DEBUG] getArchivosActuales($temaId) retorna ${archivos.size} archivos:")
+        archivos.forEach { a ->
+            println("  - id=${a.id}, filename='${a.filename}', tipo='${a.tipo}'")
+        }
+
+        return archivos
+    }
+
     fun Diario.toDto() = DiarioDto(
         id = requireNotNull(this.id),
         contenido = this.contenido,
@@ -211,7 +248,10 @@ class DiarioService(
         fechaCreacion = this.fechaCreacion,
         usuarioId = requireNotNull(this.usuario.id),
         usuarioNombre = this.usuario.nombre,
-        temaTitulo = this.tema?.titulo
+        temaId = this.tema?.id,
+        temaTitulo = this.tema?.titulo,
+        tipo = this.tipo,
+        filename = this.filename
     )
 
     private fun escapeCsv(value: String): String {

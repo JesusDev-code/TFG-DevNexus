@@ -45,12 +45,24 @@ export interface DiarioTemaDto {
   titulo: string;
   descripcion?: string;
   usuarioId: number;
+  visibilidad: Visibilidad;
+  usuarioNombre?: string;
+  tituloPublicacion?: string;
+  descripcionPublicacion?: string;
+}
+
+export interface ColaboradorDto {
+  id: number;
+  nombre: string;
+  foto_perfil?: string;
 }
 
 export interface DiarioCreateDto {
   contenido: string;
   visibilidad: Visibilidad;
   temaId: number;
+  tipo?: string;
+  filename?: string;
 }
 
 export type TicketStatus = 'ABIERTO' | 'EN_PROGRESO' | 'RESUELTO';
@@ -162,16 +174,27 @@ export interface DiarioComentario {
 export interface DiarioDto {
   id: number;
   contenido: string;
-  visibilidad: 'PUBLICO' | 'PRIVADO';
+  visibilidad: 'PUBLICO' | 'PRIVADO' | 'PENDIENTE';
   fechaCreacion: string;
+  usuarioId?: number;
   usuarioNombre: string;
+  temaId?: number;
   temaTitulo?: string;
-  
-  // Campos opcionales para la UI de admin
+  tipo?: 'FILE' | 'LOG' | null;
+  filename?: string;
+
+  // UI state — no viene del backend
   mostrarComentarios?: boolean;
   listaComentarios?: DiarioComentario[];
   nuevoComentario?: string;
   cargandoComentarios?: boolean;
+}
+
+export interface ProyectoAnalisisDto {
+  feedback: string;
+  score: number;
+  sugerencias: string[];
+  errores: string[];
 }
 
 export interface MensajeChat {

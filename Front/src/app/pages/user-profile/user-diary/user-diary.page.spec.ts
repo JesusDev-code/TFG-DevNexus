@@ -13,6 +13,8 @@ import { of, throwError } from 'rxjs';
  * `entradasFiltradas` es un getter que filtra por temaSeleccionado.
  * `crearEntrada` no invoca el servicio si el texto está vacío o no hay tema.
  * `seleccionarTema` / `volverATemas` controlan la navegación entre vistas.
+ * `mostrarFormCrear` controla el modal de crear proyecto (arranca en false).
+ * `crearTema` cierra el modal (mostrarFormCrear = false) al completarse.
  */
 describe('UserDiaryPage', () => {
   let component: UserDiaryPage;
@@ -72,6 +74,10 @@ describe('UserDiaryPage', () => {
 
   it('initial state: nuevaEntradaTexto is empty string', () => {
     expect(component.nuevaEntradaTexto).toBe('');
+  });
+
+  it('initial state: mostrarFormCrear is false (modal closed)', () => {
+    expect(component.mostrarFormCrear).toBeFalse();
   });
 
   // ─── cargarDatos HTTP ─────────────────────────────────
@@ -135,5 +141,53 @@ describe('UserDiaryPage', () => {
     component.crearEntrada();
 
     expect(diarioServiceSpy.crearEntrada).not.toHaveBeenCalled();
+  });
+
+  // ─── Modal crear proyecto ─────────────────────────────
+
+  it('mostrarFormCrear toggles to true when "Nuevo proyecto" is clicked', () => {
+    component.mostrarFormCrear = false;
+    component.mostrarFormCrear = true;
+    expect(component.mostrarFormCrear).toBeTrue();
+  });
+
+  it('crearTema guard: does NOT reach service when nuevoTemaTitulo is blank', async () => {
+    diarioServiceSpy.crearTema.and.returnValue(of(MOCK_TEMAS[0]));
+    component.nuevoTemaTitulo = '   ';
+
+    await component.crearTema();
+
+    expect(diarioServiceSpy.crearTema).not.toHaveBeenCalled();
+  });
+
+  // ─── getEntradasCountForTema / getLastEntradaRelative ──
+
+  it('getEntradasCountForTema returns correct count for known tema', () => {
+    component.entradas = MOCK_ENTRADAS.content;
+    expect(component.getEntradasCountForTema('Angular')).toBe(2);
+    expect(component.getEntradasCountForTema('Docker')).toBe(1);
+  });
+
+  it('getEntradasCountForTema returns 0 for unknown tema', () => {
+    component.entradas = MOCK_ENTRADAS.content;
+    expect(component.getEntradasCountForTema('Inexistente')).toBe(0);
+  });
+
+  // ─── filtrado por tipo ────────────────────────────────
+
+  it('setFiltro changes filtroTipo', () => {
+    component.setFiltro('bug');
+    expect(component.filtroTipo).toBe('bug');
+  });
+
+  it('contarTipo returns 0 when no tema is selected', () => {
+    component.temaSeleccionado = null;
+    expect(component.contarTipo('todo')).toBe(0);
+  });
+
+  it('contarTipo todo returns total entries for selected tema', () => {
+    component.entradas = MOCK_ENTRADAS.content;
+    component.temaSeleccionado = MOCK_TEMAS[0];
+    expect(component.contarTipo('todo')).toBe(2);
   });
 });

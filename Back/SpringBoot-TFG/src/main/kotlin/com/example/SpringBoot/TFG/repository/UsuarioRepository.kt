@@ -21,18 +21,16 @@ interface UsuarioRepository : JpaRepository<Usuario, Int> {
     // Spring Data genera automáticamente el SQL: ... WHERE departamento_id = ? AND permite_contacto = TRUE
     fun findByDepartamentoIdAndPermiteContactoTrue(departamentoId: Int): List<Usuario>
 
-    // Búsqueda por texto (Nombre/Email) dentro de un departamento
+    // Búsqueda global: todos los que permiten contacto, excepto yo mismo
     @Query("""
-        SELECT u FROM Usuario u 
-        WHERE u.departamento.id = :deptoId 
-        AND u.permiteContacto = true 
-        AND (LOWER(u.nombre) LIKE LOWER(CONCAT('%', :query, '%')) 
+        SELECT u FROM Usuario u
+        WHERE u.permiteContacto = true
+        AND (LOWER(u.nombre) LIKE LOWER(CONCAT('%', :query, '%'))
              OR LOWER(u.email) LIKE LOWER(CONCAT('%', :query, '%')))
         AND u.id <> :miId
     """)
-    fun buscarContactosEnDepartamento(
+    fun buscarContactosGlobal(
         @Param("query") query: String,
-        @Param("deptoId") deptoId: Int,
         @Param("miId") miId: Int
     ): List<Usuario>
 

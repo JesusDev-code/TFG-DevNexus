@@ -20,4 +20,8 @@ class DiarioAIController(private val service: DiarioAIService) {
     @PostMapping("/resumir-tema/{temaId}")
     fun resumirTema(@PathVariable temaId: Int): Map<String, String> =
         mapOf("resumen" to service.resumirTema(temaId))
+
+    @PostMapping("/analizar-proyecto/{temaId}")
+    fun analizarProyecto(@PathVariable temaId: Int): Map<String, Any> =
+        service.analizarProyecto(temaId)
 }

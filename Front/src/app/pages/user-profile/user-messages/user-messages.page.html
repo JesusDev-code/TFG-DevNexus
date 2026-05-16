@@ -17,7 +17,11 @@
         }
 
         <button class="btn-add-glass" (click)="toggleBuscador()" [class.active]="mostrarBuscador()">
-          <ion-icon [name]="mostrarBuscador() ? 'close-outline' : 'person-add-outline'"></ion-icon>
+          @if (mostrarBuscador()) {
+            <ion-icon name="close-outline"></ion-icon>
+          } @else {
+            <ion-icon name="person-add-outline"></ion-icon>
+          }
         </button>
       </div>
 
@@ -29,7 +33,7 @@
           </div>
         </div>
 
-        <cdk-virtual-scroll-viewport itemSize="70" class="conversations-list premium-viewport" style="height: 60vh;">
+        <cdk-virtual-scroll-viewport itemSize="70" class="conversations-list premium-viewport">
           <div *cdkVirtualFor="let conv of conversacionesFiltradas()" class="chat-item"
             [class.active]="conv.id === conversacionSeleccionada()?.id" [class.is-admin]="conv.esAdmin"
             (click)="seleccionarConversacion(conv)">
@@ -152,8 +156,7 @@
           }
         </header>
 
-        <cdk-virtual-scroll-viewport itemSize="60" class="messages-scroll premium-viewport-messages"
-          style="height: 50vh;">
+        <cdk-virtual-scroll-viewport itemSize="60" class="messages-scroll premium-viewport-messages">
           <div *cdkVirtualFor="let msg of mensajes()" class="msg-bubble" [ngClass]="{
                  'propio': esPropio(msg), 
                  'staff': !esPropio(msg) && msg.esStaff, 

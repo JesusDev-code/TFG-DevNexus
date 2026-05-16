@@ -98,6 +98,43 @@ Responde en español con formato Markdown claro y conciso.""",
         )
     }
 
+    fun analizarProyecto(temaId: Int): Map<String, Any> {
+        val tema = diarioTemaRepo.findById(temaId)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Tema no encontrado") }
+
+        val archivos = diarioRepo.findAllByTemaIdAndTipoOrderByFechaCreacionDesc(temaId, "FILE")
+            .groupBy { it.filename }
+            .mapNotNull { (_, versions) -> versions.firstOrNull() }
+
+        if (archivos.isEmpty())
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "El proyecto no tiene archivos de código aún")
+
+        val codigoUnificado = archivos.joinToString("\n\n") { archivo ->
+            "### ${archivo.filename}\n```\n${archivo.contenido ?: ""}\n```"
+        }.take(10000)
+
+        val respuesta = llamarGroq(
+            system = """Eres un senior developer revisando un proyecto web llamado "${tema.titulo}".
+Analiza los archivos de código del proyecto (HTML, CSS, JavaScript).
+Responde ÚNICAMENTE con este JSON (sin markdown ni texto adicional):
+{"feedback":"análisis en markdown","score":85,"sugerencias":["sugerencia"],"errores":["error"]}
+El score es de 0 a 100. Si no hay errores, el array errores debe ser vacío.""",
+            user = codigoUnificado
+        )
+
+        return try {
+            @Suppress("UNCHECKED_CAST")
+            mapper.readValue<Map<String, Any>>(respuesta.trim())
+        } catch (e: Exception) {
+            mapOf(
+                "feedback" to respuesta,
+                "score" to 0,
+                "sugerencias" to emptyList<String>(),
+                "errores" to emptyList<String>()
+            )
+        }
+    }
+
     private fun llamarGroq(system: String, user: String): String {
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON

@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <div class="table-glass-container">
+  <div class="table-glass-container desktop-only">
     <table class="premium-table">
       <thead>
         <tr>
@@ -69,6 +69,39 @@
         }
       </tbody>
     </table>
+  </div>
+
+  <!-- ── MOBILE CARDS (< 600px) ── -->
+  <div class="mobile-card-list">
+    @for (log of logs(); track log.id) {
+      <div class="audit-mobile-card">
+        <div class="amc-top-row">
+          <div class="badge-status" [ngClass]="getClass(log.severidad)">
+            <ion-icon [name]="getIcon(log.severidad)"></ion-icon>
+            <span>{{ log.severidad }}</span>
+          </div>
+          <div class="amc-date">
+            <span class="amc-date-day">{{ log.fecha | date:'dd MMM' }}</span>
+            <span class="amc-date-time">{{ log.fecha | date:'HH:mm' }}</span>
+          </div>
+        </div>
+
+        <div class="amc-action-row">
+          <span class="mono-text">{{ log.accion }}</span>
+          <span class="resource-pill">{{ log.recurso }}</span>
+        </div>
+
+        <div class="amc-user-row">
+          <ion-icon name="person-outline"></ion-icon>
+          <span>{{ log.usuarioEmail || 'Sistema' }}</span>
+        </div>
+
+        <p class="amc-details">{{ log.descripcion }}</p>
+      </div>
+    }
+    @if (logs().length === 0 && !cargando()) {
+      <div class="amc-empty">No se han encontrado registros de actividad.</div>
+    }
   </div>
 
   @if (cargando() && page() === 0) {
