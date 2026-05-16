@@ -17,3 +17,6 @@ spring:
 
 firebase:
   sa-b64: dGVzdA==
+
+groq:
+  api-key: test-dummy-key

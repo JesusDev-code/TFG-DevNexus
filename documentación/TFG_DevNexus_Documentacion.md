@@ -2115,13 +2115,38 @@ graph TD
 
 ### Pruebas unitarias del backend
 
-Se han implementado pruebas unitarias con JUnit 5 y Mockito para los servicios críticos:
+Se han implementado **168 tests** con JUnit 5, Mockito y `@WebMvcTest`, todos en verde (`BUILD SUCCESS`). Los tests de servicio utilizan `@ExtendWith(MockitoExtension::class)` con mocks de dependencias; los tests de controlador usan `@WebMvcTest` + `MockMvc` con `@MockBean` para aislar la capa web.
 
-| Test | Archivo | Tests | Resultado |
+#### Tests de servicios (JUnit 5 + Mockito)
+
+| Archivo | Casos cubiertos | Tests | Resultado |
 |---|---|---|---|
-| EventoServiceTest | `src/test/kotlin/.../service/EventoServiceTest.kt` | 1 test | ✅ OK |
-| MensajeServiceTest | `src/test/kotlin/.../service/MensajeServiceTest.kt` | 1 test | ✅ OK |
-| TicketServiceTest | `src/test/kotlin/.../service/TicketServiceTest.kt` | 1 test | ✅ OK |
+| `AuditoriaServiceTest` | registrar (con datos, desde contexto, sin usuario, severidades), listarPaginado, obtenerPorId | 9 | ✅ OK |
+| `ConversacionServiceTest` | listarMisConversaciones, crearOObtener (individual/grupal/existente), eliminarConversacion (creador/admin/forbidden), eliminarParticipante | 11 | ✅ OK |
+| `DiarioColaboracionServiceTest` | invitarUsuario (ok/forbidden/duplicado/404), responderInvitacion (aceptar/rechazar/forbidden/404), getColaboradores, misInvitacionesPendientes | 13 | ✅ OK |
+| `DiarioServiceTest` | create (ok/sin-tema/forbidden), getById, update (ok/forbidden/404), delete (ok/forbidden/404), publicos, publicosPorTema | 14 | ✅ OK |
+| `DiarioTemaServiceTest` | listMisTemas, create, getById, delete (ok/forbidden), actualizarTema, cambiarVisibilidad, listPublicos, listByUserId | 14 | ✅ OK |
+| `EventoServiceTest` | listarSeguro (USER/ADMIN), crearEventoSeguro (user/admin), eliminarEventoSeguro (ok/forbidden/404) | 7 | ✅ OK |
+| `MensajeServiceTest` | marcarComoLeidos (query específica), obtenerMensajes (ok/forbidden/admin-bypass) | 5 | ✅ OK |
+| `NotificacionServiceTest` | listarMisNotificaciones, enviar (con/sin token), marcarLeida (ok/forbidden/404), marcarTodasLeidas, eliminar | 10 | ✅ OK |
+| `SecurityServiceTest` | getUserPrincipal (ok/sin-auth/principal-incorrecto), hasRole (con/sin/múltiples), checkRole, checkAccess (dueño/rol/forbidden) | 12 | ✅ OK |
+| `TicketServiceTest` | crearTicket (estado ABIERTO + notificación), listarMisTickets, listarTodos (STAFF) | 4 | ✅ OK |
+| `UsuarioServiceTest` | listAll, getById/ByFirebaseUid (ok/404), buscarPorDepartamento, create (ok/conflict), sincronizarGoogle, update, delete | 16 | ✅ OK |
+
+#### Tests de controladores (@WebMvcTest + MockMvc)
+
+| Archivo | Endpoints cubiertos | Tests | Resultado |
+|---|---|---|---|
+| `AuthControllerTest` | POST `/auth/sync` (login Google) | 2 | ✅ OK |
+| `DiarioControllerTest` | GET list (ADMIN/USER), GET byId (ok/403/404), POST crear, DELETE, GET publicos, GET publicosPorTema | 10 | ✅ OK |
+| `DiarioTemaControllerTest` | GET list, GET byId, POST crear, DELETE, POST invitar, POST responder, GET colaboradores, GET invitaciones, GET publicos | 12 | ✅ OK |
+| `EventoControllerTest` | GET list (vacía/con datos), POST crear (201 + service call), DELETE | 5 | ✅ OK |
+| `MensajeControllerTest` | GET deConversacion (ok/vacía), POST enviar (201 + service call), PUT marcarLeido | 5 | ✅ OK |
+| `NotificacionControllerTest` | GET list (ok/vacía), PATCH marcarLeida (ok + service call), PATCH marcarTodas, DELETE | 6 | ✅ OK |
+| `TicketControllerTest` | GET listarTodos (ok/vacía), GET mis-tickets, POST crear (201 + service call), PUT cambiarEstado | 6 | ✅ OK |
+| `UsuarioControllerTest` | GET perfil, GET byId, GET por-departamento, PUT perfil (ok + service call), DELETE | 6 | ✅ OK |
+
+**Total: 168 tests — 0 errores — BUILD SUCCESS**
 
 ### Matriz rápida de evidencia (cierre de rúbrica)
 
@@ -2160,6 +2185,7 @@ Se realizó una sesión guiada con **4 usuarios potenciales** (2 estudiantes DAM
 | Cobertura de requisitos funcionales | 100% de los RF definidos | 100% (34 requisitos implementados) |
 | Endpoints de API documentados en Swagger | >90% | 100% |
 | Tiempo medio de respuesta de la API (local) | < 500ms | ~150ms promedio |
+| Pruebas unitarias backend | 168 tests (11 services + 8 controllers) | 168/168 ✅ BUILD SUCCESS |
 | Pruebas funcionales pasadas | >95% | 100% de las definidas |
 | Validación de datos en entrada | 100% de campos obligatorios | 100% |
 | Código estructurado en capas | Arquitectura por capas completa | ✅ Cumplido |
