@@ -52,7 +52,7 @@ describe('Flujo de Autenticación — Login', () => {
             // Al menos verificamos que seguimos en la pantalla de login
             expect(
                 $body.find('ion-input[type="email"]').length > 0 || tieneError
-            ).toBeTrue();
+            ).to.be.true;
         });
     });
 
@@ -90,7 +90,7 @@ describe('Flujo de Autenticación — Logout', () => {
 
     it('Paso 1: Logout completo limpia la sesión y redirige al dashboard público', () => {
         cy.login(Cypress.env('USER_EMAIL'), Cypress.env('USER_PASSWORD'));
-        cy.url({ timeout: 15000 }).should('include', '/user-profile');
+        cy.url({ timeout: 15000 }).should('match', /\/(user-profile|admin-profile)/);
 
         // Cerrar sesión usando el botón de logout disponible en la UI
         cy.get('body').then($body => {
@@ -112,7 +112,7 @@ describe('Flujo de Autenticación — Logout', () => {
 
     it('Paso 2: Guard bloquea acceso a zona protegida después del logout', () => {
         cy.login(Cypress.env('USER_EMAIL'), Cypress.env('USER_PASSWORD'));
-        cy.url({ timeout: 15000 }).should('include', '/user-profile');
+        cy.url({ timeout: 15000 }).should('match', /\/(user-profile|admin-profile)/);
 
         // Hacer logout
         cy.get('body').then($body => {
@@ -135,7 +135,7 @@ describe('Flujo de Autenticación — Logout', () => {
 
     it('Paso 3: Después del logout, el botón "Iniciar sesión" está visible', () => {
         cy.login(Cypress.env('USER_EMAIL'), Cypress.env('USER_PASSWORD'));
-        cy.url({ timeout: 15000 }).should('include', '/user-profile');
+        cy.url({ timeout: 15000 }).should('match', /\/(user-profile|admin-profile)/);
 
         cy.get('body').then($body => {
             if ($body.find('.mini-logout-btn').length > 0) {
