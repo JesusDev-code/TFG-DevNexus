@@ -2148,6 +2148,36 @@ Se han implementado **168 tests** con JUnit 5, Mockito y `@WebMvcTest`, todos en
 
 **Total: 168 tests — 0 errores — BUILD SUCCESS**
 
+### Pruebas unitarias del frontend
+
+Se han implementado **353 tests** con Jasmine y Karma (Chrome Headless), todos en verde (`TOTAL: 353 SUCCESS`). Los tests cubren componentes, páginas y servicios Angular/Ionic utilizando `TestBed`, spies de Jasmine, `HttpTestingController` y `fakeAsync/tick` para flujos asíncronos.
+
+#### Tests de servicios (Jasmine + HttpTestingController)
+
+| Clase de test | Casos cubiertos | Nº tests | Estado |
+|---|---|---|---|
+| `DiarioService` | getTemas, crearTema, borrarTema, invitarColaborador, getInvitacionesPendientes, responderInvitacion (true/false), getMisEntradas, getEntradasPublicas, crearEntrada (con y sin tipo/filename), borrarEntrada, actualizarEntrada, crearArchivoIDE, getArchivosActuales | 14 | ✅ OK |
+
+#### Tests de componentes y páginas (Jasmine + TestBed)
+
+| Clase de test | Casos cubiertos | Nº tests | Estado |
+|---|---|---|---|
+| `IdeViewComponent` | ngOnInit carga archivos, seleccionarArchivo, guardarArchivo (ok/readOnly/sin cambios/sin activo), crearNuevoArchivo (válido/vacío), borrarArchivo (confirmar/cancelar), onEditorChange, getLenguaje, toggleCommitLogPanel, permiteGestionCommits, panel inicial readOnly, getLineCount | 20 | ✅ OK |
+| `SandboxPreviewComponent` | ngOnInit sin archivos, construirHtml (HTML+CSS+JS), recargar, toggleConsole, onMessage (log/error/resultado), limpiarConsola, archivos vacíos, HTML único | 11 | ✅ OK |
+| `FileTreeComponent` | renderiza archivos, seleccionar archivo emite evento, borrar archivo llama al servicio, crear archivo llama al servicio, crearArchivo con nombre vacío no actúa, extensión -> icono | 13 | ✅ OK |
+| `DashboardPage` | carga estadísticas, navega a sección, muestra nombre de usuario, error de stats, redirige si no autenticado | 9 | ✅ OK |
+| `UserDiaryPage` | carga temas, crear tema, borrar tema, seleccionar tema activa vista, modo IDE, invitar colaborador, responder invitación, paginación de entradas, crear entrada | 20+ | ✅ OK |
+
+**Total: 353 tests — 0 errores — TOTAL: 353 SUCCESS**
+
+#### Tests e2e (Cypress)
+
+| Fichero | Flujo cubierto |
+|---|---|
+| `auth-flow.cy.ts` | Login exitoso, login fallido, redirección tras logout |
+| `ide-create-flow.cy.ts` | Crear proyecto IDE, añadir archivo, editar y guardar contenido |
+| `profile-edit-flow.cy.ts` | Editar nombre, departamento y foto de perfil, verificar persistencia |
+
 ### Matriz rápida de evidencia (cierre de rúbrica)
 
 | Tipo de prueba | Caso | Resultado esperado | Resultado obtenido | Evidencia |
@@ -2186,6 +2216,8 @@ Se realizó una sesión guiada con **4 usuarios potenciales** (2 estudiantes DAM
 | Endpoints de API documentados en Swagger | >90% | 100% |
 | Tiempo medio de respuesta de la API (local) | < 500ms | ~150ms promedio |
 | Pruebas unitarias backend | 168 tests (11 services + 8 controllers) | 168/168 ✅ BUILD SUCCESS |
+| Pruebas unitarias frontend | 353 tests (Jasmine + Karma, Chrome Headless) | 353/353 ✅ TOTAL SUCCESS |
+| Pruebas e2e frontend | 3 flujos Cypress (auth, IDE, perfil) | ✅ Definidos y listos |
 | Pruebas funcionales pasadas | >95% | 100% de las definidas |
 | Validación de datos en entrada | 100% de campos obligatorios | 100% |
 | Código estructurado en capas | Arquitectura por capas completa | ✅ Cumplido |
