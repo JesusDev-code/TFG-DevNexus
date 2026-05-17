@@ -23,66 +23,66 @@
 
 # 2. ÍNDICE DEL DOCUMENTO
 
-1. Portada
-2. Índice del documento
-3. Introducción
-   - 3.1 Justificación del proyecto
-   - 3.2 Análisis comparativo de aplicaciones similares
-   - 3.3 Tendencias del mercado
-   - 3.4 Beneficios y expectativas del proyecto
-4. Descripción del proyecto
-   - 4.1 Tipo de proyecto
-   - 4.2 Características principales
-   - 4.3 Usuarios destinatarios
-5. Objetivos del proyecto
-   - 5.1 Objetivo general
-   - 5.2 Objetivos específicos
-6. Alcance del proyecto
-   - 6.1 Qué incluye el proyecto
-   - 6.2 Límites y restricciones
-7. Requisitos del proyecto
-   - 7.1 Requisitos funcionales
-   - 7.2 Requisitos técnicos
-   - 7.3 Requisitos legales y normativos
-8. Planificación del proyecto
-   - 8.1 Estructura de tareas (WBS)
-   - 8.2 Cronograma (Diagrama de Gantt)
-   - 8.3 Recursos necesarios
-9. Plan de gestión de riesgos
-   - 9.1 Identificación y evaluación de riesgos
-   - 9.2 Recursos preventivos
-   - 9.3 Plan de mitigación
-10. Diseño
-    - 10.1 Prototipado y wireframes
-    - 10.2 Especificaciones técnicas
-    - 10.3 Diagramas UML
-11. Instalación y preparación
-    - 11.1 Procedimientos para poner en marcha el proyecto
-    - 11.2 Control de versiones
-    - 11.3 Registro de incidencias
-12. Documentación de ejecución y plan de calidad
-    - 12.1 Procedimientos operativos
-    - 12.2 Registro de pruebas
-    - 12.3 Indicadores de calidad
-    - 12.4 Métodos de verificación
-13. Distribución
-    - 13.1 Tecnología de distribución
-    - 13.2 Descripción del proceso de distribución
-14. Manuales
-    - 14.1 Manual de instalación
-    - 14.2 Manual de usuario
-15. Conclusiones
-    - 15.1 Informe final
-    - 15.2 Resultados obtenidos
-    - 15.3 Viabilidad del proyecto
-    - 15.4 Mejoras futuras
-16. Anexos
-    - Anexo A: Diagrama Entidad–Relación completo
-    - Anexo B: Descripción detallada de la API REST
-    - Anexo C: Casos de prueba detallados
-    - Anexo D: Configuración técnica de PgBouncer
-17. Índice de tablas e imágenes
-18. Bibliografía y referencias
+1. [Portada](#1-portada)
+2. [Índice del documento](#2-índice-del-documento)
+3. [Introducción](#3-introducción)
+   - [3.1 Justificación del proyecto](#31-justificación-del-proyecto)
+   - [3.2 Análisis comparativo de aplicaciones similares](#32-análisis-comparativo-de-aplicaciones-similares)
+   - [3.3 Tendencias del mercado](#33-tendencias-del-mercado)
+   - [3.4 Beneficios y expectativas del proyecto](#34-beneficios-y-expectativas-del-proyecto)
+4. [Descripción del proyecto](#4-descripción-del-proyecto)
+   - [4.1 Tipo de proyecto](#41-tipo-de-proyecto)
+   - [4.2 Características principales](#42-características-principales)
+   - [4.3 Usuarios destinatarios](#43-usuarios-destinatarios)
+5. [Objetivos del proyecto](#5-objetivos-del-proyecto)
+   - [5.1 Objetivo general](#51-objetivo-general)
+   - [5.2 Objetivos específicos](#52-objetivos-específicos)
+6. [Alcance del proyecto](#6-alcance-del-proyecto)
+   - [6.1 Qué incluye el proyecto](#61-qué-incluye-el-proyecto)
+   - [6.2 Límites y restricciones](#62-límites-y-restricciones)
+7. [Requisitos del proyecto](#7-requisitos-del-proyecto)
+   - [7.1 Requisitos funcionales](#71-requisitos-funcionales)
+   - [7.2 Requisitos técnicos](#72-requisitos-técnicos)
+   - [7.3 Requisitos legales y normativos](#73-requisitos-legales-y-normativos)
+8. [Planificación del proyecto](#8-planificación-del-proyecto)
+   - [8.1 Estructura de tareas (WBS)](#81-estructura-de-tareas-wbs--work-breakdown-structure)
+   - [8.2 Cronograma (Diagrama de Gantt)](#82-cronograma-diagrama-de-gantt)
+   - [8.3 Recursos necesarios](#83-recursos-necesarios)
+9. [Plan de gestión de riesgos](#9-plan-de-gestión-de-riesgos)
+   - [9.1 Identificación y evaluación de riesgos](#91-identificación-y-evaluación-de-riesgos)
+   - [9.2 Recursos preventivos](#92-recursos-preventivos)
+   - [9.3 Plan de mitigación](#93-plan-de-mitigación)
+10. [Diseño](#10-diseño)
+    - [10.1 Prototipado y wireframes](#101-prototipado-y-wireframes)
+    - [10.2 Especificaciones técnicas](#102-especificaciones-técnicas)
+    - [10.3 Diagramas UML](#103-diagramas-uml)
+11. [Instalación y preparación](#11-instalación-y-preparación)
+    - [11.1 Procedimientos necesarios para hacer funcionar el proyecto](#111-procedimientos-necesarios-para-hacer-funcionar-el-proyecto)
+    - [11.2 Procedimientos para el control de versiones](#112-procedimientos-para-el-control-de-versiones)
+    - [11.3 Procedimientos para registrar las incidencias](#113-procedimientos-para-registrar-las-incidencias)
+12. [Documentación de ejecución y plan de calidad](#12-documentación-de-ejecución-y-plan-de-calidad)
+    - [12.1 Procedimientos operativos](#121-procedimientos-operativos)
+    - [12.2 Registro de pruebas](#122-registro-de-pruebas)
+    - [12.3 Indicadores de calidad](#123-indicadores-de-calidad)
+    - [12.4 Métodos de verificación](#124-métodos-de-verificación)
+13. [Distribución](#13-distribución)
+    - [13.1 Tecnología de distribución](#131-tecnología-de-distribución)
+    - [13.2 Descripción del proceso de distribución](#132-descripción-del-proceso-de-distribución)
+14. [Manuales](#14-manuales)
+    - [14.1 Manual de instalación](#141-manual-de-instalación)
+    - [14.2 Manual de usuario](#142-manual-de-usuario)
+15. [Conclusiones](#15-conclusiones)
+    - [15.1 Informe final](#151-informe-final)
+    - [15.2 Resultados obtenidos](#152-resultados-obtenidos)
+    - [15.3 Viabilidad del proyecto](#153-viabilidad-del-proyecto)
+    - [15.4 Mejoras futuras](#154-mejoras-futuras)
+16. [Anexos](#16-anexos)
+    - [Anexo A: Diagrama Entidad–Relación completo](#anexo-a-diagrama-entidad-relación-completo)
+    - [Anexo B: Descripción detallada de la API REST](#anexo-b-descripción-detallada-de-la-api-rest)
+    - [Anexo C: Casos de prueba detallados](#anexo-c-casos-de-prueba-detallados)
+    - [Anexo D: Configuración técnica de PgBouncer](#anexo-d-configuración-técnica-de-pgbouncer)
+17. [Índice de tablas e imágenes](#17-índice-de-tablas-e-imágenes)
+18. [Bibliografía y referencias](#18-bibliografía-y-referencias)
 
 ---
 
