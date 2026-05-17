@@ -5,6 +5,8 @@
 
 # 1. PORTADA
 
+![Portada DevNexus](img/portada.png)
+
 **Nombre del proyecto:** DevNexus — Plataforma Colaborativa de Gestión de Diarios, Incidencias y Comunicación para Desarrolladores
 
 **Autor:** Jesús Alfonso Pedreño Domínguez
