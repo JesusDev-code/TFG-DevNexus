@@ -1,7 +1,7 @@
 .gradient-border {
   margin: 16px;
   // Sombra Glow Morada
-  box-shadow: 0 0 40px rgba(168, 85, 247, 0.15); 
+  box-shadow: 0 0 40px rgba(168, 85, 247, 0.15);
   border: 1px solid transparent;
   border-radius: 24px;
   
@@ -145,19 +145,19 @@ div.sign-in-container {
 
   .close-container {
     position: absolute; left: 0; right: 0; margin-top: 8px;
-    
+
     ion-button {
       width: 36px; min-height: 36px;
-      
+
       --background: rgba(255,255,255,0.1);
       --background-hover: rgba(255,255,255,0.2);
       --border-radius: 50%;
       --box-shadow: none;
       --padding-top: 0; --padding-start: 0; --padding-end: 0; --padding-bottom: 0;
-      
+
       border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 50%; 
-      
+      border-radius: 50%;
+
       ion-icon { color: white; width: 20px; height: 20px; }
     }
   }
