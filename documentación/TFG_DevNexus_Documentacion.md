@@ -190,7 +190,7 @@ Las características principales de la aplicación son:
 - Chat integrado por ticket para comunicación directa
 
 **Mensajería interna:**
-- Conversaciones individuales y grupales entre usuarios
+- Conversaciones individuales
 - Envío y recepción de mensajes mediante API REST con control de lectura (leído/no leído)
 - Gestión de participantes: añadir y eliminar
 - Filtrado de contactos por departamento (Backend Developer, Frontend Developer, Full Stack Developer)
