@@ -2031,6 +2031,17 @@ psql -U [USER] -d [DATABASE] < backup_YYYYMMDD.sql
 **Backup automático a NeonDB:**
 El sistema tiene configurado un backup periódico hacia NeonDB (PostgreSQL gestionado en la nube), que actúa como copia de seguridad externa. Esto garantiza recuperabilidad ante pérdida total del VPS.
 
+### Matriz de responsabilidad operativa
+
+| Tarea | Responsable | Frecuencia |
+|---|---|---|
+| Monitorización de contenedores | Administrador del sistema | Continua (bot Telegram) |
+| Copias de seguridad a NeonDB | Administrador del sistema | Diaria (automática) |
+| Actualización de imágenes Docker | Desarrollador | Por versión/release |
+| Revisión de entradas pendientes (diarios) | Staff designado | Bajo demanda |
+| Gestión de usuarios y asignación de roles | Administrador | Bajo demanda |
+| Renovación de certificados SSL | Automática (Dokploy + Let's Encrypt) | Cada 90 días |
+
 ## 12.2 Registro de pruebas
 
 ### Pruebas funcionales del backend (mediante Swagger UI)
@@ -2054,6 +2065,18 @@ El sistema tiene configurado un backup periódico hacia NeonDB (PostgreSQL gesti
 | PF-15 | /api/auditorias | GET | Listar auditoría (ADMIN) | ✅ OK |
 | PF-16 | /api/auditorias | GET | Listar auditoría (USER) → 403 | ✅ OK |
 | PF-17 | /api/diarios/tema/{temaId}/export.csv | GET | Exportación de diarios de tema a CSV | ✅ OK |
+
+### Pruebas de seguridad
+
+| ID | Vector de ataque | Método de prueba | Resultado |
+|---|---|---|---|
+| PS-01 | SQL injection | Payload `' OR 1=1 --` en campos de texto enviados al backend | ✅ OK — JPA/Hibernate usa queries parametrizadas; sin concatenación SQL directa |
+| PS-02 | XSS reflejado | `<script>alert(1)</script>` en título y descripción de tickets/diarios | ✅ OK — Angular sanitiza automáticamente interpolación `{{ }}` e `[innerHTML]` |
+| PS-03 | CORS — origen no autorizado | Petición con `Origin: https://atacante.com` | ✅ OK — Spring devuelve 403; solo orígenes configurados en `WebMvcConfig` son permitidos |
+| PS-04 | CSRF | POST sin token JWT desde origen externo | ✅ OK — Autenticación stateless con JWT; sin cookies de sesión; CSRF no aplicable |
+| PS-05 | Acceso sin autenticación | GET `/api/diarios` sin cabecera `Authorization` | ✅ OK — Spring Security devuelve 401 Unauthorized |
+| PS-06 | Escalada de privilegios | Usuario USER intenta GET `/api/auditorias` | ✅ OK — `@PreAuthorize` devuelve 403 Forbidden |
+| PS-07 | HTTPS enforcement | Petición HTTP a `http://devnexus.es` | ✅ OK — Traefik redirige automáticamente a HTTPS con código 301 |
 
 ### Evidencia ADA: comparación BD vs ficheros (lectura/escritura)
 
@@ -2183,6 +2206,8 @@ Se han implementado **353 tests** con Jasmine y Karma (Chrome Headless), todos e
 
 **Total: 20 tests e2e — 0 errores — All specs passed (2m 54s)**
 
+> **Nota sobre la cobertura e2e:** Los 4 flujos Cypress cubren los escenarios de mayor riesgo: autenticación, flujo principal de usuario, edición de perfil y administración. La cobertura funcional completa sobre los 41 RF se apoya en los 353 tests unitarios de frontend + 168 tests de backend + 17 pruebas funcionales via Swagger. El número reducido de flujos e2e es una decisión de diseño: ejecutar Cypress contra el entorno de producción real requiere datos de prueba persistentes y un estado de BD controlado. Se priorizaron los 4 flujos de mayor impacto para evitar efectos secundarios sobre los datos de usuarios reales.
+
 ### Matriz rápida de evidencia (cierre de rúbrica)
 
 | Tipo de prueba | Caso | Resultado esperado | Resultado obtenido | Evidencia |
@@ -2217,7 +2242,7 @@ Se realizó una sesión guiada con **4 usuarios potenciales** (2 estudiantes DAM
 
 | Indicador | Objetivo | Resultado |
 |---|---|---|
-| Cobertura de requisitos funcionales | 100% de los RF definidos | 100% (34 requisitos implementados) |
+| Cobertura de requisitos funcionales | 100% de los RF definidos | 100% — 41 de 41 RF implementados |
 | Endpoints de API documentados en Swagger | >90% | 100% |
 | Tiempo medio de respuesta de la API (local) | < 500ms | ~150ms promedio |
 | Pruebas unitarias backend | 168 tests (11 services + 8 controllers) | 168/168 ✅ BUILD SUCCESS |
@@ -2546,6 +2571,27 @@ La aplicación soporta dos métodos de autenticación:
 ![Figura 34e: IDE integrado — Feedback de staff](img/27.png)
 
 *Figura 34e: IDE integrado — Sección de feedback de staff sobre el proyecto*
+
+### Flujo de revisión de diarios (usuarios con rol STAFF)
+
+Los usuarios con rol **STAFF** tienen acceso al panel de administración para revisar los proyectos de diario enviados a revisión por los usuarios.
+
+**Proceso de revisión paso a paso:**
+
+1. Acceder a la aplicación con una cuenta con rol STAFF o ADMIN.
+2. En la barra de navegación inferior, pulsar el icono de **Panel de Administración** para ir a `/admin-profile`.
+3. Navegar a la sección **"Revisión de Diarios"** (`admin-diarios`).
+4. El panel muestra todos los proyectos con visibilidad `PENDIENTE` que esperan revisión.
+5. Pulsar sobre un proyecto para abrirlo en **modo solo lectura** del IDE integrado.
+6. Revisar las entradas del usuario, los archivos del IDE y el historial de commits.
+7. Dejar comentarios de feedback detallados en la sección **"Comentarios del staff"** dentro de la vista del proyecto (comentarios privados, solo visibles para el staff y el propietario).
+8. Tomar una decisión y cambiar la visibilidad del proyecto usando el selector de estado:
+   - **Aprobar → `PUBLICA`:** el proyecto pasa a ser visible en el blog de la comunidad.
+   - **Devolver a revisión → `PRIVADA`:** el proyecto vuelve al propietario con el feedback en los comentarios.
+   - **Mantener en espera → `PENDIENTE`:** sin cambio, el proyecto sigue en cola de revisión.
+9. El propietario del proyecto recibe automáticamente una **notificación push** (Firebase FCM) informando del cambio de estado.
+
+> **Nota:** Todos los cambios de visibilidad quedan registrados automáticamente en el **log de auditoría** del sistema, con usuario responsable, timestamp y acción realizada (ver módulo de auditoría en el panel de administración).
 
 ### Uso del módulo de tickets
 
