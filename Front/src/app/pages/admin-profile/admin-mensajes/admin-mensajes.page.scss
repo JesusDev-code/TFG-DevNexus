@@ -110,8 +110,8 @@
   &:hover { background: rgba(168, 85, 247, 0.2); border-color: #a855f7; color: #a855f7; transform: translateX(-3px); }
 }
 
-.chat-messages-area { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 12px; &::-webkit-scrollbar { width: 6px; } &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; } }
-.message-bubble-wrapper { max-width: 75%; display: flex; &.is-mine { align-self: flex-end; .message-glass-bubble { background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%); color: white; border-radius: 20px 20px 4px 20px; } } &:not(.is-mine) { align-self: flex-start; .message-glass-bubble { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); color: #e2e8f0; border-radius: 20px 20px 20px 4px; } } }
+.chat-messages-area { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 12px; &::-webkit-scrollbar { width: 6px; } &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; } ::ng-deep .cdk-virtual-scroll-content-wrapper { width: 100%; display: flex; flex-direction: column; gap: 12px; } }
+.message-bubble-wrapper { max-width: 75%; display: flex; &.is-mine { margin-left: auto; .message-glass-bubble { background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%); color: white; border-radius: 20px 20px 4px 20px; } } &:not(.is-mine) { margin-right: auto; .message-glass-bubble { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); color: #e2e8f0; border-radius: 20px 20px 20px 4px; } } }
 .message-glass-bubble { padding: 14px 18px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); p { margin: 0; line-height: 1.5; font-size: 0.95rem; } .message-time-stamp { font-size: 0.7rem; opacity: 0.6; display: block; text-align: right; margin-top: 6px; } }
 
 .chat-input-premium {

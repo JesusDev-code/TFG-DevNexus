@@ -44,20 +44,10 @@ export class AdminMensajesPage implements OnInit {
 
   constructor() {
     addIcons({ searchOutline, sendOutline, trashOutline, personAddOutline, chatbubbleEllipsesOutline, closeOutline, chevronBackOutline, arrowForwardOutline });
-
-    // 🔔 Effect para observar el login de usuario (Signals)
-    import('@angular/core').then(m => {
-      m.effect(() => {
-        const u = this.authService.currentUser();
-        if (u) {
-          this.miId = u.id;
-          this.cd.markForCheck();
-        }
-      });
-    });
   }
 
   ngOnInit() {
+    this.miId = this.authService.currentUser()?.id ?? null;
     this.cargarConversaciones();
   }
 
