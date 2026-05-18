@@ -133,7 +133,7 @@ Antes del despliegue público se realizó una auditoría SAST completa (frontend
 | Dependencias | 0 CVEs críticos en runtime (`npm audit` + override `dompurify`) |
 | Actuator / Swagger | Restringidos a `ROLE_ADMIN` — `/actuator/health` es el único endpoint público |
 
-Documentación detallada: `documentación/Guion_DevNexus_Documnetacion.md` § 12.5.
+Documentación detallada: `documentación/TFG_DevNexus_Documentacion.md` § 12.5.
 
 ---
 
