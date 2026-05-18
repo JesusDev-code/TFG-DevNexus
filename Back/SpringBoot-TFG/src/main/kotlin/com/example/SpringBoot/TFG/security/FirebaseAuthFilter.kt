@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -16,6 +17,8 @@ class FirebaseAuthFilter(
     private val firebaseAuth: FirebaseAuth,
     private val usuarioRepository: UsuarioRepository
 ) : OncePerRequestFilter() {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
         val path = request.servletPath
@@ -79,13 +82,11 @@ class FirebaseAuthFilter(
             chain.doFilter(request, response)
 
         } catch (e: Exception) {
-            println("❌ [FILTRO] Error verificando token: ${e.message}")
-            // Importante: Si el token es inválido (caducado, falso), cortamos aquí
-            // y devolvemos 401 inmediatamente.
+            logger.warn("Token de Firebase inválido o expirado")
             response.status = HttpServletResponse.SC_UNAUTHORIZED
             SecurityContextHolder.clearContext()
             response.contentType = "application/json"
-            response.writer.write("""{"error":"Token inválido","message":"${e.message}"}""")
+            response.writer.write("""{"error":"Token inválido","message":"El token proporcionado no es válido o ha expirado"}""")
         }
     }
 }

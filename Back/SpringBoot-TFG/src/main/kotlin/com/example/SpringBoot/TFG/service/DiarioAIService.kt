@@ -102,7 +102,15 @@ Responde en español con formato Markdown claro y conciso.""",
         val tema = diarioTemaRepo.findById(temaId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Tema no encontrado") }
 
-        val archivos = diarioRepo.findAllByTemaIdAndTipoOrderByFechaCreacionDesc(temaId, "FILE")
+        val principal = securityService.getUserPrincipal()
+        val todosBrutos = if (securityService.hasRole("ADMIN", "STAFF")) {
+            diarioRepo.findAllByTemaIdAndTipoOrderByFechaCreacionDesc(temaId, "FILE")
+        } else {
+            val userId = principal.userId ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no identificado")
+            diarioRepo.findPermitidosByTemaId(userId, temaId).filter { it.tipo == "FILE" }
+        }
+
+        val archivos = todosBrutos
             .groupBy { it.filename }
             .mapNotNull { (_, versions) -> versions.firstOrNull() }
 

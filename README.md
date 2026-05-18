@@ -119,6 +119,24 @@ npx cypress open
 
 ---
 
+## Seguridad
+
+Antes del despliegue público se realizó una auditoría SAST completa (frontend + backend) con clasificación OWASP Top 10 (2021). Se identificaron y corrigieron 14 hallazgos, incluyendo un bypass crítico del sandbox del IDE que permitía robo de tokens de sesión mediante XSS.
+
+| Protección | Mecanismo |
+|---|---|
+| Aislamiento del IDE | `iframe sandbox="allow-scripts"` sin `allow-same-origin` — origen opaco |
+| Control de acceso (BOLA) | Verificación de propietario/colaborador en `analizarProyecto`, `enviarMensaje`, `comentar` |
+| Content Security Policy | CSP completa con compatibilidad Monaco Editor (ver `Front/src/index.html`) |
+| Rate limiting IA | Token bucket 10 req/min por usuario (`AiRateLimitFilter` con bucket4j) |
+| Validación de payload | Bean Validation en `VisionRequestDto` — límite 5 MB + tipo MIME permitido |
+| Dependencias | 0 CVEs críticos en runtime (`npm audit` + override `dompurify`) |
+| Actuator / Swagger | Restringidos a `ROLE_ADMIN` — `/actuator/health` es el único endpoint público |
+
+Documentación detallada: `documentación/Guion_DevNexus_Documnetacion.md` § 12.5.
+
+---
+
 ## Roles de usuario
 
 | Rol | Descripción |

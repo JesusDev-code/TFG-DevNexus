@@ -59,6 +59,11 @@ class MensajeService(
             ResponseStatusException(HttpStatus.NOT_FOUND, "Conversación no encontrada")
         }
 
+        val esAdmin = principal.authorities.any { it.authority == "ROLE_ADMIN" }
+        if (!esAdmin && !participanteRepo.existsById(ConversacionParticipanteId(conv.id!!, autorId))) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes acceso a esta conversación")
+        }
+
         val nuevoMensaje = Mensaje(
             conversacion = conv,
             autor = autor,

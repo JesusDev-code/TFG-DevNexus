@@ -46,7 +46,7 @@ interface SandboxError {
       <div class="sandbox-frame-wrap">
         <iframe #previewFrame
                 class="sandbox-frame"
-                sandbox="allow-scripts allow-same-origin"
+                sandbox="allow-scripts"
                 title="Preview">
         </iframe>
       </div>

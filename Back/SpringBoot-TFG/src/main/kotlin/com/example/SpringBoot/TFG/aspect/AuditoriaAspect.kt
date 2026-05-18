@@ -4,13 +4,15 @@ import com.example.SpringBoot.TFG.service.AuditoriaService
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Aspect
 @Component
 class AuditoriaAspect(
-    private val auditoriaService: AuditoriaService // ✅ Ahora usamos el Service
+    private val auditoriaService: AuditoriaService
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     // Detecta Creaciones (POST) -> INFO
     @AfterReturning("within(com.example.SpringBoot.TFG.controller..*) && @annotation(org.springframework.web.bind.annotation.PostMapping)")
@@ -52,7 +54,7 @@ class AuditoriaAspect(
             )
 
         } catch (e: Exception) {
-            println("❌ Error en aspecto de auditoría: ${e.message}")
+            logger.error("Error al registrar auditoría automática: ${e.message}")
         }
     }
 }

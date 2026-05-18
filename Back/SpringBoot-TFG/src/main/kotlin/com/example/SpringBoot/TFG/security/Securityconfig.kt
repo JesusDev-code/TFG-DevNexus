@@ -17,7 +17,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
-    private val firebaseAuthFilter: FirebaseAuthFilter
+    private val firebaseAuthFilter: FirebaseAuthFilter,
+    private val aiRateLimitFilter: AiRateLimitFilter
 ) {
 
     @Bean
@@ -34,7 +35,7 @@ class SecurityConfig(
                 it
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Por seguridad extra
                     .requestMatchers("/h2-console/**").permitAll()
-                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/usuarios/registro").permitAll()
                     .requestMatchers("/favicon.ico").permitAll()
 
@@ -54,6 +55,9 @@ class SecurityConfig(
                     .requestMatchers(HttpMethod.PUT, "/api/diarios/*/revisar").hasAnyRole("STAFF", "ADMIN")
                     .requestMatchers(HttpMethod.PUT, "/api/proyectos/*/validar").hasAnyRole("STAFF", "ADMIN")
 
+                    .requestMatchers("/actuator/health").permitAll()
+                    .requestMatchers("/actuator/**").hasRole("ADMIN")
+
                     .anyRequest().authenticated()
             }
             .headers { headers ->
@@ -67,11 +71,12 @@ class SecurityConfig(
                 }
             }
             .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterAfter(aiRateLimitFilter, FirebaseAuthFilter::class.java)
             .exceptionHandling {
                 it.authenticationEntryPoint { _, response, authException ->
                     response.status = 401
                     response.contentType = "application/json"
-                    response.writer.write("""{"error":"Unauthorized","message":"${authException?.message ?: "Autenticación requerida"}"}""")
+                    response.writer.write("""{"error":"Unauthorized","message":"Autenticación requerida"}""")
                 }
                 it.accessDeniedHandler { _, response, _ ->
                     response.status = 403

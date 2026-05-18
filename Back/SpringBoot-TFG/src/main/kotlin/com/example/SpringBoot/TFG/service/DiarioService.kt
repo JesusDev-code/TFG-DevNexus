@@ -58,7 +58,6 @@ class DiarioService(
             }
         }
 
-        println("[BACKEND-DEBUG] Creando Diario con: tipo=${dto.tipo}, filename='${dto.filename}'")
         
         val diario = Diario(
             contenido = dto.contenido,
@@ -69,7 +68,6 @@ class DiarioService(
             filename = dto.filename
         )
         val saved = repo.save(diario)
-        println("[BACKEND-DEBUG] Diario guardado: id=${saved.id}, filename='${saved.filename}'")
         return saved.toDto()
     }
 
@@ -213,6 +211,15 @@ class DiarioService(
         val diario = repo.findById(diarioId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Diario no encontrado") }
 
+        if (diario.visibilidad == Visibilidad.PRIVADO) {
+            val esAdminOrStaff = principal.authorities.any {
+                it.authority == "ROLE_STAFF" || it.authority == "ROLE_ADMIN"
+            }
+            if (diario.usuario.id != principal.userId && !esAdminOrStaff) {
+                throw ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes acceso a esta entrada")
+            }
+        }
+
         val comentario = DiarioComentario(texto = texto, diario = diario, autor = autor)
         val guardado = comentarioRepo.save(comentario)
 
@@ -232,11 +239,6 @@ class DiarioService(
             .mapNotNull { (_, versions) -> versions.firstOrNull() }
             .sortedBy { it.filename }
             .map { it.toDto() }
-
-        println("[BACKEND-DEBUG] getArchivosActuales($temaId) retorna ${archivos.size} archivos:")
-        archivos.forEach { a ->
-            println("  - id=${a.id}, filename='${a.filename}', tipo='${a.tipo}'")
-        }
 
         return archivos
     }
