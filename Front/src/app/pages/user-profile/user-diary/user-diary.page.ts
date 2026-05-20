@@ -306,7 +306,6 @@ export class UserDiaryPage implements OnInit {
         this.cdr.markForCheck();
       },
       error: (err) => {
-        // Si el error es 403 (Forbidden), mostramos mensaje personalizado
         if (err.status === 403) {
             this.presentToast('No tienes permiso para escribir en este repo.', 'warning');
         } else {
@@ -589,7 +588,6 @@ export class UserDiaryPage implements OnInit {
     this.cdr.markForCheck();
   }
 
-  // ✅ NUEVA FUNCIONALIDAD: INVITAR COLABORADORES
   async abrirInvitacion() {
     if (!this.temaSeleccionado) return;
 

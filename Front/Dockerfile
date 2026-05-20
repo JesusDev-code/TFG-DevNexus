@@ -11,7 +11,7 @@ COPY . .
 RUN npm run build -- --configuration=production
 
 # Etapa 2: Servidor de producción
-FROM nginx:alpine
+FROM nginx:1.30.1-alpine
 
 # IMPORTANTE: Revisa si tu carpeta de salida es 'www' o 'dist/miweb'
 # Si tras fallar ves que no encuentra la carpeta, cambia /app/www por /app/dist/miweb

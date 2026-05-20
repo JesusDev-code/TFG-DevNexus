@@ -75,7 +75,7 @@ export interface TicketDto {
   titulo: string;
   descripcion: string;
   estado: string; 
-  prioridad: string; // ✅ Añadido para evitar fallos en el HTML
+  prioridad: string;
   fechaCreacion: string;
   usuarioNombre: string;
 }
@@ -88,7 +88,6 @@ export interface TicketComentarioDto {
   fechaEnvio: string;
 }
 
-// ✅ AÑADIR ESTA INTERFAZ PARA EL HISTORIAL
 export interface TicketHistoricoDto {
   id: number;
   estadoAnterior: string | null;
@@ -104,14 +103,14 @@ export interface ConversacionDto {
   tipo: 'individual' | 'grupal';
   ultimoMensaje?: string;
   fechaUltimoMensaje?: string;
-  unreadCount?: number; // ✅ Añadido para notificaciones
-  avatarUrl?: string;   // ✅ Añadido para la lista
+  unreadCount?: number;
+  avatarUrl?: string;
   esAdmin: boolean;
 }
 export interface ConversacionCreateDto {
   titulo: string;
   tipo: 'individual' | 'grupal';
-  invitadoId?: number; // ✅ ID del compañero con el que iniciamos chat
+  invitadoId?: number;
 }
 
 export interface MensajeDto {
@@ -119,7 +118,7 @@ export interface MensajeDto {
   texto: string;
   autorId: number;
   autorNombre: string;
-  autorFoto?: string;   // ✅ Añadido para mostrar avatar en el chat
+  autorFoto?: string;
   fechaEnvio: string;
   esStaff: boolean;
   leido: boolean;

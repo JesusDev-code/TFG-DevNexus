@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { IonicModule, AlertController, ToastController, ModalController } from '@ionic/angular'; // Módulos y Servicios
+import { IonicModule, AlertController, ToastController, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   send, personAddOutline, closeOutline, searchOutline,
@@ -38,17 +38,14 @@ export class UserMessagesPage {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  // --- STATE MANAGEMENT (SIGNALS) ---
   conversaciones = signal<ConversacionDto[]>([]);
   conversacionSeleccionada = signal<ConversacionDto | null>(null);
   mensajes = signal<MensajeDto[]>([]);
 
-  // UI State
   filtroChats = signal('');
   mostrarBuscador = signal(false);
   mostrarEmojiPicker = signal(false);
 
-  // Search & Departments State
   usuariosEncontrados = signal<UsuarioDto[]>([]);
   searchQuery = signal('');
   departamentos = signal<any[]>([]);
@@ -58,7 +55,6 @@ export class UserMessagesPage {
   miId = signal<number | null>(null);
   emojiList = ['😀', '😂', '😍', '👍', '🙌', '🔥', '🚀', '👏', '✅', '💡'];
 
-  // --- COMPUTED SIGNALS ---
   conversacionesFiltradas = computed(() => {
     const term = this.filtroChats().toLowerCase().trim();
     const todas = this.conversaciones();
@@ -138,7 +134,6 @@ export class UserMessagesPage {
     this.conversacionSeleccionada.set(null);
   }
 
-  // ✅ CORREGIDO: Métodos explícitos para evitar arrow functions en template
   toggleBuscador() {
     this.mostrarBuscador.update(v => !v);
     this.searchQuery.set('');

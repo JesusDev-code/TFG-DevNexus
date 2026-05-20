@@ -7,7 +7,6 @@ import {
   ModalController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-// ✅ Importamos 'addCircleOutline'
 import { send, attachOutline, happyOutline, timeOutline, chatbubblesOutline, closeOutline, personCircleOutline, addCircleOutline } from 'ionicons/icons';
 import { SupportChatService } from 'src/app/services/support-chat.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -47,7 +46,6 @@ export class SupportChatPage implements OnDestroy {
   chatCerrado = false;
 
   constructor() {
-    // ✅ Registramos el nuevo icono
     addIcons({ send, attachOutline, happyOutline, timeOutline, chatbubblesOutline, closeOutline, personCircleOutline, addCircleOutline });
 
     effect(() => {
@@ -123,10 +121,9 @@ export class SupportChatPage implements OnDestroy {
     });
   }
 
-  // ✅ NUEVA FUNCIÓN: Abrir nuevo ticket
   iniciarNuevoTicket() {
     this.chatService.reopenChat(this.chatId).then(() => {
-      this.chatCerrado = false; // Desbloqueamos localmente para que sea instantáneo
+      this.chatCerrado = false;
       this.cdr.markForCheck();
     });
   }

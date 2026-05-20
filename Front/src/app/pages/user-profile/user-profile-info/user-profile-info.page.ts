@@ -51,7 +51,6 @@ export class UserProfileInfoPage implements OnInit {
     departamentoId: null as number | null
   };
 
-  // 🔥 NUEVO: Variable para la selección temporal en el modal
   avatarTemporal: string = '';
 
   inicial: string = '?';
@@ -102,17 +101,14 @@ export class UserProfileInfoPage implements OnInit {
 
   seleccionarRol(id: number) { this.formData.departamentoId = id; }
 
-  // 🔥 NUEVO: Se ejecuta al abrir el modal para resetear la selección
   iniciarSeleccionAvatar() {
     this.avatarTemporal = this.formData.foto_perfil;
   }
 
-  // 🔥 MODIFICADO: Solo selecciona visualmente
   seleccionarAvatar(ruta: string) {
     this.avatarTemporal = ruta;
   }
 
-  // 🔥 NUEVO: Confirma y cierra
   confirmarAvatar(modal: any) {
     this.formData.foto_perfil = this.avatarTemporal;
     modal.dismiss();

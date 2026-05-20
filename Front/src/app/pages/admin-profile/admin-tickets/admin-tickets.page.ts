@@ -27,19 +27,16 @@ export class AdminTicketsPage implements OnInit {
   private toastCtrl = inject(ToastController);
   private breakpointObserver = inject(BreakpointObserver);
 
-  // --- SIGNALS STATE ---
   tickets = signal<TicketDto[]>([]);
   filtroTexto = signal('');
   isMobile = signal(false);
 
-  // Modal & Chat State
   modalAbierto = signal(false);
   ticketEditando = signal<TicketDto | null>(null);
   mensajes = signal<TicketComentarioDto[]>([]);
   nuevoMensaje = signal('');
   modalTab = signal<'chat' | 'info'>('chat');
 
-  // --- COMPUTED SIGNALS ---
   ticketsFiltrados = computed(() => {
     const term = this.filtroTexto().toLowerCase().trim();
     const lista = this.tickets();
@@ -69,8 +66,6 @@ export class AdminTicketsPage implements OnInit {
   }
 
   cargarTickets() {
-    // Usamos el servicio centralizado (si no existiera getTickets, lo añadimos al servicio)
-    // Asumimos que TicketService tiene un método para traer todos los tickets (admin)
     this.ticketService.getTicketsAdmin().subscribe({
       next: (res) => this.tickets.set(res),
       error: () => this.presentToast('Error al cargar tickets', 'danger')
@@ -127,9 +122,7 @@ export class AdminTicketsPage implements OnInit {
     }).subscribe({
       next: () => {
         this.presentToast('Ticket actualizado', 'success');
-        this.cargarTickets(); // Recarga la lista global
-        
-        // Actualizamos la copia local en el modal sin cerrar
+        this.cargarTickets();
         this.ticketEditando.update(prev => prev ? { ...prev, ...ticket } : null);
       },
       error: () => this.presentToast('Error al guardar cambios', 'danger')
@@ -145,14 +138,10 @@ export class AdminTicketsPage implements OnInit {
       ? '✅ Solicitud de reapertura aceptada. Un agente revisará el caso.'
       : '⛔ Solicitud de reapertura rechazada. El ticket permanecerá cerrado.';
 
-    // 1. Mensaje auto
     this.ticketService.enviarComentario(ticket.id, mensajeSistema).subscribe(() => {
-      // 2. Actualizar estado
       this.ticketService.actualizarTicketAdmin(ticket.id, { estado: nuevoEstado }).subscribe({
         next: () => {
           this.presentToast(aceptar ? 'Reabierto' : 'Rechazado', 'success');
-          
-          // Actualizar UI Local
           this.ticketEditando.update(t => t ? { ...t, estado: nuevoEstado } : null);
           
           this.cargarTickets();

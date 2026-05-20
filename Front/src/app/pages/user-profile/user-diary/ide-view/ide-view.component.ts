@@ -784,11 +784,6 @@ export class IdeViewComponent implements OnInit, OnDestroy {
       cssClass: 'fullscreen-modal'
     });
     await modal.present();
-
-    // Disparar análisis IA al abrir el preview (solo si el usuario tiene acceso a IA)
-    if (this.archivos.length > 0 && !this.staffFeedbackMode && !this.readOnly) {
-      this.analizarConIA();
-    }
   }
 
   analizarConIA() {

@@ -10,7 +10,6 @@ export const routes: Routes = [
     path: '',
     component: AppShellComponent,
     children: [
-      // --- PÁGINAS PÚBLICAS ---
       { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.page').then(m => m.DashboardPage) },
       { path: 'about', loadComponent: () => import('./pages/about/about.page').then(m => m.SobreNosotrosPage) },
       { path: 'blog', loadComponent: () => import('./pages/blog/blog.page').then(m => m.BlogPage) },
@@ -18,7 +17,6 @@ export const routes: Routes = [
       { path: 'contacto', loadComponent: () => import('./pages/contacto/contacto.page').then(m => m.ContactoPage) },
       { path: 'privacidad', loadComponent: () => import('./pages/privacidad/privacidad.page').then(m => m.PrivacidadPage) },
       
-      // --- ZONA PRIVADA DE USUARIO ---
       {
         path: 'user-profile',
         loadComponent: () => import('./pages/user-profile/user-profile.page').then(m => m.UserProfilePage),
@@ -35,11 +33,10 @@ export const routes: Routes = [
         ]
       },
 
-      // --- ZONA PRIVADA DE ADMIN ---
       {
         path: 'admin-profile',
         loadComponent: () => import('./pages/admin-profile/admin-profile.page').then(m => m.AdminProfilePage),
-        canActivate: [authGuard, adminGuard], // 🔒 Protegido
+        canActivate: [authGuard, adminGuard],
         children: [
           { path: 'admin-user', loadComponent: () => import('./pages/admin-profile/admin-user/admin-user.page').then(m => m.AdminUserPage) },
           { path: 'admin-tickets', loadComponent: () => import('./pages/admin-profile/admin-tickets/admin-tickets.page').then(m => m.AdminTicketsPage) },
@@ -54,9 +51,8 @@ export const routes: Routes = [
         
           { path: 'admin-personal', loadComponent: () => import('./pages/admin-profile/admin-personal/admin-personal.page').then(m => m.AdminPersonalPage) },
           
-          // ✅ AHORA ES SEGURO: Está dentro de la zona protegida
-          { 
-            path: 'staff-inbox', 
+          {
+            path: 'staff-inbox',
             loadComponent: () => import('./pages/dashboard/views/staff-inbox/staff-inbox.page').then( m => m.StaffInboxPage)
           },
           

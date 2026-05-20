@@ -21,8 +21,6 @@ export class FcmService {
   private tokenYaSolicitado = false;
   private escuchaIniciada = false;
 
-  // --- API pública ---
-
   async obtenerToken(): Promise<string | null> {
     if (this.tokenYaSolicitado) return null;
     this.tokenYaSolicitado = true;
@@ -48,8 +46,6 @@ export class FcmService {
     this.escuchaIniciada = false;
   }
 
-  // --- Nativo (Android / iOS) ---
-
   private async obtenerTokenNativo(): Promise<string | null> {
     try {
       const permisos = await PushNotifications.requestPermissions();
@@ -62,13 +58,12 @@ export class FcmService {
         PushNotifications.addListener('registrationError', () => resolve(null));
       });
     } catch (err) {
-      console.error('❌ Error FCM nativo:', err);
+      console.error('Error FCM nativo:', err);
       return null;
     }
   }
 
   private escuchaNativa() {
-    // Notificación recibida con la app abierta → mostramos toast
     PushNotifications.addListener('pushNotificationReceived', async (notification) => {
       await this.mostrarToast(
         notification.title ?? 'Aviso',
@@ -78,14 +73,11 @@ export class FcmService {
       );
     });
 
-    // Usuario tocó la notificación estando la app en background → navegamos
     PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
       const url = action.notification.data?.['url'];
       if (url) this.zone.run(() => this.router.navigateByUrl(url));
     });
   }
-
-  // --- Web (Chrome, Edge, PWA) ---
 
   private async obtenerTokenWeb(): Promise<string | null> {
     try {
@@ -113,14 +105,14 @@ export class FcmService {
       });
 
       if (token) {
-        console.log('[FCM] ✅ Token obtenido:', token);
+        console.log('[FCM] Token obtenido:', token);
       } else {
-        console.warn('[FCM] ⚠️ getToken() devolvió vacío');
+        console.warn('[FCM] getToken() devolvió vacío');
       }
 
       return token || null;
     } catch (err) {
-      console.error('[FCM] ❌ Error obteniendo token:', err);
+      console.error('[FCM] Error obteniendo token:', err);
       return null;
     }
   }
@@ -128,7 +120,7 @@ export class FcmService {
   private escuchaWeb() {
     try {
       onMessage(getMessaging(this.firebaseApp), async (payload) => {
-        console.log('[FCM] 🔔 onMessage recibido:', payload);
+        console.log('[FCM] onMessage recibido:', payload);
         if (!payload.notification) {
           console.warn('[FCM] payload.notification es null — mensaje ignorado');
           return;
@@ -145,8 +137,6 @@ export class FcmService {
       console.warn('[FCM] Error registrando listener web:', e);
     }
   }
-
-  // --- Helpers compartidos ---
 
   private async mostrarToast(titulo: string, cuerpo: string, tipo?: string, url?: string) {
     let color = 'tertiary';

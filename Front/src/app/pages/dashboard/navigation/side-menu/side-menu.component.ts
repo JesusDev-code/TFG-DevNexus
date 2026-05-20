@@ -25,7 +25,7 @@ import { UsuarioDto } from 'src/app/core/models/models';
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.scss'],
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush, // ✅ Rendimiento extremo
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     IonRow, IonCol, IonText, IonIcon, IonItem, IonLabel
@@ -37,12 +37,10 @@ export class SideMenuComponent implements OnInit {
   private navigation = inject(NavController);
   public platform = inject(Platform);
 
-  // ✅ EVENTO DE SALIDA PARA AVISAR AL PADRE QUE CIERRE EL MENÚ
   @Output() closeMenuEvent = new EventEmitter<void>();
 
   menuItems = menuItemsList;
   selectedMenu: MenuItem | null = null;
-  // Convertimos a public para que la vista pueda acceder a authService.currentUser() directamente en vez de usar variable
 
   constructor() {
     addIcons({
@@ -64,7 +62,6 @@ export class SideMenuComponent implements OnInit {
 
     if (menu.route) {
       this.navigation.navigateForward(menu.route);
-      // ✅ EMITIMOS SEÑAL DE CIERRE AL ELEGIR OPCIÓN
       this.closeMenuEvent.emit();
     }
   }
@@ -77,14 +74,12 @@ export class SideMenuComponent implements OnInit {
     } else {
       this.navigation.navigateForward('/user-profile');
     }
-    // ✅ EMITIMOS SEÑAL DE CIERRE AL IR AL PERFIL
     this.closeMenuEvent.emit();
   }
 
   goBack() {
     this.authService.logout().subscribe(() => {
       this.navigation.navigateRoot('/dashboard');
-      // ✅ EMITIMOS SEÑAL DE CIERRE AL SALIR
       this.closeMenuEvent.emit();
     });
   }

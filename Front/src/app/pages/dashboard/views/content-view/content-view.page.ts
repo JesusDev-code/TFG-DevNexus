@@ -13,7 +13,6 @@ import { copyOutline, schoolOutline, peopleOutline } from 'ionicons/icons';
   imports: [IonContent, IonGrid, IonRow, IonCol, IonIcon, CommonModule],
 })
 export class ContentViewPage implements AfterViewInit {
-  // Referencia al video en el HTML
   @ViewChild('heroVideo') videoElement!: ElementRef<HTMLVideoElement>;
 
   cards = [
@@ -28,10 +27,9 @@ export class ContentViewPage implements AfterViewInit {
 
 
   ngAfterViewInit() {
-    // Intentamos reproducir el video en cuanto la vista esté lista
     if (this.videoElement) {
       const video = this.videoElement.nativeElement;
-      video.muted = true; // El autoplay requiere que esté silenciado
+      video.muted = true;
       
       const playPromise = video.play();
       
@@ -45,7 +43,6 @@ export class ContentViewPage implements AfterViewInit {
     }
   }
 
-  // ✅ NUEVA FUNCIÓN AÑADIDA
   triggerOnboarding() {
     // Dispara un evento global que el AppShell puede escuchar
     window.dispatchEvent(new CustomEvent('open-onboarding-modal'));

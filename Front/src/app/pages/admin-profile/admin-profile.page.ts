@@ -12,7 +12,7 @@ import {
   shieldCheckmarkOutline, 
   personOutline, 
   bookOutline,
-  fileTrayFullOutline // ✅ NUEVO ICONO
+  fileTrayFullOutline
 } from 'ionicons/icons';
 
 @Component({
@@ -40,7 +40,7 @@ export class AdminProfilePage {
       shieldCheckmarkOutline, 
       personOutline, 
       bookOutline,
-      fileTrayFullOutline // ✅ REGISTRADO
+      fileTrayFullOutline
     });
   }
 

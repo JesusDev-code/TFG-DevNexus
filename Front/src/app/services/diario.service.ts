@@ -15,12 +15,7 @@ export interface InvitacionPendienteDto {
 @Injectable({ providedIn: 'root' })
 export class DiarioService {
   private http = inject(HttpClient);
-  // Usamos la URL base definida en environment
   private url = environment.apiUrl;
-
-  // ==========================================
-  // 1. GESTIÓN DE TEMAS (PROYECTOS)
-  // ==========================================
 
   getTemas(): Observable<DiarioTemaDto[]> {
     return this.http.get<DiarioTemaDto[]>(`${this.url}/diario-temas`);
@@ -63,11 +58,6 @@ export class DiarioService {
     return this.http.get<any[]>(`${this.url}/diarios/tema/${temaId}/publicos`);
   }
 
-  // ==========================================
-  // 2. GESTIÓN DE COLABORACIÓN (INVITACIONES)
-  // ==========================================
-
-  // Enviar una invitación a otro usuario por email
   getColaboradores(temaId: number): Observable<ColaboradorDto[]> {
     return this.http.get<ColaboradorDto[]>(`${this.url}/diario-temas/${temaId}/colaboradores`);
   }
@@ -76,12 +66,10 @@ export class DiarioService {
     return this.http.post(`${this.url}/diario-temas/${temaId}/invitar`, { email });
   }
 
-  // Obtener invitaciones que me han enviado a mí y están pendientes
   getInvitacionesPendientes(): Observable<InvitacionPendienteDto[]> {
     return this.http.get<InvitacionPendienteDto[]>(`${this.url}/diario-temas/invitaciones/pendientes`);
   }
 
-  // Aceptar (true) o Rechazar (false) una invitación
   responderInvitacion(invitacionId: number, aceptar: boolean): Observable<void> {
     return this.http.post<void>(
       `${this.url}/diario-temas/invitaciones/${invitacionId}/responder`, 
@@ -90,15 +78,10 @@ export class DiarioService {
     );
   }
 
-  // ==========================================
-  // 3. GESTIÓN DE DIARIOS (NOTAS/ENTRADAS)
-  // ==========================================
-
-  getMisEntradas(): Observable<any> { 
+  getMisEntradas(): Observable<any> {
     return this.http.get(`${this.url}/diarios/mis-diarios?sort=fechaCreacion,desc`); 
   }
 
-  // Obtener todas las entradas PÚBLICAS para el Blog
   getEntradasPublicas(): Observable<any> {
     return this.http.get(`${this.url}/diarios/publicos?sort=fechaCreacion,desc`);
   }

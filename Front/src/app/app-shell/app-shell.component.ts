@@ -1,4 +1,3 @@
-// ✅ SE AÑADIÓ HostListener A LOS IMPORTS
 import { Component, ElementRef, OnInit, ViewChild, inject, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import {
@@ -70,7 +69,6 @@ export class AppShellComponent implements OnInit {
     });
   }
 
-  // ✅ NUEVO LISTENER PARA CAPTURAR EL CLICK DESDE CONTENT-VIEW
   @HostListener('window:open-onboarding-modal')
   onExternalTrigger() {
     if (!this.showOnBoarding) {
@@ -78,16 +76,13 @@ export class AppShellComponent implements OnInit {
     }
   }
 
-  // DEFINICIÓN DE ANIMACIÓN "PRO" PARA ABRIR EL CHAT
   private enterAnimation = (baseEl: HTMLElement): Animation => {
     const root = baseEl.shadowRoot!;
 
-    // Animación del fondo oscuro (backdrop)
     const backdropAnimation = this.animationCtrl.create()
       .addElement(root.querySelector('ion-backdrop')!)
       .fromTo('opacity', '0.01', 'var(--backdrop-opacity)');
 
-    // Animación de la ventana del chat (wrapper)
     const wrapperAnimation = this.animationCtrl.create()
       .addElement(root.querySelector('.modal-wrapper')!)
       .keyframes([
@@ -95,20 +90,17 @@ export class AppShellComponent implements OnInit {
         { offset: 1, opacity: '1', transform: 'translateY(0px) scale(1)' }
       ]);
 
-    // Combinamos ambas con una curva de velocidad suave
     return this.animationCtrl.create()
       .addElement(baseEl)
-      .easing('cubic-bezier(0.4, 0.0, 0.2, 1)') // Curva profesional "ease-in-out"
-      .duration(300) // Duración de 300ms
+      .easing('cubic-bezier(0.4, 0.0, 0.2, 1)')
+      .duration(300)
       .addAnimation([backdropAnimation, wrapperAnimation]);
   }
 
-  // DEFINICIÓN DE ANIMACIÓN PARA CERRAR (Inversa de la de abrir)
   private leaveAnimation = (baseEl: HTMLElement): Animation => {
     return this.enterAnimation(baseEl).direction('reverse');
   }
 
-  // FUNCIÓN PARA ABRIR EL CHAT USANDO LAS ANIMACIONES
   async abrirChat() {
     const modal = await this.modalCtrl.create({
       component: SupportChatPage,

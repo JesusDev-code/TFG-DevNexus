@@ -1,22 +1,21 @@
 export interface MenuItem {
   id: string;
-  // Propiedades de Rive que mantenemos por compatibilidad aunque no usemos
-  stateMachine?: string; 
+  stateMachine?: string;
   artboard?: string;
   status: boolean;
   show: boolean;
   route?: string;
-  icon?: string; // ✅ Nueva propiedad para el icono
+  icon?: string;
 }
 
 export const menuItemsList: MenuItem[] = [
   {
     id: 'Inicio',
     stateMachine: 'HOME_interactivity', artboard: 'HOME',
-    status: true, // Activo por defecto
+    status: true,
     show: true,
     route: '/dashboard',
-    icon: 'home-outline' // ✅ Icono
+    icon: 'home-outline'
   },
   {
     id: 'Sobre la comunidad',
@@ -52,6 +51,5 @@ export const menuItemsList: MenuItem[] = [
   },
 ];
 
-// ✅ Listas vacías para eliminar las secciones "History" y "Dark Mode"
 export const menuItems2List: MenuItem[] = [];
 export const menuItems3List: MenuItem[] = [];

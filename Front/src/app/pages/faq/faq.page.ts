@@ -10,7 +10,6 @@ import {
   IonIcon
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-// ✅ AÑADIDO 'chatbubblesOutline'
 import { helpBuoyOutline, shieldCheckmarkOutline, chatbubblesOutline } from 'ionicons/icons';
 import { Router } from '@angular/router';
 
@@ -36,7 +35,6 @@ export class FAQPage {
   private router = inject(Router);
 
   constructor() {
-    // ✅ REGISTRADO ICONO
     addIcons({ helpBuoyOutline, shieldCheckmarkOutline, chatbubblesOutline });
   }
 
@@ -45,7 +43,6 @@ export class FAQPage {
     this.router.navigate(['/privacidad']);
   }
 
-  // ✅ NUEVA FUNCIÓN
   goToContact() {
     this.router.navigate(['/contacto']);
   }

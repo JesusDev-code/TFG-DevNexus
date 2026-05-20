@@ -69,14 +69,13 @@ export class SignInComponent {
   }
 
   doLogin(success: any, failure: any, reset: any, confetti: any) {
-    // ✅ RESET INICIAL: Limpiamos estado anterior (quita la X si estaba)
-    reset?.fire(); 
+    reset?.fire();
 
     if (!this.email.trim() || !this.password.trim()) {
       this.presentToast('Faltan datos', 'warning');
-      this.isLoading = true; // Mostramos Rive para que se vea el error
-      setTimeout(() => { failure?.fire(); }, 50); // Pequeño delay para asegurar que reset ocurrió
-      setTimeout(() => { this.isLoading = false; this.cdr.markForCheck(); }, 2000); // Ocultamos tras error
+      this.isLoading = true;
+      setTimeout(() => { failure?.fire(); }, 50);
+      setTimeout(() => { this.isLoading = false; this.cdr.markForCheck(); }, 2000);
       return;
     }
 
@@ -88,7 +87,6 @@ export class SignInComponent {
   }
 
   doRegister(success: any, failure: any, reset: any, confetti: any) {
-    // ✅ RESET INICIAL
     reset?.fire();
 
     if (!this.nombre.trim() || !this.email.trim() || !this.password.trim()) {
@@ -103,7 +101,7 @@ export class SignInComponent {
     const nuevoUsuario: UsuarioCreateDto = {
       nombre: this.nombre,
       email: this.email,
-      rolId: 2, 
+      rolId: 2,
     };
 
     this.authService.register(nuevoUsuario, this.password).subscribe({
@@ -115,9 +113,7 @@ export class SignInComponent {
     });
   }
 
-  // ✅ AÑADIDO argumento 'reset'
   async onGoogleLogin(success: any, failure: any, reset: any, confetti: any) {
-    // ✅ RESET INICIAL: Clave para evitar la "X" fantasma
     reset?.fire();
     this.isLoading = true;
 
@@ -133,8 +129,6 @@ export class SignInComponent {
         console.error('Google Login Error:', error);
         
         this.isLoading = false;
-        // Solo mostramos animación de error si NO fue cancelación por usuario
-        // para no ser molestos
         const errStr = JSON.stringify(error).toLowerCase();
         if (errStr.includes('close') || errStr.includes('cancel') || errStr.includes('popup')) {
            this.presentToast('Inicio de sesión cancelado', 'medium');
@@ -156,7 +150,7 @@ export class SignInComponent {
     this.authService.recuperarContrasena(this.email).subscribe({
       next: () => {
         this.isLoading = false;
-        this.presentToast('✅ Correo de recuperación enviado. Revisa tu bandeja.', 'success');
+        this.presentToast('Correo de recuperación enviado. Revisa tu bandeja.', 'success');
         this.cdr.markForCheck();
       },
       error: (err) => {
@@ -191,12 +185,10 @@ export class SignInComponent {
 
   handleError(err: any, failure: any, reset: any) {
     console.error('Auth Error:', err);
-    
-    // Mantenemos la carga un momento para ver la X, luego ocultamos
     failure?.fire();
     setTimeout(() => {
       this.isLoading = false;
-      reset?.fire(); // Dejamos limpio para la próxima
+      reset?.fire();
       this.cdr.markForCheck();
     }, 2000);
 

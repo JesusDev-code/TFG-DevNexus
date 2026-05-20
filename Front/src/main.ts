@@ -7,11 +7,10 @@ import { registerLicense } from '@syncfusion/ej2-base';
 import { RIVE_FOLDER } from 'ng-rive';
 import { provideMarkdown } from 'ngx-markdown';
 
-// --- IMPORTACIONES DE FIREBASE ---
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
-import { provideMessaging, getMessaging } from '@angular/fire/messaging'; // ✅ AÑADIDO
+import { provideMessaging, getMessaging } from '@angular/fire/messaging';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
@@ -36,7 +35,7 @@ bootstrapApplication(AppComponent, {
 
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-    provideMessaging(() => getMessaging()), // ✅ CLAVE: Esto evita la pantalla blanca
+    provideMessaging(() => getMessaging()),
     provideFirestore(() => getFirestore()),
 
     {

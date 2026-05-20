@@ -6,10 +6,10 @@ import {
   updateProfile,
   signOut,
   authState,
-  GoogleAuthProvider, // ✅ Google
-  signInWithPopup,    // ✅ Google
-  User,               // ✅ Google
-  sendPasswordResetEmail // ✅ Recuperar Contraseña
+  GoogleAuthProvider,
+  signInWithPopup,
+  User,
+  sendPasswordResetEmail
 } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -104,12 +104,10 @@ export class AuthService {
     }));
   }
 
-  // ✅ NUEVO: RECUPERAR CONTRASEÑA
   recuperarContrasena(email: string): Observable<void> {
     return from(sendPasswordResetEmail(this.auth, email));
   }
 
-  // ✅ NUEVO: LOGIN CON GOOGLE
   async loginWithGoogle() {
     this.isRegistering = true;
     try {
@@ -159,7 +157,5 @@ export class AuthService {
   }
 
   private activarNotificaciones() {
-    // La lógica principal vive en app.component (effect reactivo al currentUser signal)
-    // Este método queda como hook vacío para no romper los call-sites
   }
 }

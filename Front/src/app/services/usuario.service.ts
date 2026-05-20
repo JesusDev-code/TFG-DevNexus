@@ -13,12 +13,10 @@ export class UsuarioService {
     return this.http.get<UsuarioDto>(`${this.url}/perfil`);
   }
 
-  // ✅ Búsqueda segura restringida por departamento en el backend
   buscar(query: string): Observable<UsuarioDto[]> {
     return this.http.get<UsuarioDto[]>(`${this.url}/buscar?query=${query}`);
   }
 
-  // --- MÉTODOS DE ADMIN ---
   getUsuarios(): Observable<UsuarioDto[]> {
     return this.http.get<UsuarioDto[]>(this.url);
   }

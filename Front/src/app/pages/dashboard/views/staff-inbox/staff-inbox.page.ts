@@ -10,7 +10,7 @@ import { addIcons } from 'ionicons';
 import { chatbubblesOutline, checkmarkDoneOutline, trashOutline, checkmarkCircleOutline } from 'ionicons/icons';
 import { SupportChatService } from 'src/app/services/support-chat.service';
 import { ChatRoom } from 'src/app/core/models/models';
-import { SupportChatPage } from '../support-chat/support-chat.page'; // Importamos la página para usarla de modal
+import { SupportChatPage } from '../support-chat/support-chat.page';
 
 @Component({
   selector: 'app-staff-inbox',
@@ -30,9 +30,9 @@ import { SupportChatPage } from '../support-chat/support-chat.page'; // Importam
 })
 export class StaffInboxPage implements OnInit {
   private chatService = inject(SupportChatService);
-  private modalCtrl = inject(ModalController); // ✅ Para abrir ventana
-  private alertCtrl = inject(AlertController); // ✅ Para confirmar borrado
-  private toastCtrl = inject(ToastController); // ✅ Para avisar
+  private modalCtrl = inject(ModalController);
+  private alertCtrl = inject(AlertController);
+  private toastCtrl = inject(ToastController);
   
   chats$!: Observable<ChatRoom[]>;
 
@@ -44,32 +44,26 @@ export class StaffInboxPage implements OnInit {
     this.chats$ = this.chatService.getAllChats();
   }
 
-  // ✅ 1. ABRIR CHAT EN VENTANA FLOTANTE (Igual que el usuario)
   async abrirChat(chat: ChatRoom) {
     const modal = await this.modalCtrl.create({
       component: SupportChatPage,
-      cssClass: 'chat-modal-widget', // Usamos la misma clase CSS bonita
-      componentProps: { 
-        esModal: true, // Le decimos que es modal
-        // Ojo: SupportChatPage coge el ID de la URL o del usuario logueado.
-        // Como aquí somos ADMIN viendo a OTRO, necesitamos pasarle el ID manualmente.
-        // Vamos a tener que hacer un pequeño ajuste en SupportChatPage.ts (PASO 4 abajo)
-        adminViendoChatId: chat.id 
+      cssClass: 'chat-modal-widget',
+      componentProps: {
+        esModal: true,
+        adminViendoChatId: chat.id
       }
     });
     await modal.present();
   }
 
-  // ✅ 2. MARCAR COMO RESUELTO
   async resolverTicket(event: Event, chat: ChatRoom) {
-    event.stopPropagation(); // Evita que se abra el chat al pulsar el botón
+    event.stopPropagation();
     await this.chatService.closeChat(chat.id);
     this.presentToast('Ticket marcado como resuelto ✅');
   }
 
-  // ✅ 3. BORRAR CHAT
   async borrarTicket(event: Event, chat: ChatRoom) {
-    event.stopPropagation(); // Evita que se abra el chat
+    event.stopPropagation();
     
     const alert = await this.alertCtrl.create({
       header: '¿Borrar conversación?',
