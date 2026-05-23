@@ -9,7 +9,7 @@
         <div class="heatmap-header">
           <div class="heatmap-title-row">
             <h3><ion-icon name="time-outline"></ion-icon> Actividad</h3>
-            <span class="subtitle">{{ entradas.length }} contribuciones · últimos 90 días</span>
+            <span class="subtitle">{{ entradas.length }} contribuciones · último año</span>
           </div>
           <div class="racha-badge" *ngIf="racha > 0">
             <ion-icon name="flame-outline"></ion-icon>
@@ -18,17 +18,19 @@
         </div>
 
         <div class="heatmap-weeks-wrapper">
-          <div class="heatmap-month-labels">
-            <span *ngFor="let m of heatmapMonthLabels"
-                  class="month-label-item"
-                  [style.left.px]="m.offsetPx">{{ m.label }}</span>
-          </div>
+          <div class="heatmap-inner">
+            <div class="heatmap-month-labels">
+              <span *ngFor="let m of heatmapMonthLabels"
+                    class="month-label-item"
+                    [style.left.%]="m.offsetPct">{{ m.label }}</span>
+            </div>
 
-          <div class="heatmap-weeks">
-            <div *ngFor="let week of heatmapWeeks" class="heatmap-week">
-              <div *ngFor="let dia of week"
-                   class="day-square level-{{ dia.level }}"
-                   [title]="(dia.date | date:'dd MMM yyyy') + ': ' + dia.count + ' entradas'">
+            <div class="heatmap-weeks">
+              <div *ngFor="let week of heatmapWeeks" class="heatmap-week">
+                <div *ngFor="let dia of week"
+                     class="day-square level-{{ dia.level }}"
+                     [title]="(dia.date | date:'dd MMM yyyy') + ': ' + dia.count + ' entradas'">
+                </div>
               </div>
             </div>
           </div>

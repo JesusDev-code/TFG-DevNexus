@@ -9,7 +9,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "postinstall": "node -e \"try{var f='node_modules/source-map-support/source-map-support.js';if(require('fs').existsSync(f))require('fs').writeFileSync(f,'module.exports={install:function(){},hookRequire:function(){}};')}catch(e){console.warn('source-map-support patch skipped:',e.message)}\""
   },
   "private": true,
   "dependencies": {
@@ -62,6 +63,7 @@
     "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^7.4.4",
     "@ionic/angular-toolkit": "^12.0.0",
+    "@playwright/test": "^1.58.2",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
@@ -82,5 +84,8 @@
   "description": "An Ionic project",
   "overrides": {
     "dompurify": ">=3.3.4"
+  },
+  "browser": {
+    "source-map-support": false
   }
 }

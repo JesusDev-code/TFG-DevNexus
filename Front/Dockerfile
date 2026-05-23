@@ -4,7 +4,8 @@ WORKDIR /app
 
 # Copiamos solo los archivos de dependencias primero
 COPY package*.json ./
-RUN npm install
+RUN npm install --ignore-scripts && \
+    node -e "require('fs').writeFileSync('node_modules/source-map-support/source-map-support.js', 'module.exports={install:function(){},hookRequire:function(){}};')"
 
 # Copiamos el resto del código y compilamos
 COPY . .

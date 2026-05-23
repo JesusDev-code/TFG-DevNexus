@@ -70,19 +70,25 @@
 
 .heatmap-weeks-wrapper {
   position: relative;
-}
-
-.heatmap-weeks {
-  display: flex; gap: 3px; overflow-x: auto;
-  padding-bottom: 4px;
+  overflow-x: auto;
   &::-webkit-scrollbar { height: 3px; }
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 10px; }
 }
 
-.heatmap-week { display: flex; flex-direction: column; gap: 3px; }
+.heatmap-inner {
+  width: 100%;
+  min-width: fit-content;
+}
+
+.heatmap-weeks {
+  display: flex; gap: 3px;
+  padding-bottom: 4px;
+}
+
+.heatmap-week { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 11px; }
 
 .day-square {
-  width: 11px; height: 11px; border-radius: 2px;
+  width: 100%; aspect-ratio: 1; border-radius: 2px;
   background: #0f1225;
   border: 1px solid rgba(255,255,255,0.04);
   transition: 0.15s; cursor: pointer;

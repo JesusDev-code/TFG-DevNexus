@@ -97,6 +97,30 @@
   font-size: 0.75rem; color: #20d77c; font-style: italic;
 }
 
+.console-log {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 0.78rem; color: #94a3b8; font-family: 'Consolas', monospace;
+}
+
+.console-loading {
+  font-size: 0.75rem; color: #a6e3a1; font-style: italic;
+  display: flex; align-items: center; gap: 6px;
+}
+
+.loading-spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.console-header {
+  ion-icon.terminal-icon { color: #64748b; }
+}
+
 /* Modal fullscreen */
 :host-context(.fullscreen-modal) {
   height: 100vh;

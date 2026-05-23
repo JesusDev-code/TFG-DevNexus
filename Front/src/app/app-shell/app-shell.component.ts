@@ -65,6 +65,7 @@ export class AppShellComponent implements OnInit {
     ).subscribe((event: any) => {
       if ((event.url.includes('/user-profile') || event.url.includes('/admin-profile')) && this.showOnBoarding) {
         this.showOnBoardingToggle();
+        if (!this.isMenuOpen) this.onMenuToggle();
       }
     });
   }

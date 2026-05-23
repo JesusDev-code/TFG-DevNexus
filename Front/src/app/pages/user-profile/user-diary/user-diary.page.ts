@@ -135,7 +135,7 @@ export class UserDiaryPage implements OnInit {
   private generarHeatmap() {
     const hoy = new Date();
     const dias = [];
-    for (let i = 89; i >= 0; i--) {
+    for (let i = 363; i >= 0; i--) {
       const d = new Date();
       d.setDate(hoy.getDate() - i);
       d.setHours(0,0,0,0);
@@ -481,10 +481,10 @@ export class UserDiaryPage implements OnInit {
     return base.filter(e => this.detectTipo(e.contenido) === tipo).length;
   }
 
-  get heatmapMonthLabels(): { label: string; offsetPx: number }[] {
+  get heatmapMonthLabels(): { label: string; offsetPct: number }[] {
     const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-    const labels: { label: string; offsetPx: number }[] = [];
-    const cellSize = 11 + 3; // width + gap
+    const labels: { label: string; offsetPct: number }[] = [];
+    const totalWeeks = this.heatmapWeeks.length;
     let lastMonth = -1;
     let weekIndex = 0;
 
@@ -492,7 +492,7 @@ export class UserDiaryPage implements OnInit {
       if (week.length > 0) {
         const month = week[0].date.getMonth();
         if (month !== lastMonth) {
-          labels.push({ label: meses[month], offsetPx: weekIndex * cellSize });
+          labels.push({ label: meses[month], offsetPct: totalWeeks > 0 ? (weekIndex / totalWeeks) * 100 : 0 });
           lastMonth = month;
         }
       }

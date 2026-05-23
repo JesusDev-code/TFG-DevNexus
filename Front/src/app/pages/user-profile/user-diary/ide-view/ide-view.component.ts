@@ -1186,9 +1186,30 @@ export class IdeViewComponent implements OnInit, OnDestroy {
   getLenguaje(filename: string): string {
     const ext = filename.split('.').pop()?.toLowerCase() ?? '';
     const map: Record<string, string> = {
-      html: 'html', css: 'css', js: 'javascript',
-      ts: 'typescript', json: 'json', md: 'markdown',
-      py: 'python', java: 'java'
+      // Web
+      html: 'html', htm: 'html',
+      css: 'css', scss: 'scss', less: 'less',
+      js: 'javascript', jsx: 'javascript', mjs: 'javascript', cjs: 'javascript',
+      ts: 'typescript', tsx: 'typescript',
+      // Data / Config
+      json: 'json', jsonc: 'json',
+      yaml: 'yaml', yml: 'yaml',
+      toml: 'ini', ini: 'ini', env: 'ini',
+      xml: 'xml', svg: 'xml',
+      // Markup
+      md: 'markdown', mdx: 'markdown',
+      // Backend
+      py: 'python',
+      java: 'java', kt: 'kotlin', kts: 'kotlin',
+      go: 'go', rs: 'rust', rb: 'ruby', php: 'php',
+      cs: 'csharp', cpp: 'cpp', c: 'c', h: 'c', hpp: 'cpp',
+      swift: 'swift', dart: 'dart', r: 'r',
+      // Shell / Scripts
+      sh: 'shell', bash: 'shell', zsh: 'shell', ps1: 'powershell',
+      // DB / Query
+      sql: 'sql', graphql: 'graphql', gql: 'graphql',
+      // Infra
+      tf: 'hcl', proto: 'proto',
     };
     return map[ext] ?? 'plaintext';
   }
@@ -1201,10 +1222,16 @@ export class IdeViewComponent implements OnInit, OnDestroy {
     const ext = filename.split('.').pop()?.toLowerCase() ?? '';
     const templates: Record<string, string> = {
       html: `<!DOCTYPE html>\n<html lang="es">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>${this.tema.titulo}</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n\n  <script src="script.js"></script>\n</body>\n</html>`,
-      css: `/* Estilos — ${this.tema.titulo} */\n\n* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  font-family: sans-serif;\n}\n`,
-      js: `// ${this.tema.titulo}\n\ndocument.addEventListener('DOMContentLoaded', () => {\n  \n});\n`,
-      md: `# ${this.tema.titulo}\n\n## Descripción\n\n`,
-      json: `{\n  \n}\n`
+      css:  `/* ${this.tema.titulo} */\n\n* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  font-family: sans-serif;\n}\n`,
+      scss: `// ${this.tema.titulo}\n\n$primary: #3b82f6;\n\n* { margin: 0; padding: 0; box-sizing: border-box; }\n\nbody {\n  font-family: sans-serif;\n}\n`,
+      js:   `// ${this.tema.titulo}\n\ndocument.addEventListener('DOMContentLoaded', () => {\n\n});\n`,
+      ts:   `// ${this.tema.titulo}\n\nconst saludo = (nombre: string): string => \`Hola, \${nombre}!\`;\n\nconsole.log(saludo('mundo'));\n`,
+      py:   `# ${this.tema.titulo}\n\ndef main():\n    print("Hola, mundo!")\n\nif __name__ == "__main__":\n    main()\n`,
+      md:   `# ${this.tema.titulo}\n\n## Descripción\n\n`,
+      json: `{\n\n}\n`,
+      yaml: `# ${this.tema.titulo}\n`,
+      sql:  `-- ${this.tema.titulo}\n\nSELECT *\nFROM tabla\nWHERE condicion = true;\n`,
+      sh:   `#!/bin/bash\n# ${this.tema.titulo}\n\necho "Hola, mundo!"\n`,
     };
     return templates[ext] ?? `// ${filename}\n`;
   }
@@ -1343,13 +1370,26 @@ export class IdeViewComponent implements OnInit, OnDestroy {
       scrollbar: {
         verticalScrollbarSize: 6,
         horizontalScrollbarSize: 6
-      }
+      },
+      autoIndent: 'keep',
+      formatOnPaste: false
     });
 
     this.editor.onDidChangeModelContent(() => {
       this.onEditorChange(this.editor.getValue());
       this.cdr.markForCheck();
     });
+
+    container.addEventListener('paste', (e: ClipboardEvent) => {
+      const lang = this.getLenguaje(this.archivoActivo?.filename ?? '');
+      if (lang !== 'python') return;
+      e.preventDefault();
+      e.stopPropagation();
+      const text = (e.clipboardData?.getData('text/plain') ?? '')
+        .replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      const selection = this.editor.getSelection();
+      this.editor.executeEdits('paste', [{ range: selection, text, forceMoveMarkers: true }]);
+    }, true);
   }
 
   private async mostrarToast(message: string, color: string) {
