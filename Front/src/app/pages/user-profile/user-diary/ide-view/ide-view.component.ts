@@ -16,8 +16,8 @@ import {
   arrowBackOutline, playOutline, sparklesOutline,
   chevronDownOutline, chevronUpOutline, cloudUploadOutline,
   closeOutline, addOutline, terminalOutline, codeSlashOutline,
-  gitCommitOutline, timeOutline, cameraOutline, pricetagsOutline,
-  readerOutline, saveOutline, closeCircleOutline, trashOutline, personAddOutline, funnelOutline,
+  gitCommitOutline, timeOutline, cameraOutline,
+  readerOutline, saveOutline, closeCircleOutline, trashOutline, personAddOutline,
   folderOpenOutline, ellipsisHorizontalOutline, chatbubbleOutline, sendOutline
 } from 'ionicons/icons';
 import { ColaboradorDto, DiarioComentario, DiarioDto, DiarioTemaDto, ProyectoAnalisisDto } from 'src/app/core/models/models';
@@ -69,16 +69,10 @@ export class IdeViewComponent implements OnInit, OnDestroy {
   cargandoVision = false;
   cargandoCodeReview = false;
   codeReviewActual: string | null = null;
-  cargandoEtiquetas = false;
-  etiquetasSugeridas: string[] = [];
   cargandoResumen = false;
   resumenTema: string | null = null;
 
   mostrarFileTree = true;
-  mostrarFiltroEtiquetas = false;
-  filtroEtiquetasActivas: string[] = [];
-  etiquetasCommitActuales: string[] = [];
-  etiquetasSugeridosCommit: string[] = [];
 
   commitFeedbackMap: Record<number, { loading: boolean; comments: DiarioComentario[]; text: string }> = {};
 
@@ -122,13 +116,11 @@ export class IdeViewComponent implements OnInit, OnDestroy {
       'git-commit-outline': gitCommitOutline,
       'time-outline': timeOutline,
       'camera-outline': cameraOutline,
-      'pricetags-outline': pricetagsOutline,
       'reader-outline': readerOutline,
       'save-outline': saveOutline,
       'close-circle-outline': closeCircleOutline,
       'trash-outline': trashOutline,
       'person-add-outline': personAddOutline,
-      'funnel-outline': funnelOutline,
       'folder-open-outline': folderOpenOutline,
       'ellipsis-horizontal-outline': ellipsisHorizontalOutline,
       'chatbubble-outline': chatbubbleOutline,
@@ -948,66 +940,6 @@ export class IdeViewComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       }
     });
-  }
-
-  sugerirEtiquetasCommit() {
-    if (!this.permiteGestionCommits) return;
-    if (!this.nuevoCommitTexto.trim() || this.cargandoEtiquetas) {
-      this.mostrarToast('Escribe texto en el commit para sugerir etiquetas', 'warning');
-      return;
-    }
-    this.cargandoEtiquetas = true;
-    this.etiquetasSugeridosCommit = [];
-    this.cdr.markForCheck();
-    this.diarioService.sugerirEtiquetas(this.nuevoCommitTexto).subscribe({
-      next: ({ etiquetas }) => {
-        this.etiquetasSugeridosCommit = etiquetas ?? [];
-        this.cargandoEtiquetas = false;
-        this.cdr.markForCheck();
-      },
-      error: (error: HttpErrorResponse) => {
-        this.cargandoEtiquetas = false;
-        this.mostrarToast(this.getApiErrorMessage(error, 'No se pudieron sugerir etiquetas'), 'danger');
-        this.cdr.markForCheck();
-      }
-    });
-  }
-
-  aplicarEtiqueta(tag: string) {
-    if (!this.permiteGestionCommits) return;
-    const hashtag = `#${tag}`;
-    this.nuevoCommitTexto = this.nuevoCommitTexto.trim()
-      ? `${this.nuevoCommitTexto} ${hashtag}`
-      : hashtag;
-    this.etiquetasSugeridosCommit = this.etiquetasSugeridosCommit.filter(t => t !== tag);
-    this.cdr.markForCheck();
-  }
-
-  aplicarFiltroEtiqueta(tag: string) {
-    const idx = this.filtroEtiquetasActivas.indexOf(tag);
-    if (idx >= 0) {
-      this.filtroEtiquetasActivas.splice(idx, 1);
-    } else {
-      this.filtroEtiquetasActivas.push(tag);
-    }
-    this.cdr.markForCheck();
-  }
-
-  extraerEtiquetas(commit: DiarioDto): string[] {
-    const contenido = commit.contenido ?? '';
-    const regex = /#(\w+)/g;
-    const matches: string[] = [];
-    let match;
-    while ((match = regex.exec(contenido)) !== null) {
-      matches.push(match[1]);
-    }
-    return [...new Set(matches)];
-  }
-
-  tieneEtiquetasCompatibles(commit: DiarioDto): boolean {
-    if (!this.filtroEtiquetasActivas.length) return true;
-    const etiquetasDelCommit = this.extraerEtiquetas(commit);
-    return this.filtroEtiquetasActivas.some(tag => etiquetasDelCommit.includes(tag));
   }
 
   resumirProyecto() {

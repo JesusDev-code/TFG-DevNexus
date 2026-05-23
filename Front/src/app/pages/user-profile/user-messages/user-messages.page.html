@@ -175,12 +175,14 @@
             [class.active]="mostrarEmojiPicker()">
             <ion-icon name="happy-outline"></ion-icon>
           </button>
-          <input type="text" class="glass-input" placeholder="Escribe tu mensaje..." [ngModel]="nuevoMensaje()"
-            (ngModelChange)="nuevoMensaje.set($event)"
-            (keyup.enter)="enviarMensaje()">
-          <button class="btn-send" (click)="enviarMensaje()" [disabled]="!nuevoMensaje().trim()">
-            <ion-icon name="send"></ion-icon>
-          </button>
+          <div class="input-send-row">
+            <input type="text" class="glass-input" placeholder="Escribe tu mensaje..." [ngModel]="nuevoMensaje()"
+              (ngModelChange)="nuevoMensaje.set($event)"
+              (keyup.enter)="enviarMensaje()">
+            <button class="btn-send" (click)="enviarMensaje()" [disabled]="!nuevoMensaje().trim()">
+              <ion-icon name="send"></ion-icon>
+            </button>
+          </div>
         </div>
 
         @if (mostrarEmojiPicker()) {

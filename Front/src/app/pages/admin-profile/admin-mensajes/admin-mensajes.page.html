@@ -98,14 +98,11 @@
         </cdk-virtual-scroll-viewport>
 
         <div class="chat-input-premium">
-          <div class="input-glass-container">
-            <input type="text" placeholder="Escribe un mensaje..." [(ngModel)]="nuevoMensaje"
-              (keyup.enter)="enviarMensaje()">
-
-            <button class="premium-send-btn" (click)="enviarMensaje()" [disabled]="!nuevoMensaje.trim()">
-              <ion-icon name="send-outline"></ion-icon>
-            </button>
-          </div>
+          <input type="text" placeholder="Escribe un mensaje..." [(ngModel)]="nuevoMensaje"
+            (keyup.enter)="enviarMensaje()">
+          <button class="premium-send-btn" (click)="enviarMensaje()" [disabled]="!nuevoMensaje.trim()">
+            <ion-icon name="send-outline"></ion-icon>
+          </button>
         </div>
 
       </div>

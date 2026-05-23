@@ -5,7 +5,7 @@
 .blog-hero-container {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 10px 24px 20px;
+  padding: calc(env(safe-area-inset-top, 0px) + 24px) 24px 20px;
   text-align: center;
 }
 

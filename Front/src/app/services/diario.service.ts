@@ -156,10 +156,6 @@ export class DiarioService {
     return this.http.post<{ review: string }>(`${this.url}/diario-ai/code-review/${diarioId}`, {});
   }
 
-  sugerirEtiquetas(contenido: string): Observable<{ etiquetas: string[] }> {
-    return this.http.post<{ etiquetas: string[] }>(`${this.url}/diario-ai/sugerir-etiquetas`, { contenido });
-  }
-
   resumirTema(temaId: number): Observable<{ resumen: string }> {
     return this.http.post<{ resumen: string }>(`${this.url}/diario-ai/resumir-tema/${temaId}`, {});
   }

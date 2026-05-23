@@ -10,7 +10,7 @@
 .privacy-hero-container {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: calc(env(safe-area-inset-top, 0px) + 40px) 24px 40px;
   text-align: center;
 
   .hero-icon-glow {

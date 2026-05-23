@@ -115,8 +115,37 @@
 .message-glass-bubble { padding: 14px 18px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); p { margin: 0; line-height: 1.5; font-size: 0.95rem; } .message-time-stamp { font-size: 0.7rem; opacity: 0.6; display: block; text-align: right; margin-top: 6px; } }
 
 .chat-input-premium {
-  padding: 24px 30px; background: #05071a; border-top: 1px solid rgba(255, 255, 255, 0.05);
-  .input-glass-container { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 6px 6px 6px 20px; display: flex; align-items: center; gap: 15px; input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 1rem; } .premium-send-btn { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(90deg, #a855f7, #3b82f6); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s; &:disabled { opacity: 0.3; } &:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); } } }
+  padding: 15px;
+  background: #05071a;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  input {
+    flex: 1;
+    background: #0f1225;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    padding: 12px 20px;
+    color: white;
+    outline: none;
+    font-size: 1rem;
+    transition: 0.3s;
+    &:focus { border-color: #a855f7; }
+    &::placeholder { color: rgba(148, 163, 184, 0.5); }
+  }
+
+  .premium-send-btn {
+    width: 44px; height: 44px; min-width: 44px; flex-shrink: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #a855f7, #3b82f6);
+    color: white; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; transition: 0.3s;
+    &:disabled { opacity: 0.3; cursor: not-allowed; }
+    &:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); }
+  }
 }
 
 // Botón de atrás: solo visible en mobile
@@ -124,6 +153,8 @@
 
 @media (max-width: 768px) {
   .messages-premium-container { position: relative; }
+
+  .admin-content-wrapper { padding: 10px; }
 
   .chat-sidebar {
     width: 100%;

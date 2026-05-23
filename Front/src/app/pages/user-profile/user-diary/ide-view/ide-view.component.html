@@ -147,25 +147,10 @@
             <ion-icon name="sparkles-outline"></ion-icon>
             <span>{{ cargandoCodeReview ? 'Revisando...' : 'Code Review IA' }}</span>
           </button>
-          <button class="btn-ai-quick" (click)="sugerirEtiquetasCommit()" [disabled]="cargandoEtiquetas || !nuevoCommitTexto.trim()">
-            <ion-icon name="pricetags-outline"></ion-icon>
-            <span>{{ cargandoEtiquetas ? 'Sugiriendo...' : 'Sugerir etiquetas commit' }}</span>
-          </button>
           <button class="btn-ai-quick" (click)="resumirProyecto()" [disabled]="cargandoResumen">
             <ion-icon name="reader-outline"></ion-icon>
             <span>{{ cargandoResumen ? 'Resumiendo...' : 'Resumen IA' }}</span>
           </button>
-        </div>
-
-        <div class="ai-section" *ngIf="etiquetasSugeridas.length">
-          <div class="ai-section-title">
-            <span>Etiquetas sugeridas</span>
-          </div>
-          <div class="tag-list">
-            <button class="tag-chip" *ngFor="let tag of etiquetasSugeridas" (click)="aplicarEtiqueta(tag)">
-              #{{ tag }}
-            </button>
-          </div>
         </div>
 
         <div class="ai-section" *ngIf="codeReviewActual">
@@ -313,38 +298,17 @@
              placeholder="Describí qué hiciste..."
              class="commit-input"
              (keyup.enter)="commitLog_guardar()">
-      <button class="btn-ai-tag-suggest" (click)="sugerirEtiquetasCommit()" [disabled]="cargandoEtiquetas || !nuevoCommitTexto.trim()" title="Sugerir etiquetas con IA">
-        <ion-icon name="pricetags-outline"></ion-icon>
-      </button>
-      <button class="btn-ai-filter-tags" (click)="mostrarFiltroEtiquetas = !mostrarFiltroEtiquetas" [disabled]="!etiquetasCommitActuales.length" title="Filtrar por etiquetas">
-        <ion-icon name="funnel-outline"></ion-icon>
-      </button>
       <button class="btn-commit" (click)="commitLog_guardar()" [disabled]="!nuevoCommitTexto.trim()">
         <ion-icon name="cloud-upload-outline"></ion-icon> Commit
       </button>
     </div>
 
-    <div class="commit-tags-row" *ngIf="etiquetasSugeridosCommit?.length">
-      <div class="tag-suggestions">
-        <span class="tag-label">Etiquetas sugeridas:</span>
-        <button class="tag-chip" *ngFor="let tag of etiquetasSugeridosCommit" (click)="aplicarEtiqueta(tag)">
-          #{{ tag }}
-        </button>
-      </div>
-    </div>
-
     <div class="commit-list">
       <ng-container *ngFor="let c of commitLog">
-        <div class="commit-item" [class.hidden]="filtroEtiquetasActivas.length && !tieneEtiquetasCompatibles(c)">
+        <div class="commit-item">
           <div class="commit-dot"></div>
           <div class="commit-content">
             <span class="commit-msg">{{ c.contenido | slice:0:100 }}</span>
-            <div class="commit-tags" *ngIf="extraerEtiquetas(c)?.length">
-              <span class="commit-tag" *ngFor="let tag of extraerEtiquetas(c)"
-                    (click)="aplicarFiltroEtiqueta(tag); $event.stopPropagation()">
-                #{{ tag }}
-              </span>
-            </div>
             <span class="commit-date">{{ c.fechaCreacion | date:'d MMM, HH:mm' }}</span>
           </div>
           <button class="commit-delete-btn" *ngIf="permiteGestionCommits" (click)="borrarCommit(c)" title="Eliminar commit">

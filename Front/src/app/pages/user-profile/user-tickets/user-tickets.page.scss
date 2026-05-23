@@ -12,6 +12,7 @@
   max-width: 900px;
   margin: 0 auto;
   padding: 0 20px;
+  overflow-x: hidden;
 }
 
 /* HEADER */
@@ -201,4 +202,106 @@
 
 @keyframes pulse-opacity {
   0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; }
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .tickets-container {
+    padding: 0 14px;
+  }
+
+  .tickets-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    margin-bottom: 1.25rem;
+
+    .title-block {
+      text-align: center;
+      h2 { font-size: 1.6rem; }
+      p { font-size: 0.85rem; }
+    }
+  }
+
+  .btn-new-ticket {
+    justify-content: center;
+    padding: 11px 16px;
+    font-size: 0.9rem;
+    width: 100%;
+  }
+
+  .premium-filter-bar {
+    gap: 6px;
+    margin-bottom: 1.25rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+
+    &::-webkit-scrollbar { display: none; }
+
+    .filter-pill {
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      flex-shrink: 0;
+      white-space: nowrap;
+      ion-icon { font-size: 0.9rem; }
+    }
+  }
+
+  .ticket-summary {
+    padding: 14px 14px;
+    gap: 10px;
+
+    .ticket-main-info {
+      min-width: 0;
+      flex: 1;
+
+      .ticket-title {
+        font-size: 0.95rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .ticket-meta {
+      gap: 6px;
+      flex-shrink: 0;
+
+      .priority-badge {
+        font-size: 0.6rem;
+        padding: 3px 7px;
+      }
+    }
+  }
+
+  .chat-messages-container { padding: 16px; }
+
+  .chat-input-row {
+    padding: 14px;
+    gap: 8px;
+
+    input {
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      min-width: 0;
+    }
+
+    button {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      ion-icon { font-size: 1.15rem; }
+    }
+  }
+
+  .reopen-premium-box,
+  .pending-notice {
+    margin: 16px 14px;
+  }
 }

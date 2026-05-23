@@ -85,7 +85,6 @@ describe('IdeViewComponent', () => {
       'agregarComentarioTema',
       'analizarProyecto',
       'codeReview',
-      'sugerirEtiquetas',
       'resumirTema',
       'exportarTemaCsv',
       'crearEntrada',

@@ -40,7 +40,7 @@ describe('UserDiaryPage', () => {
     diarioServiceSpy = jasmine.createSpyObj('DiarioService', [
       'getTemas', 'getMisEntradas', 'crearTema', 'crearEntrada',
       'borrarTema', 'borrarEntrada', 'actualizarEntrada', 'invitarColaborador',
-      'cambiarVisibilidadTema', 'codeReview', 'sugerirEtiquetas', 'resumirTema',
+      'cambiarVisibilidadTema', 'codeReview', 'resumirTema',
       'exportarTemaCsv', 'extraerCodigoDeImagen'
     ]);
     diarioServiceSpy.getTemas.and.returnValue(of(MOCK_TEMAS));

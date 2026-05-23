@@ -2,7 +2,7 @@
 
 .sandbox-shell {
   display: grid;
-  grid-template-rows: 44px 1fr 120px;
+  grid-template-rows: calc(env(safe-area-inset-top, 0px) + 44px) 1fr 120px;
   height: 100%;
   background: #020617;
   overflow: hidden;
@@ -10,7 +10,7 @@
 
 .sandbox-header {
   display: flex; align-items: center; gap: 12px;
-  padding: 0 16px;
+  padding: env(safe-area-inset-top, 0px) 16px 0;
   background: #05071a;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }

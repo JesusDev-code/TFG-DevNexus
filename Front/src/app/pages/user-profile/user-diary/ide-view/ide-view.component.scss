@@ -455,25 +455,6 @@
   }
 }
 
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.tag-chip {
-  background: rgba(139,92,246,0.10);
-  border: 1px solid rgba(139,92,246,0.25);
-  color: #c084fc;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.2s;
-  &:hover { background: #a855f7; color: white; }
-}
-
 .ai-feedback-md {
   ::ng-deep {
     color: #94a3b8; font-size: 0.8rem; line-height: 1.65;
@@ -684,100 +665,7 @@
 
 .commit-empty { font-size: 0.78rem; color: #334155; font-style: italic; }
 
-.btn-ai-tag-suggest {
-  width: 30px;
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(139,92,246,0.10);
-  border: 1px solid rgba(139,92,246,0.22);
-  color: #c4b5fd;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s;
-  ion-icon { font-size: 0.9rem; }
-  &:hover:not(:disabled) { background: rgba(139,92,246,0.24); color: white; }
-  &:disabled { opacity: 0.45; cursor: not-allowed; }
-}
-
-.btn-ai-filter-tags {
-  width: 30px;
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(59,130,246,0.10);
-  border: 1px solid rgba(59,130,246,0.22);
-  color: #93c5fd;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s;
-  ion-icon { font-size: 0.9rem; }
-  &:hover:not(:disabled) { background: rgba(59,130,246,0.24); color: white; }
-  &:disabled { opacity: 0.45; cursor: not-allowed; }
-}
-
-.commit-tags-row {
-  padding: 6px 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.tag-suggestions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.tag-label {
-  font-size: 0.7rem;
-  color: #64748b;
-  font-weight: 600;
-}
-
-.tag-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(139,92,246,0.15);
-  border: 1px solid rgba(139,92,246,0.3);
-  color: #c4b5fd;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-  white-space: nowrap;
-  &:hover { background: rgba(139,92,246,0.28); color: white; }
-}
-
-.commit-tags {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  margin-top: 2px;
-}
-
-.commit-tag {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(59,130,246,0.15);
-  border: 1px solid rgba(59,130,246,0.25);
-  color: #93c5fd;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-  white-space: nowrap;
-  &:hover { background: rgba(59,130,246,0.28); color: white; }
-}
-
-.commit-item.hidden, .commit-feedback-panel.hidden {
+.commit-feedback-panel.hidden {
   display: none;
 }
 
@@ -829,9 +717,11 @@
 }
 
 .cfp-send-btn {
-  width: 28px; height: 28px; border-radius: 7px;
+  width: 28px; height: 28px; min-width: 28px; flex-shrink: 0;
+  border-radius: 7px;
   background: linear-gradient(135deg, #a855f7, #3b82f6);
   border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  padding: 0;
   ion-icon { font-size: 0.8rem; }
   &:hover { opacity: 0.85; }
 }
@@ -974,13 +864,6 @@
   .commit-input {
     width: 100%;
     min-width: 0;
-  }
-
-  .btn-ai-tag-suggest,
-  .btn-ai-filter-tags {
-    width: 34px;
-    height: 34px;
-    flex-shrink: 0;
   }
 
   .btn-commit {

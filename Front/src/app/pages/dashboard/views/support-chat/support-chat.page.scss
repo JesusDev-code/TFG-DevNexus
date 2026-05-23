@@ -46,10 +46,10 @@
 
 // --- CONTENEDOR CHAT ---
 .chat-container {
-  padding: 15px 12px 20px 12px;
+  padding: 15px 20px 20px 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
 }
 
 .spinner-container {
@@ -121,7 +121,7 @@
 }
 
 .bubble {
-  padding: 8px 14px;
+  padding: 11px 14px;
   position: relative;
   word-wrap: break-word;
   .text { font-size: 0.95rem; line-height: 1.4; }
@@ -134,8 +134,11 @@
 // --- BARRA DE INPUT (GLASSMORPHISM) ---
 .input-toolbar {
   --background: transparent;
-  padding: 10px;
-  background: linear-gradient(to top, #0b0e1e 90%, transparent); 
+  --padding-start: 10px;
+  --padding-end: 10px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  background: linear-gradient(to top, #0b0e1e 90%, transparent);
 }
 
 .input-container {
@@ -177,6 +180,8 @@
     border: none;
     width: 40px;
     height: 40px;
+    min-width: 40px;
+    flex-shrink: 0;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -184,11 +189,16 @@
     color: white;
     margin-left: 8px;
     transition: transform 0.2s;
-    
+    padding: 0;
+
+    ion-icon {
+      font-size: 1.15rem;
+    }
+
     &:active { transform: scale(0.9); }
-    &:disabled { 
-      background: rgba(255, 255, 255, 0.1); 
-      color: rgba(255, 255, 255, 0.2); 
+    &:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.2);
     }
   }
 

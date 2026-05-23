@@ -81,17 +81,39 @@ export class AdminMensajesPage implements OnInit {
   cerrarChat() { this.conversacionSeleccionada = null; }
 
   enviarMensaje() {
-    if (!this.nuevoMensaje.trim() || !this.conversacionSeleccionada) return;
-    const texto = this.nuevoMensaje;
+    const texto = this.nuevoMensaje.trim();
+    if (!texto || !this.conversacionSeleccionada) return;
+
     this.nuevoMensaje = '';
+
+    const tempId = -Date.now();
+    const user = this.authService.currentUser();
+    const optimista: MensajeDto = {
+      id: tempId,
+      texto,
+      autorId: this.miId!,
+      autorNombre: user?.nombre ?? '',
+      autorFoto: user?.foto_perfil,
+      fechaEnvio: new Date().toISOString(),
+      esStaff: true,
+      leido: true
+    };
+
+    this.mensajes = [...this.mensajes, optimista];
+    this.cd.markForCheck();
+    this.scrollToBottom();
+
     this.chatService.enviarMensaje({ conversacionId: this.conversacionSeleccionada.id, texto }).subscribe({
       next: (msg) => {
-        this.mensajes.push(msg);
+        this.mensajes = this.mensajes.map(m => m.id === tempId ? msg : m);
         this.cd.markForCheck();
-        this.scrollToBottom();
         this.conversacionSeleccionada!.ultimoMensaje = texto;
       },
-      error: () => this.presentToast('Error al enviar', 'danger')
+      error: () => {
+        this.mensajes = this.mensajes.filter(m => m.id !== tempId);
+        this.cd.markForCheck();
+        this.presentToast('Error al enviar', 'danger');
+      }
     });
   }
 

@@ -20,7 +20,7 @@ import {
   searchOutline, downloadOutline, eyeOutline, eyeOffOutline,
   bookmarkOutline, bookmarkSharp, flameOutline, filterOutline,
   chevronUpOutline, cameraOutline, logoMarkdown, sparklesOutline,
-  readerOutline, pricetagsOutline, documentTextOutline, closeOutline
+  readerOutline, documentTextOutline, closeOutline
 } from 'ionicons/icons';
 
 import { DiarioService } from 'src/app/services/diario.service';
@@ -84,8 +84,6 @@ export class UserDiaryPage implements OnInit {
 
   reviewMap: Record<number, string> = {};
   cargandoReviewIds = new Set<number>();
-  etiquetasSugeridas: string[] = [];
-  cargandoEtiquetas = false;
   resumenTema: string | null = null;
   cargandoResumen = false;
   mostrarResumen = false;
@@ -128,7 +126,6 @@ export class UserDiaryPage implements OnInit {
       'logo-markdown': logoMarkdown,
       'sparkles-outline': sparklesOutline,
       'reader-outline': readerOutline,
-      'pricetags-outline': pricetagsOutline,
       'document-text-outline': documentTextOutline,
       'close-outline': closeOutline,
     });
@@ -678,34 +675,6 @@ export class UserDiaryPage implements OnInit {
         this.cdr.markForCheck();
       }
     });
-  }
-
-  sugerirEtiquetas() {
-    if (!this.nuevaEntradaTexto.trim() || this.cargandoEtiquetas) return;
-    this.cargandoEtiquetas = true;
-    this.etiquetasSugeridas = [];
-    this.cdr.markForCheck();
-
-    this.diarioService.sugerirEtiquetas(this.nuevaEntradaTexto).subscribe({
-      next: ({ etiquetas }) => {
-        this.etiquetasSugeridas = etiquetas;
-        this.cargandoEtiquetas = false;
-        this.cdr.markForCheck();
-      },
-      error: () => {
-        this.cargandoEtiquetas = false;
-        this.presentToast('No se pudieron sugerir etiquetas', 'danger');
-        this.cdr.markForCheck();
-      }
-    });
-  }
-
-  aplicarEtiqueta(tag: string) {
-    const hashtag = `#${tag}`;
-    this.nuevaEntradaTexto = this.nuevaEntradaTexto.trim()
-      ? `${this.nuevaEntradaTexto}\n${hashtag}`
-      : hashtag;
-    this.cdr.markForCheck();
   }
 
   resumirProyecto() {
