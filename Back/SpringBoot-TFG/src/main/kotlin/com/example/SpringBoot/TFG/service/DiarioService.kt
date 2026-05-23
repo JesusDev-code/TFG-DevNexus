@@ -232,6 +232,47 @@ class DiarioService(
         )
     }
 
+    @Transactional
+    fun renombrarArchivo(temaId: Int, oldFilename: String, newFilename: String): List<DiarioDto> {
+        val nuevo = newFilename.trim()
+        if (nuevo.isBlank()) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "El nuevo nombre no puede estar vacío")
+        }
+        if (nuevo == oldFilename) {
+            return repo.findAllByTemaIdAndTipoAndFilename(temaId, "FILE", oldFilename).map { it.toDto() }
+        }
+        if (!nuevo.matches(Regex("^[\\w\\-./]+$"))) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Nombre de archivo inválido")
+        }
+
+        val tema = diarioTemaRepo.findById(temaId)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Tema no encontrado") }
+
+        val currentUser = securityService.getUserPrincipal()
+        val esDuenio = tema.usuario.id == currentUser.userId
+        val esStaff = currentUser.authorities.any { it.authority == "ROLE_STAFF" || it.authority == "ROLE_ADMIN" }
+        val esColaborador = colaboracionRepo.existsByTemaIdAndUsuarioIdAndEstado(
+            temaId,
+            currentUser.userId!!,
+            InvitacionEstado.ACEPTADA
+        )
+        if (!esDuenio && !esStaff && !esColaborador) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes permiso para renombrar archivos de este proyecto")
+        }
+
+        if (repo.existsByTemaIdAndTipoAndFilename(temaId, "FILE", nuevo)) {
+            throw ResponseStatusException(HttpStatus.CONFLICT, "Ya existe un archivo con ese nombre en el proyecto")
+        }
+
+        val versions = repo.findAllByTemaIdAndTipoAndFilename(temaId, "FILE", oldFilename)
+        if (versions.isEmpty()) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Archivo no encontrado")
+        }
+
+        versions.forEach { it.filename = nuevo }
+        return repo.saveAll(versions).map { it.toDto() }
+    }
+
     @Transactional(readOnly = true)
     fun getArchivosActuales(temaId: Int): List<DiarioDto> {
         val archivos = repo.findAllByTemaIdAndTipoOrderByFechaCreacionDesc(temaId, "FILE")

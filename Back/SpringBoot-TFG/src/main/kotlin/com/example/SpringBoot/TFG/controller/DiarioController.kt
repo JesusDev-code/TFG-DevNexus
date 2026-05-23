@@ -124,4 +124,14 @@ class DiarioController(
     fun delete(@PathVariable id: Int, authentication: Authentication) {
         service.delete(id)
     }
+
+    data class RenombrarArchivoRequest(val oldFilename: String, val newFilename: String)
+
+    @PatchMapping("/tema/{temaId}/archivo/rename")
+    fun renombrarArchivo(
+        @PathVariable temaId: Int,
+        @RequestBody body: RenombrarArchivoRequest
+    ): List<DiarioDto> {
+        return service.renombrarArchivo(temaId, body.oldFilename, body.newFilename)
+    }
 }

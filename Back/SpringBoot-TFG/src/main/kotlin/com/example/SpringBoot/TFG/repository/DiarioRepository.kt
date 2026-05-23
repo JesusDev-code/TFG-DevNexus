@@ -44,6 +44,10 @@ interface DiarioRepository : JpaRepository<Diario, Int> {
     @EntityGraph(attributePaths = ["usuario", "tema"])
     fun findAllByTemaIdAndTipoOrderByFechaCreacionDesc(temaId: Int, tipo: String): List<Diario>
 
+    fun findAllByTemaIdAndTipoAndFilename(temaId: Int, tipo: String, filename: String): List<Diario>
+
+    fun existsByTemaIdAndTipoAndFilename(temaId: Int, tipo: String, filename: String): Boolean
+
     @EntityGraph(attributePaths = ["usuario", "tema", "revisadoPor"])
     @Query("""
         SELECT DISTINCT d FROM Diario d
