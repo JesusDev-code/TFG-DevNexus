@@ -56,7 +56,7 @@
       </div>
 
       <!-- Empty state -->
-      <div *ngIf="temas.length === 0 && !mostrarFormCrear" class="empty-projects-state">
+      <div *ngIf="misProyectos.length === 0 && proyectosCompartidos.length === 0 && !mostrarFormCrear" class="empty-projects-state">
         <ion-icon name="git-branch-outline"></ion-icon>
         <p>Todavía no tenés proyectos</p>
         <small>Creá tu primer proyecto para empezar a registrar tu trabajo</small>
@@ -66,8 +66,8 @@
       </div>
 
       <!-- Grid de proyectos 2 columnas -->
-      <div class="themes-grid" *ngIf="temas.length > 0">
-        <div *ngFor="let tema of temas" class="theme-glass-card" (click)="seleccionarTema(tema)">
+      <div class="themes-grid" *ngIf="misProyectos.length > 0">
+        <div *ngFor="let tema of misProyectos" class="theme-glass-card" (click)="seleccionarTema(tema)">
 
           <div class="theme-card-top">
             <div class="theme-initial-box" [ngStyle]="{'background': getThemeColor(tema.id)}">
@@ -103,6 +103,55 @@
               </button>
               <button class="btn-icon-action delete" (click)="borrarTema(tema)" title="Eliminar">
                 <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Header de proyectos compartidos -->
+      <div class="section-header-row" *ngIf="proyectosCompartidos.length > 0" style="margin-top: 28px;">
+        <h3 class="section-title">
+          <ion-icon name="person-add-outline" style="vertical-align: middle; margin-right: 6px;"></ion-icon>
+          Proyectos Compartidos
+        </h3>
+      </div>
+
+      <!-- Grid de proyectos compartidos -->
+      <div class="themes-grid" *ngIf="proyectosCompartidos.length > 0">
+        <div *ngFor="let tema of proyectosCompartidos" class="theme-glass-card shared" (click)="seleccionarTema(tema)">
+
+          <div class="theme-card-top">
+            <div class="theme-initial-box" [ngStyle]="{'background': getThemeColor(tema.id)}">
+              {{ getThemeInitial(tema.titulo) }}
+            </div>
+            <div class="theme-content">
+              <h4 class="theme-title">{{ tema.titulo }}</h4>
+              <p class="theme-desc">{{ tema.descripcion || 'Sin descripción' }}</p>
+              <p class="theme-owner" *ngIf="tema.usuarioNombre">
+                <ion-icon name="person-add-outline"></ion-icon>
+                Compartido por {{ tema.usuarioNombre }}
+              </p>
+            </div>
+          </div>
+
+          <div class="theme-card-footer" (click)="$event.stopPropagation()">
+            <div class="tema-metrics">
+              <span class="metric-item">
+                <ion-icon name="document-text-outline"></ion-icon>
+                {{ getEntradasCountForTema(tema.titulo) }}
+                {{ getEntradasCountForTema(tema.titulo) === 1 ? 'entrada' : 'entradas' }}
+              </span>
+              <span class="metric-divider" *ngIf="getLastEntradaRelative(tema.titulo)"></span>
+              <span class="metric-item" *ngIf="getLastEntradaRelative(tema.titulo)">
+                <ion-icon name="time-outline"></ion-icon>
+                {{ getLastEntradaRelative(tema.titulo) }}
+              </span>
+            </div>
+            <div class="theme-actions">
+              <button class="btn-icon-action enter" (click)="seleccionarTema(tema)" title="Abrir">
+                <ion-icon name="code-slash-outline"></ion-icon>
               </button>
             </div>
           </div>

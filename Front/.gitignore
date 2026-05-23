@@ -72,6 +72,11 @@ Thumbs.db
 # Cypress credentials (local only, never commit)
 cypress.env.json
 
+# Android sensitive files (never commit)
+android/app/google-services.json
+android/*.keystore
+android/**/*.keystore
+
 # AI workspace / temp files
 .atl/
 .brain/

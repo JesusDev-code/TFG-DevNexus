@@ -3,16 +3,16 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
-export const adminGuard: CanActivateFn = (route, state) => {
+export const adminGuard: CanActivateFn = async (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Tiene que estar logueado Y ADEMÁS ser Admin
+  await authService.waitForAuthReady();
+
   if (authService.isAuthenticated && authService.isAdmin) {
     return true;
-  } else {
-    // Si es un usuario normal intentando entrar a admin, lo mandamos a su perfil
-    router.navigate(['/user-profile']);
-    return false;
   }
+
+  router.navigate(['/user-profile']);
+  return false;
 };

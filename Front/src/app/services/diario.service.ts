@@ -130,6 +130,13 @@ export class DiarioService {
     return this.http.delete<void>(`${this.url}/diarios/${id}`);
   }
 
+  renombrarArchivo(temaId: number, oldFilename: string, newFilename: string): Observable<DiarioDto[]> {
+    return this.http.patch<DiarioDto[]>(
+      `${this.url}/diarios/tema/${temaId}/archivo/rename`,
+      { oldFilename, newFilename }
+    );
+  }
+
   actualizarEntrada(id: number, contenido: string, visibilidad: Visibilidad, temaId: number): Observable<any> {
     const body: DiarioCreateDto = { contenido, visibilidad, temaId };
     return this.http.put<any>(`${this.url}/diarios/${id}`, body);

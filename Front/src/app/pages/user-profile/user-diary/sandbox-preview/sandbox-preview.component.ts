@@ -247,25 +247,37 @@ export class SandboxPreviewComponent implements OnInit, OnDestroy, AfterViewInit
       htmlFile?.contenido ?? '<p style="font-family:sans-serif;padding:20px;color:#888">No hay index.html en el proyecto.</p>'
     );
 
+    const missingRefs: string[] = [];
+
     htmlBody = htmlBody.replace(/<link[^>]*href=["']([^"']+\.css)["'][^>]*>/gi, (_m, href: string) => {
       const key = this.findFileKey(href, cssByPath);
-      if (!key) return '';
+      if (!key) {
+        missingRefs.push(`CSS no encontrado en el proyecto: "${href}"`);
+        return '';
+      }
       usedCss.add(key);
       return `<style>\n${cssByPath.get(key) ?? ''}\n</style>`;
     });
 
     htmlBody = htmlBody.replace(/<script[^>]*src=["']([^"']+\.js)["'][^>]*>\s*<\/script>/gi, (_m, src: string) => {
       const key = this.findFileKey(src, jsByPath);
-      if (!key) return '';
+      if (!key) {
+        missingRefs.push(`JS no encontrado en el proyecto: "${src}". Revisá que el nombre del archivo coincida con el src.`);
+        return '';
+      }
       usedJs.add(key);
-      return `<script>\n${jsByPath.get(key) ?? ''}\n</script>`;
+      return `<script>${jsByPath.get(key) ?? ''}</script>`;
     });
 
     const extraCss = Array.from(cssByPath.entries()).filter(([k]) => !usedCss.has(k)).map(([, v]) => v).join('\n');
     const extraJs  = Array.from(jsByPath.entries()).filter(([k]) => !usedJs.has(k)).map(([, v]) => v).join('\n');
 
+    const warningsScript = missingRefs.length
+      ? `<script>${missingRefs.map(m => `console.warn(${JSON.stringify('[Sandbox] ' + m)});`).join('\n')}</script>`
+      : '';
+
     if (/<\/body>/i.test(htmlBody)) {
-      htmlBody = htmlBody.replace(/<\/body>/i, `<script>${this.errorInterceptor()}</script>\n<script>${extraJs}</script>\n</body>`);
+      htmlBody = htmlBody.replace(/<\/body>/i, `<script>${this.errorInterceptor()}</script>\n${warningsScript}\n<script>${extraJs}</script>\n</body>`);
       if (/<\/head>/i.test(htmlBody)) {
         htmlBody = htmlBody.replace(/<\/head>/i, `<style>${extraCss}</style>\n</head>`);
       } else {
@@ -285,6 +297,7 @@ export class SandboxPreviewComponent implements OnInit, OnDestroy, AfterViewInit
 <body>
 ${htmlBody}
 <script>${this.errorInterceptor()}</script>
+${warningsScript}
 <script>${extraJs}</script>
 </body>
 </html>`;
@@ -626,10 +639,20 @@ console.log=function(){
   private findFileKey(importPath: string, store: Map<string, string>): string | null {
     const clean  = this.normPath(importPath).split('?')[0].split('#')[0];
     if (store.has(clean)) return clean;
-    const byName = clean.split('/').pop() ?? clean;
+
+    const withoutLeadingDots = clean.replace(/^(\.\/|\.\.\/)+/, '');
+    if (store.has(withoutLeadingDots)) return withoutLeadingDots;
+
+    const byName = withoutLeadingDots.split('/').pop() ?? withoutLeadingDots;
     for (const key of store.keys()) {
       if (key.endsWith(`/${byName}`) || key === byName) return key;
     }
+
+    if (store.size === 1) {
+      const onlyKey = store.keys().next().value;
+      return onlyKey ?? null;
+    }
+
     return null;
   }
 

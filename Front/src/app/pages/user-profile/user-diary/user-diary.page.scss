@@ -167,6 +167,17 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
   }
+
+}
+
+.theme-owner {
+  color: #64748b;
+  font-size: 0.72rem;
+  margin: 4px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  ion-icon { font-size: 0.78rem; }
 }
 
 .theme-card-top {

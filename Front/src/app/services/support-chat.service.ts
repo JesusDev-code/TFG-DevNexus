@@ -15,6 +15,7 @@ import {
   getDocs
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { MensajeChat, ChatRoom } from '../core/models/models';
 
 @Injectable({
@@ -58,8 +59,13 @@ export class SupportChatService {
 
   getAllChats(): Observable<ChatRoom[]> {
     const soporteRef = collection(this.firestore, 'soporte');
-    const q = query(soporteRef, orderBy('fecha', 'desc'));
-    return collectionData(q, { idField: 'id' }) as Observable<ChatRoom[]>;
+    return (collectionData(soporteRef, { idField: 'id' }) as Observable<ChatRoom[]>).pipe(
+      map(chats => [...chats].sort((a, b) => {
+        const fa = (a as any).fecha?.toMillis?.() ?? 0;
+        const fb = (b as any).fecha?.toMillis?.() ?? 0;
+        return fb - fa;
+      }))
+    );
   }
 
   async closeChat(chatId: string) {

@@ -732,6 +732,70 @@ export class IdeViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  async renombrarArchivo(archivo: DiarioDto) {
+    if (this.readOnly) return;
+    const original = archivo.filename ?? '';
+    if (!original) {
+      this.mostrarToast('Archivo sin nombre, no se puede renombrar', 'warning');
+      return;
+    }
+
+    const alert = await this.alertCtrl.create({
+      header: 'Renombrar archivo',
+      cssClass: 'custom-alert',
+      inputs: [
+        {
+          name: 'filename',
+          type: 'text',
+          value: original,
+          placeholder: 'Nuevo nombre (ej: app.js)',
+          cssClass: 'alert-input'
+        }
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel', cssClass: 'alert-button-cancel', handler: () => {} },
+        {
+          text: 'Guardar',
+          cssClass: 'alert-button-confirm',
+          handler: (data) => {
+            const nuevo = (data.filename ?? '').trim();
+            if (!nuevo) {
+              this.mostrarToast('El nombre no puede estar vacío', 'warning');
+              return false;
+            }
+            if (nuevo === original) return true;
+            if (!/^[\w\-./]+$/.test(nuevo)) {
+              this.mostrarToast('Nombre inválido (solo letras, números, guiones, puntos y /)', 'warning');
+              return false;
+            }
+            if (this.archivos.some(a => (a.filename ?? '') === nuevo)) {
+              this.mostrarToast('Ya existe un archivo con ese nombre', 'warning');
+              return false;
+            }
+
+            this.diarioService.renombrarArchivo(this.tema.id, original, nuevo).subscribe({
+              next: () => {
+                this.archivos = this.archivos.map(a =>
+                  (a.filename ?? '') === original ? { ...a, filename: nuevo } : a
+                );
+                if (this.archivoActivo?.filename === original) {
+                  this.archivoActivo = { ...this.archivoActivo, filename: nuevo };
+                }
+                this.mostrarToast(`Renombrado a "${nuevo}"`, 'success');
+                this.cargarArchivos();
+                this.cdr.markForCheck();
+              },
+              error: (error: HttpErrorResponse) =>
+                this.mostrarToast(this.getApiErrorMessage(error, 'No se pudo renombrar'), 'danger')
+            });
+            return true;
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
   async borrarArchivo(archivo: DiarioDto) {
     if (this.readOnly) return;
     const alert = await this.alertCtrl.create({

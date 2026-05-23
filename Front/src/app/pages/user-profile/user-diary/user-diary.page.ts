@@ -24,6 +24,7 @@ import {
 } from 'ionicons/icons';
 
 import { DiarioService } from 'src/app/services/diario.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { Visibilidad, DiarioTemaDto } from 'src/app/core/models/models';
 import { IdeViewComponent } from './ide-view/ide-view.component';
 
@@ -44,8 +45,21 @@ export class UserDiaryPage implements OnInit {
   private apiUrl = environment.apiUrl;
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   temas: DiarioTemaDto[] = [];
+
+  get misProyectos(): DiarioTemaDto[] {
+    const uid = this.authService.currentUser()?.id;
+    if (uid == null) return this.temas;
+    return this.temas.filter(t => t.usuarioId === uid);
+  }
+
+  get proyectosCompartidos(): DiarioTemaDto[] {
+    const uid = this.authService.currentUser()?.id;
+    if (uid == null) return [];
+    return this.temas.filter(t => t.usuarioId !== uid);
+  }
   entradas: any[] = [];
   temaSeleccionado: DiarioTemaDto | null = null;
   heatmapData: { date: Date, level: number, count: number }[] = [];

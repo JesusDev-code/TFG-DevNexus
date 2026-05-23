@@ -7,7 +7,7 @@ import {
 } from '@ionic/angular/standalone';
 import { Observable } from 'rxjs';
 import { addIcons } from 'ionicons';
-import { chatbubblesOutline, checkmarkDoneOutline, trashOutline, checkmarkCircleOutline } from 'ionicons/icons';
+import { chatbubblesOutline, checkmarkDoneOutline, trashOutline, checkmarkCircleOutline, personCircleOutline, fileTrayOutline } from 'ionicons/icons';
 import { SupportChatService } from 'src/app/services/support-chat.service';
 import { ChatRoom } from 'src/app/core/models/models';
 import { SupportChatPage } from '../support-chat/support-chat.page';
@@ -37,7 +37,14 @@ export class StaffInboxPage implements OnInit {
   chats$!: Observable<ChatRoom[]>;
 
   constructor() { 
-    addIcons({ chatbubblesOutline, checkmarkDoneOutline, trashOutline, checkmarkCircleOutline }); 
+    addIcons({
+      chatbubblesOutline,
+      checkmarkDoneOutline,
+      trashOutline,
+      checkmarkCircleOutline,
+      'person-circle-outline': personCircleOutline,
+      'file-tray-outline': fileTrayOutline
+    });
   }
 
   ngOnInit() {

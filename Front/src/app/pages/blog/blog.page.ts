@@ -159,7 +159,7 @@ export class BlogPage {
 
   tienePreview(): boolean {
     return this.entradasArchivos(this.entradas()).some(e =>
-      /\.(html?|css|js)$/i.test(e.filename ?? '')
+      /\.(html?|css|js|ts|py)$/i.test(e.filename ?? '')
     );
   }
 

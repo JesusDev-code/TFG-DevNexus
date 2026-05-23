@@ -32,9 +32,18 @@ export class AuthService {
   currentUser = this._currentUser.asReadonly();
   private isRegistering = false;
 
+  private authReadyResolver!: () => void;
+  private authReadyPromise: Promise<void> = new Promise<void>((resolve) => {
+    this.authReadyResolver = resolve;
+  });
+  private firstEmissionHandled = false;
+
   constructor() {
     authState(this.auth).subscribe((user) => {
-      if (this.isRegistering) return;
+      if (this.isRegistering) {
+        this.markAuthReady();
+        return;
+      }
 
       if (user && !this._currentUser()) {
         this.http.get<UsuarioDto>(`${this.apiUrl}/usuarios/perfil`)
@@ -43,11 +52,27 @@ export class AuthService {
             next: (usuarioDb) => {
               this._currentUser.set(usuarioDb);
               this.activarNotificaciones();
+              this.markAuthReady();
             },
-            error: () => this.logout().subscribe()
+            error: () => {
+              this.logout().subscribe();
+              this.markAuthReady();
+            }
           });
+      } else {
+        this.markAuthReady();
       }
     });
+  }
+
+  private markAuthReady(): void {
+    if (this.firstEmissionHandled) return;
+    this.firstEmissionHandled = true;
+    this.authReadyResolver();
+  }
+
+  waitForAuthReady(): Promise<void> {
+    return this.authReadyPromise;
   }
 
   get isAuthenticated(): boolean { return this._currentUser() !== null; }

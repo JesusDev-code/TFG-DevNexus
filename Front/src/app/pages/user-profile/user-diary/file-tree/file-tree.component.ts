@@ -75,6 +75,12 @@ type TreeRow = {
           </ng-container>
 
           <button *ngIf="row.kind === 'file' && row.file && !readOnly"
+                  class="rename-btn"
+                  (click)="$event.stopPropagation(); editarArchivo.emit(row.file)"
+                  title="Renombrar archivo">
+            <ion-icon name="create-outline"></ion-icon>
+          </button>
+          <button *ngIf="row.kind === 'file' && row.file && !readOnly"
                   class="delete-btn"
                   (click)="$event.stopPropagation(); borrarArchivo.emit(row.file)"
                   title="Eliminar archivo">
@@ -114,6 +120,7 @@ export class FileTreeComponent {
   @Output() nuevaSubcarpeta = new EventEmitter<string>();
   @Output() nuevoArchivoEnCarpeta = new EventEmitter<string>();
   @Output() borrarArchivo = new EventEmitter<DiarioDto>();
+  @Output() editarArchivo = new EventEmitter<DiarioDto>();
   @Output() editarCarpeta = new EventEmitter<string>();
   @Output() borrarCarpeta = new EventEmitter<string>();
   private collapsedFolders = new Set<string>();

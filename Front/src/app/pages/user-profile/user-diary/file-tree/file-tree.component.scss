@@ -99,6 +99,19 @@
     &:hover { opacity: 1; background: rgba(243,77,92,0.1); }
   }
 
+  .rename-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 4px;
+    color: #60a5fa;
+    opacity: 0.7;
+    ion-icon { font-size: 0.8rem; }
+    &:hover { opacity: 1; background: rgba(96,165,250,0.1); }
+  }
+
   .folder-action-btn {
     display: none;
     width: 20px;
@@ -123,6 +136,7 @@
     background: rgba(255,255,255,0.04);
     .filename { color: #e2e8f0; }
     .delete-btn { display: flex; }
+    .rename-btn { display: flex; }
     .folder-action-btn { display: inline-flex; }
   }
 
