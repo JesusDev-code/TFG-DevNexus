@@ -382,8 +382,8 @@ El alcance del proyecto comprende el desarrollo e implantación de los siguiente
 - Bot de Telegram para alertas de reinicio y monitorización del servidor
 - PgBouncer como proxy de conexiones a base de datos (contenedor Docker independiente gestionado por Dokploy): pool estático de 20 conexiones en modo `transaction`, soporta hasta 10.000 clientes concurrentes con un throughput de ~2.000 queries/segundo, preparando la arquitectura para escalado horizontal sin modificar el backend
 
-**Documentación:**
-- Documentación técnica completa del proyecto
+**Memoria técnica:**
+- Memoria técnica completa del proyecto
 - Manual de instalación y uso
 - Diagramas UML (casos de uso, secuencia, E-R, componentes, despliegue)
 
@@ -640,8 +640,8 @@ El proyecto se ha dividido en las siguientes fases y tareas principales:
 - 6.6 Configuración de dominio devnexus.es
 - 6.7 Pruebas de validación en producción
 
-### FASE 7: Documentación y entrega (Semanas 17–18)
-- 7.1 Redacción de la documentación técnica completa
+### FASE 7: Redacción de la memoria y entrega (Semanas 17–18)
+- 7.1 Redacción de la memoria técnica completa
 - 7.2 Redacción del manual de instalación y uso
 - 7.3 Preparación de la defensa oral
 - 7.4 Revisión final y entrega
@@ -717,8 +717,8 @@ gantt
     Despliegue produccion            :f6c, 2025-05-22, 5d
     Config dominio devnexus.es       :f6d, 2025-05-26, 2d
 
-    section Fase 7 - Documentacion
-    Documentacion tecnica            :f7a, 2025-05-26, 7d
+    section Fase 7 - Memoria
+    Redaccion memoria                :f7a, 2025-05-26, 7d
     Manual instalacion y uso         :f7b, 2025-06-02, 5d
     Preparacion defensa              :f7c, 2025-06-05, 3d
     Revision final y entrega         :f7d, 2025-06-08, 2d
@@ -732,7 +732,7 @@ gantt
 | F4. Desarrollo del frontend | 8–14 | 7 semanas |
 | F5. Integración y pruebas | 14–16 | 2 semanas |
 | F6. Despliegue | 16–17 | 2 semanas |
-| F7. Documentación y entrega | 17–18 | 2 semanas |
+| F7. Redacción de la memoria y entrega | 17–18 | 2 semanas |
 
 *Nota: Las fases de backend y frontend se solapan a partir de la semana 8, siguiendo un enfoque iterativo que permite desarrollar en paralelo ambas capas una vez establecidas las interfaces de la API.*
 
