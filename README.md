@@ -11,7 +11,7 @@ Plataforma colaborativa para desarrolladores que integra gestión de proyectos, 
 
 | Capa | Tecnología |
 |---|---|
-| Frontend | Angular 18 · Ionic 8 · Capacitor 6 |
+| Frontend | Angular 20 · Ionic 8 · Capacitor 6 |
 | Backend | Spring Boot 3 · Kotlin |
 | Base de datos | PostgreSQL 17 · PgBouncer |
 | Autenticación | Firebase Auth |

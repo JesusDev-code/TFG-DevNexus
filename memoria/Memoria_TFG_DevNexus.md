@@ -1,4 +1,4 @@
-# DOCUMENTACIÓN DEL TRABAJO DE FIN DE GRADO
+# MEMORIA DEL TRABAJO DE FIN DE GRADO
 ## Ciclo Superior de Desarrollo de Aplicaciones Multiplataforma (DAM)
 
 ---
@@ -2519,7 +2519,7 @@ La directiva `'unsafe-eval'` en `script-src` permite el uso de evaluación diná
 
 #### Rate limiting en memoria (B-04)
 
-El filtro de rate limiting almacena los contadores por usuario en un `ConcurrentHashMap` en la memoria del proceso JVM. Esto es correcto para el contexto de un solo nodo. Sin embargo, si el backend en Render se reinicia (por un deploy o por la política de reposo de la capa gratuita), los contadores se ponen a cero.
+El filtro de rate limiting almacena los contadores por usuario en un `ConcurrentHashMap` en la memoria del proceso JVM. Esto es correcto para el contexto de un solo nodo. Sin embargo, si el contenedor del backend se reinicia (por un nuevo despliegue en Dokploy o por un reinicio manual del VPS), los contadores se ponen a cero.
 
 **Implicación práctica:** un usuario determinado podría explotar ventanas de reinicio para superar el límite de peticiones en ese instante. Para el TFG, donde los usuarios son conocidos y la carga es predecible, este riesgo es aceptable. En una arquitectura de producción con múltiples réplicas del backend se usaría Redis como almacén distribuido de contadores.
 
