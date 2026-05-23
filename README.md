@@ -2,7 +2,8 @@
 
 Plataforma colaborativa para desarrolladores que integra gestión de proyectos, diario profesional, mentoría y un IDE web con asistencia de inteligencia artificial.
 
-Proyecto de fin de ciclo — 2º DAM · IES Rafael Alberti
+**Trabajo de Fin de Grado — 2º DAM · IES Rafael Alberti**
+**Autor:** Jesús Alfonso Pedreño Domínguez · Curso 2025–2026
 
 ---
 
@@ -38,9 +39,9 @@ Proyecto de fin de ciclo — 2º DAM · IES Rafael Alberti
 
 ```
 TFG/
-├── Front/          # Aplicación Angular + Ionic (web y Android)
-├── Back/           # API REST Spring Boot + Kotlin
-└── documentación/  # Documentación técnica del proyecto
+├── Front/      # Aplicación Angular + Ionic (web y Android)
+├── Back/       # API REST Spring Boot + Kotlin
+└── memoria/    # Memoria técnica del TFG
 ```
 
 ---
@@ -133,7 +134,7 @@ Antes del despliegue público se realizó una auditoría SAST completa (frontend
 | Dependencias | 0 CVEs críticos en runtime (`npm audit` + override `dompurify`) |
 | Actuator / Swagger | Restringidos a `ROLE_ADMIN` — `/actuator/health` es el único endpoint público |
 
-Documentación detallada: `documentación/TFG_DevNexus_Documentacion.md` § 12.5.
+Documentación detallada: `memoria/Memoria_TFG_DevNexus.md` § 12.5.
 
 ---
 
@@ -147,6 +148,21 @@ Documentación detallada: `documentación/TFG_DevNexus_Documentacion.md` § 12.5
 
 ---
 
+## Memoria del proyecto
+
+La memoria técnica completa está en [`memoria/Memoria_TFG_DevNexus.md`](memoria/Memoria_TFG_DevNexus.md) e incluye:
+
+- Justificación y análisis comparativo
+- Diseño de arquitectura y diagramas UML
+- Diagramas de secuencia y entidad–relación
+- Plan de gestión de riesgos
+- Registro de pruebas y plan de calidad
+- Auditoría de seguridad OWASP
+- Manuales de instalación y usuario
+- Conclusiones y mejoras futuras
+
+---
+
 ## Licencia
 
-Proyecto académico — IES Rafael Alberti · 2025
+Proyecto académico — IES Rafael Alberti · 2025–2026
