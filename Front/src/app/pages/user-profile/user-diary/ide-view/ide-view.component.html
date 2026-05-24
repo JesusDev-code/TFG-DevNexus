@@ -145,7 +145,7 @@
           </button>
           <button class="btn-ai-quick" (click)="solicitarCodeReviewArchivo()" [disabled]="cargandoCodeReview || !archivoActivo">
             <ion-icon name="sparkles-outline"></ion-icon>
-            <span>{{ cargandoCodeReview ? 'Revisando...' : 'Code Review IA' }}</span>
+            <span>{{ cargandoCodeReview ? 'Revisando...' : 'Code Review (archivo)' }}</span>
           </button>
           <button class="btn-ai-quick" (click)="resumirProyecto()" [disabled]="cargandoResumen">
             <ion-icon name="reader-outline"></ion-icon>
@@ -193,7 +193,7 @@
         <div class="ai-empty" *ngIf="!cargandoAI && !analisisAI">
           <p>Pulsá <strong>Run</strong> para ejecutar el proyecto y obtener un análisis completo de la IA.</p>
           <button class="btn-analizar" (click)="analizarConIA()">
-            <ion-icon name="sparkles-outline"></ion-icon> Analizar ahora
+            <ion-icon name="sparkles-outline"></ion-icon> Analizar proyecto
           </button>
         </div>
 

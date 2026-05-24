@@ -34,12 +34,12 @@ export const menuItemsList: MenuItem[] = [
     icon: 'mail-outline'
   },
   {
-    id: 'Blog de noticias',
+    id: 'Comunidad',
     stateMachine: 'CHAT_Interactivity', artboard: 'CHAT',
     status: false,
-    show: true, 
+    show: true,
     route: '/blog',
-    icon: 'newspaper-outline'
+    icon: 'people-outline'
   },
   {
     id: 'FAQ / Ayuda',
