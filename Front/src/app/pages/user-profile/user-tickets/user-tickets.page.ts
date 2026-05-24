@@ -1,7 +1,7 @@
-import { Component, inject, ChangeDetectionStrategy, signal, computed, effect, OnDestroy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController, LoadingController, AlertController } from '@ionic/angular';
+import { IonicModule, ToastController, AlertController } from '@ionic/angular';
 import { TicketService } from 'src/app/services/ticket.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { TicketDto, TicketComentarioDto } from 'src/app/core/models/models';
@@ -26,7 +26,6 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 export class UserTicketsPage {
   private ticketService = inject(TicketService);
   private toastCtrl = inject(ToastController);
-  private loadingCtrl = inject(LoadingController);
   private alertCtrl = inject(AlertController);
   public authService = inject(AuthService);
 
@@ -37,6 +36,7 @@ export class UserTicketsPage {
   
   // Estado UI
   nuevoTicketVisible = signal(false);
+  enviando = signal(false);
   mensajes = signal<TicketComentarioDto[]>([]); 
 
   // Modelos de formulario
@@ -93,7 +93,7 @@ export class UserTicketsPage {
     this.nuevoTicketVisible.update(v => !v);
   }
 
-  async crearTicket() {
+  crearTicket() {
     if (!this.nuevoTitulo.trim()) {
       this.presentToast('El título es obligatorio', 'warning');
       return;
@@ -102,31 +102,29 @@ export class UserTicketsPage {
       this.presentToast('La descripción es obligatoria', 'warning');
       return;
     }
+    if (this.enviando()) return;
 
-    await this.loadingCtrl.dismiss().catch(() => {});
+    this.enviando.set(true);
 
-    const loading = await this.loadingCtrl.create({ message: 'Enviando ticket...' });
-    await loading.present();
-
-    try {
-      await new Promise<void>((resolve, reject) => {
-        this.ticketService.crearTicket({
-          titulo: this.nuevoTitulo,
-          descripcion: this.nuevaDescripcion,
-          prioridad: this.nuevaPrioridad
-        }).subscribe({ next: () => resolve(), error: reject });
-      });
-      this.nuevoTicketVisible.set(false);
-      this.nuevoTitulo = '';
-      this.nuevaDescripcion = '';
-      this.cargarTickets();
-      this.presentToast('Incidencia registrada con éxito', 'success');
-    } catch (err) {
-      console.error('Error al crear ticket:', err);
-      this.presentToast('No se pudo enviar el ticket', 'danger');
-    } finally {
-      loading.dismiss();
-    }
+    this.ticketService.crearTicket({
+      titulo: this.nuevoTitulo,
+      descripcion: this.nuevaDescripcion,
+      prioridad: this.nuevaPrioridad
+    }).subscribe({
+      next: () => {
+        this.enviando.set(false);
+        this.nuevoTicketVisible.set(false);
+        this.nuevoTitulo = '';
+        this.nuevaDescripcion = '';
+        this.cargarTickets();
+        this.presentToast('Incidencia registrada con éxito', 'success');
+      },
+      error: (err) => {
+        this.enviando.set(false);
+        console.error('Error al crear ticket:', err);
+        this.presentToast('No se pudo enviar el ticket', 'danger');
+      }
+    });
   }
 
   toggleChat(ticket: TicketDto) {
