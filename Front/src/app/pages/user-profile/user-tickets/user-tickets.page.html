@@ -44,8 +44,7 @@
             <button (click)="nuevoTicketVisible.set(false)" class="btn-cancel-ghost">
               Cancelar
             </button>
-            <button (click)="crearTicket()" [disabled]="!nuevoTitulo.trim() || !nuevaDescripcion.trim()"
-              class="btn-gradient-save">
+            <button (click)="crearTicket()" class="btn-gradient-save">
               Enviar Ticket
             </button>
           </div>

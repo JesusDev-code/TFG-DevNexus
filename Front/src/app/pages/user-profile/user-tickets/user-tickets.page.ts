@@ -94,7 +94,14 @@ export class UserTicketsPage {
   }
 
   async crearTicket() {
-    if (!this.nuevoTitulo.trim()) return;
+    if (!this.nuevoTitulo.trim()) {
+      this.presentToast('El título es obligatorio', 'warning');
+      return;
+    }
+    if (!this.nuevaDescripcion.trim()) {
+      this.presentToast('La descripción es obligatoria', 'warning');
+      return;
+    }
 
     const loading = await this.loadingCtrl.create({ message: 'Enviando ticket...' });
     await loading.present();
