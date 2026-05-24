@@ -10,10 +10,11 @@ describe('adminGuard', () => {
     const mockState = { url: '/admin-profile' } as RouterStateSnapshot;
 
     beforeEach(() => {
-        authServiceMock = jasmine.createSpyObj('AuthService', [], {
+        authServiceMock = jasmine.createSpyObj('AuthService', ['waitForAuthReady'], {
             isAuthenticated: false,
             isAdmin: false
         });
+        authServiceMock.waitForAuthReady.and.returnValue(Promise.resolve());
         routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
         TestBed.configureTestingModule({
@@ -24,28 +25,27 @@ describe('adminGuard', () => {
         });
     });
 
-    it('should allow navigation when user is authenticated AND admin', () => {
+    it('should allow navigation when user is authenticated AND admin', async () => {
         (Object.getOwnPropertyDescriptor(authServiceMock, 'isAuthenticated')!.get as jasmine.Spy).and.returnValue(true);
         (Object.getOwnPropertyDescriptor(authServiceMock, 'isAdmin')!.get as jasmine.Spy).and.returnValue(true);
 
-        const result = TestBed.runInInjectionContext(() => adminGuard(mockRoute, mockState));
+        const result = await TestBed.runInInjectionContext(() => adminGuard(mockRoute, mockState));
 
         expect(result).toBeTrue();
         expect(routerSpy.navigate).not.toHaveBeenCalled();
     });
 
-    it('should redirect to /user-profile when user is authenticated but NOT admin', () => {
+    it('should redirect to /user-profile when user is authenticated but NOT admin', async () => {
         (Object.getOwnPropertyDescriptor(authServiceMock, 'isAuthenticated')!.get as jasmine.Spy).and.returnValue(true);
-        // isAdmin stays false
 
-        const result = TestBed.runInInjectionContext(() => adminGuard(mockRoute, mockState));
+        const result = await TestBed.runInInjectionContext(() => adminGuard(mockRoute, mockState));
 
         expect(result).toBeFalse();
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/user-profile']);
     });
 
-    it('should redirect to /user-profile when user is NOT authenticated', () => {
-        const result = TestBed.runInInjectionContext(() => adminGuard(mockRoute, mockState));
+    it('should redirect to /user-profile when user is NOT authenticated', async () => {
+        const result = await TestBed.runInInjectionContext(() => adminGuard(mockRoute, mockState));
 
         expect(result).toBeFalse();
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/user-profile']);
