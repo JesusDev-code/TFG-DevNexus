@@ -26,7 +26,8 @@ class DiarioService(
     private val diarioTemaRepo: DiarioTemaRepository,
     private val securityService: SecurityService,
     private val comentarioRepo: DiarioComentarioRepository,
-    private val colaboracionRepo: DiarioColaboracionRepository
+    private val colaboracionRepo: DiarioColaboracionRepository,
+    private val notificacionService: NotificacionService
 ) {
 
     @Transactional(readOnly = true)
@@ -222,6 +223,15 @@ class DiarioService(
 
         val comentario = DiarioComentario(texto = texto, diario = diario, autor = autor)
         val guardado = comentarioRepo.save(comentario)
+
+        if (autor.id != diario.usuario.id) {
+            notificacionService.enviar(
+                usuario = diario.usuario,
+                mensaje = "${autor.nombre} comentó en tu entrada de diario",
+                titulo = "Nuevo comentario",
+                data = mapOf("tipo" to "diario", "url" to "/user-profile/diario")
+            )
+        }
 
         return DiarioComentarioDto(
             id = guardado.id!!,

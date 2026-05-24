@@ -183,7 +183,18 @@ class TicketService(
             securityService.checkRole("STAFF", "ADMIN")
         }
         val autor = usuarioRepo.findById(securityService.getUserPrincipal().userId!!).orElseThrow()
-        return comentarioRepo.save(TicketComentario(ticket = ticket, autor = autor, texto = dto.texto)).toDto()
+        val guardado = comentarioRepo.save(TicketComentario(ticket = ticket, autor = autor, texto = dto.texto))
+
+        if (autor.id != ticket.usuario.id) {
+            notificacionService.enviar(
+                usuario = ticket.usuario,
+                mensaje = "El equipo de soporte respondió en tu ticket TK-${ticket.id.toString().padStart(3, '0')}",
+                titulo = "Respuesta en ticket",
+                data = mapOf("tipo" to "ticket", "url" to "/user-profile/tickets")
+            )
+        }
+
+        return guardado.toDto()
     }
 
     @Transactional(readOnly = true)
