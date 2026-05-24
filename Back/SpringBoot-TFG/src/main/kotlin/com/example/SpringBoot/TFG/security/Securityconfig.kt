@@ -44,6 +44,10 @@ class SecurityConfig(
                     .requestMatchers(HttpMethod.PUT, "/api/usuarios/perfil").authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/api/usuarios/perfil").authenticated()
 
+                    // FCM tokens multi-device: cada usuario gestiona los suyos
+                    .requestMatchers(HttpMethod.POST, "/api/usuarios/fcm-tokens").authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/api/usuarios/fcm-tokens/**").authenticated()
+
                     .requestMatchers(HttpMethod.GET, "/api/roles/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/roles/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/api/roles/**").hasRole("ADMIN")

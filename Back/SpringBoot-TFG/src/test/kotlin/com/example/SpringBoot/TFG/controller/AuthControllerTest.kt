@@ -45,7 +45,7 @@ class AuthControllerTest {
     private val usuarioDto = UsuarioDto(
         id = 1, nombre = "Google User", biografia = null, foto_perfil = "https://photo.url",
         email = "google@test.com", rolNombre = "USER", departamentoNombre = "General",
-        departamentoId = 1, fcmToken = null, permiteContacto = true, motivoNoContacto = null
+        departamentoId = 1, permiteContacto = true, motivoNoContacto = null
     )
 
     // ────────────────────────────────────────────────────────────────────

@@ -130,8 +130,7 @@ export class AdminUserPage implements OnInit {
       permiteContacto: u.permiteContacto,
       motivoNoContacto: u.motivoNoContacto,
       rolId: rolIdToSend,
-      departamentoId: u.departamentoId,
-      fcm_token: null // No tocamos el token
+      departamentoId: u.departamentoId
     };
 
     this.usuarioService.updateUsuario(u.id, updates).subscribe({

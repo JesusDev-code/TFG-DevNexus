@@ -64,7 +64,6 @@ class UsuarioService(
             foto_perfil = dto.foto_perfil,
             rol = rol,
             departamento = departamentoDefault,
-            fcmToken = dto.fcmToken,
             permiteContacto = true
         )
 
@@ -152,12 +151,6 @@ class UsuarioService(
             }
         }
 
-        updates.fcmToken?.let { nuevoToken ->
-            val otros = usuarioRepo.findByFcmToken(nuevoToken)
-            otros.forEach { if (it.id != usuario.id) { it.fcmToken = null; usuarioRepo.save(it) } }
-            usuario.fcmToken = nuevoToken
-        }
-
         val actualizado = usuarioRepo.save(usuario)
 
         if (cambioSensible) {
@@ -203,7 +196,6 @@ class UsuarioService(
         rolNombre = this.rol.nombre,
         departamentoNombre = this.departamento?.nombre,
         departamentoId = this.departamento?.id,
-        fcmToken = this.fcmToken,
         permiteContacto = this.permiteContacto,
         motivoNoContacto = if (mostrarMotivo) this.motivoNoContacto else null
     )

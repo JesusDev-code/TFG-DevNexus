@@ -20,14 +20,20 @@ export class FcmService {
 
   private tokenYaSolicitado = false;
   private escuchaIniciada = false;
+  private _tokenActual: string | null = null;
+
+  get tokenActual(): string | null { return this._tokenActual; }
 
   async obtenerToken(): Promise<string | null> {
-    if (this.tokenYaSolicitado) return null;
+    if (this.tokenYaSolicitado) return this._tokenActual;
     this.tokenYaSolicitado = true;
 
-    return Capacitor.isNativePlatform()
-      ? this.obtenerTokenNativo()
-      : this.obtenerTokenWeb();
+    const token = Capacitor.isNativePlatform()
+      ? await this.obtenerTokenNativo()
+      : await this.obtenerTokenWeb();
+
+    this._tokenActual = token;
+    return token;
   }
 
   iniciarEscucha() {
@@ -44,6 +50,7 @@ export class FcmService {
   resetear() {
     this.tokenYaSolicitado = false;
     this.escuchaIniciada = false;
+    this._tokenActual = null;
   }
 
   private async obtenerTokenNativo(): Promise<string | null> {
@@ -51,11 +58,24 @@ export class FcmService {
       const permisos = await PushNotifications.requestPermissions();
       if (permisos.receive !== 'granted') return null;
 
-      await PushNotifications.register();
+      return await new Promise<string | null>(async (resolve) => {
+        let resuelto = false;
+        const cerrar = (valor: string | null) => {
+          if (resuelto) return;
+          resuelto = true;
+          resolve(valor);
+        };
 
-      return new Promise<string | null>((resolve) => {
-        PushNotifications.addListener('registration', (token) => resolve(token.value));
-        PushNotifications.addListener('registrationError', () => resolve(null));
+        await PushNotifications.addListener('registration', (t) => cerrar(t.value));
+        await PushNotifications.addListener('registrationError', () => cerrar(null));
+
+        try {
+          await PushNotifications.register();
+        } catch {
+          cerrar(null);
+        }
+
+        setTimeout(() => cerrar(null), 15000);
       });
     } catch (err) {
       console.error('Error FCM nativo:', err);

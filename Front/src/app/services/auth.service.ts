@@ -13,10 +13,11 @@ import {
 } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, from, switchMap, tap, take, map, finalize } from 'rxjs';
+import { Observable, from, switchMap, tap, take, map, finalize, firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UsuarioDto, UsuarioCreateDto, UsuarioUpdateDto } from '../core/models/models';
 import { FcmService } from './fcm.service';
+import { FcmTokenService } from './fcm-token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private fcmService = inject(FcmService);
+  private fcmTokenService = inject(FcmTokenService);
   private apiUrl = environment.apiUrl;
 
   private _currentUser = signal<UsuarioDto | null>(null);
@@ -113,7 +115,8 @@ export class AuthService {
   }
 
   logout() {
-    return from(signOut(this.auth)).pipe(
+    return from(this.limpiarFcmToken()).pipe(
+      switchMap(() => from(signOut(this.auth))),
       tap(() => {
         this.fcmService.resetear();
         this._currentUser.set(null);
@@ -123,10 +126,23 @@ export class AuthService {
   }
 
   logoutNoRedirect() {
-    return from(signOut(this.auth)).pipe(tap(() => {
-      this.fcmService.resetear();
-      this._currentUser.set(null);
-    }));
+    return from(this.limpiarFcmToken()).pipe(
+      switchMap(() => from(signOut(this.auth))),
+      tap(() => {
+        this.fcmService.resetear();
+        this._currentUser.set(null);
+      })
+    );
+  }
+
+  private async limpiarFcmToken(): Promise<void> {
+    const token = this.fcmService.tokenActual;
+    if (!token) return;
+    try {
+      await firstValueFrom(this.fcmTokenService.eliminar(token));
+    } catch (err) {
+      console.warn('[FCM] No se pudo eliminar token en logout:', err);
+    }
   }
 
   recuperarContrasena(email: string): Observable<void> {

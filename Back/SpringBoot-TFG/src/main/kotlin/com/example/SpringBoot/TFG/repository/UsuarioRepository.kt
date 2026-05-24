@@ -34,8 +34,6 @@ interface UsuarioRepository : JpaRepository<Usuario, Int> {
         @Param("miId") miId: Int
     ): List<Usuario>
 
-    fun findByFcmToken(fcmToken: String): List<Usuario>
-
     // Usuarios "Ocultos" (para uso interno de admins si hiciera falta)
     fun findByPermiteContactoFalse(): List<Usuario>
 

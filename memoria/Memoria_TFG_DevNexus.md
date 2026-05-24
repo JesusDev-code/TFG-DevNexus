@@ -1633,10 +1633,18 @@ erDiagram
         varchar foto_perfil
         bigint rol_id FK
         bigint departamento_id FK
-        varchar fcm_token
         boolean permite_contacto
         text motivo_no_contacto
         timestamp fecha_creacion
+    }
+
+    USUARIO_FCM_TOKEN {
+        bigint id PK
+        bigint usuario_id FK
+        varchar token UK
+        varchar plataforma "WEB ANDROID IOS"
+        timestamp fecha_creacion
+        timestamp fecha_uso
     }
 
     ROL {
@@ -3105,10 +3113,21 @@ Para un entorno de producción real, el coste mensual estimado sería:
 | foto_perfil | VARCHAR(500) | NULLABLE |
 | rol_id | BIGINT | FK → rol(id), NOT NULL |
 | departamento_id | BIGINT | FK → departamento(id), NULLABLE |
-| fcm_token | VARCHAR(500) | NULLABLE |
 | permite_contacto | BOOLEAN | DEFAULT TRUE |
 | motivo_no_contacto | TEXT | NULLABLE |
 | fecha_creacion | TIMESTAMP | NOT NULL |
+
+### Tabla: usuario_fcm_token
+| Campo | Tipo | Restricciones |
+|---|---|---|
+| id | BIGINT | PK, AUTO_INCREMENT |
+| usuario_id | INTEGER | FK → usuario(id), NOT NULL, ON DELETE CASCADE |
+| token | VARCHAR(500) | UNIQUE, NOT NULL |
+| plataforma | VARCHAR(20) | NOT NULL (WEB / ANDROID / IOS) |
+| fecha_creacion | TIMESTAMP | NOT NULL, DEFAULT NOW() |
+| fecha_uso | TIMESTAMP | NULLABLE |
+
+> Patrón multi-device: un mismo usuario puede tener varios tokens FCM activos simultáneamente (uno por navegador, otro por APK Android, etc.). El backend envía la notificación push a cada token registrado y elimina automáticamente los tokens que FCM marca como muertos (`UNREGISTERED`, `INVALID_ARGUMENT`, `SENDER_ID_MISMATCH`). El cliente registra el token al iniciar sesión y lo elimina al hacer logout.
 
 ### Tabla: rol
 | Campo | Tipo | Restricciones |

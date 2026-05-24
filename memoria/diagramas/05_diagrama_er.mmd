@@ -9,10 +9,18 @@ erDiagram
         varchar foto_perfil
         bigint rol_id FK
         bigint departamento_id FK
-        varchar fcm_token
         boolean permite_contacto
         text motivo_no_contacto
         timestamp fecha_creacion
+    }
+
+    USUARIO_FCM_TOKEN {
+        bigint id PK
+        bigint usuario_id FK
+        varchar token UK
+        varchar plataforma "WEB ANDROID IOS"
+        timestamp fecha_creacion
+        timestamp fecha_uso
     }
 
     ROL {
@@ -143,6 +151,7 @@ erDiagram
 
     ROL ||--o{ USUARIO : "tiene"
     DEPARTAMENTO ||--o{ USUARIO : "pertenece"
+    USUARIO ||--o{ USUARIO_FCM_TOKEN : "registra"
     USUARIO ||--o{ DIARIO : "crea"
     USUARIO ||--o{ DIARIO_TEMA : "crea"
     DIARIO_TEMA ||--o{ DIARIO : "agrupa"

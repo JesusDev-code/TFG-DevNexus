@@ -1,17 +1,25 @@
 package com.example.SpringBoot.TFG.service
 
 import com.example.SpringBoot.TFG.model.Notificacion
+import com.example.SpringBoot.TFG.model.Plataforma
 import com.example.SpringBoot.TFG.model.Rol
 import com.example.SpringBoot.TFG.model.Usuario
+import com.example.SpringBoot.TFG.model.UsuarioFcmToken
 import com.example.SpringBoot.TFG.repository.NotificacionRepository
+import com.example.SpringBoot.TFG.repository.UsuarioFcmTokenRepository
+import com.example.SpringBoot.TFG.repository.UsuarioRepository
 import com.example.SpringBoot.TFG.security.UserPrincipal
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingException
+import com.google.firebase.messaging.Message
+import com.google.firebase.messaging.MessagingErrorCode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentCaptor
 import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.willThrow
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.ArgumentMatchers.anyInt
@@ -28,6 +36,8 @@ import java.util.Optional
 class NotificacionServiceTest {
 
     @Mock lateinit var repo: NotificacionRepository
+    @Mock lateinit var usuarioRepo: UsuarioRepository
+    @Mock lateinit var fcmTokenRepo: UsuarioFcmTokenRepository
     @Mock lateinit var securityService: SecurityService
     @Mock lateinit var fcm: FirebaseMessaging
 
@@ -41,7 +51,7 @@ class NotificacionServiceTest {
     )
     private val usuarioConToken = Usuario(
         id = 2, firebaseUid = "uid-2", email = "token@test.com",
-        nombre = "Token User", rol = rol, fcmToken = "fcm-token-abc"
+        nombre = "Token User", rol = rol
     )
     private val principal = UserPrincipal(
         uid = "uid-1",
@@ -56,6 +66,9 @@ class NotificacionServiceTest {
         leida = leida,
         fecha = LocalDateTime.now()
     )
+
+    private fun fcmEntrada(token: String, user: Usuario, plataforma: Plataforma = Plataforma.ANDROID) =
+        UsuarioFcmToken(id = 1, usuario = user, token = token, plataforma = plataforma)
 
     // ────────────────────────────────────────────────────────────────────
     // listarMisNotificaciones
@@ -84,35 +97,53 @@ class NotificacionServiceTest {
     }
 
     // ────────────────────────────────────────────────────────────────────
-    // enviar — sin FCM token
+    // enviar — multi-token + auto-purga
     // ────────────────────────────────────────────────────────────────────
 
     @Test
-    fun `enviar siempre guarda la notificacion en BD aunque no haya token FCM`() {
+    fun `enviar siempre guarda la notificacion en BD aunque no haya tokens FCM`() {
         val notifGuardada = makeNotif(5, "Mensaje de prueba")
         given(repo.save(any(Notificacion::class.java))).willReturn(notifGuardada)
+        given(fcmTokenRepo.findByUsuarioId(usuario.id!!)).willReturn(emptyList())
 
-        // usuarioSinToken.fcmToken = null — no intenta push FCM
         notificacionService.enviar(usuario, "Mensaje de prueba", "Título")
 
         val captor = ArgumentCaptor.forClass(Notificacion::class.java)
         verify(repo).save(captor.capture())
         assertThat(captor.value.mensaje).isEqualTo("Mensaje de prueba")
         assertThat(captor.value.leida).isFalse()
-        // Sin token, fcm.send nunca debe ser llamado
         verify(fcm, never()).send(any())
     }
 
     @Test
-    fun `enviar intenta push FCM cuando el usuario tiene token`() {
-        val notifGuardada = makeNotif(6, "Con token")
+    fun `enviar manda push a todos los tokens del usuario`() {
+        val notifGuardada = makeNotif(6, "Con tokens")
         given(repo.save(any(Notificacion::class.java))).willReturn(notifGuardada)
+        given(fcmTokenRepo.findByUsuarioId(usuarioConToken.id!!)).willReturn(listOf(
+            fcmEntrada("tok-web", usuarioConToken, Plataforma.WEB),
+            fcmEntrada("tok-android", usuarioConToken, Plataforma.ANDROID)
+        ))
 
-        notificacionService.enviar(usuarioConToken, "Con token", "Título")
+        notificacionService.enviar(usuarioConToken, "Con tokens", "Título")
 
         verify(repo).save(any(Notificacion::class.java))
-        // fcm.send debe haber sido invocado (con el token del usuario)
-        verify(fcm).send(any())
+        verify(fcm, org.mockito.Mockito.times(2)).send(any(Message::class.java))
+    }
+
+    @Test
+    fun `enviar elimina token muerto cuando FCM responde UNREGISTERED`() {
+        val notifGuardada = makeNotif(7, "Token muerto")
+        val entradaMuerta = fcmEntrada("tok-dead", usuarioConToken, Plataforma.ANDROID)
+        given(repo.save(any(Notificacion::class.java))).willReturn(notifGuardada)
+        given(fcmTokenRepo.findByUsuarioId(usuarioConToken.id!!)).willReturn(listOf(entradaMuerta))
+
+        val excepcionFcm = org.mockito.Mockito.mock(FirebaseMessagingException::class.java)
+        given(excepcionFcm.messagingErrorCode).willReturn(MessagingErrorCode.UNREGISTERED)
+        willThrow(excepcionFcm).given(fcm).send(any(Message::class.java))
+
+        notificacionService.enviar(usuarioConToken, "Token muerto", "Título")
+
+        verify(fcmTokenRepo).delete(entradaMuerta)
     }
 
     // ────────────────────────────────────────────────────────────────────
@@ -169,7 +200,6 @@ class NotificacionServiceTest {
 
         notificacionService.marcarTodasLeidas()
 
-        val captor = ArgumentCaptor.forClass(List::class.java)
         verify(repo).saveAll(any<List<Notificacion>>())
     }
 

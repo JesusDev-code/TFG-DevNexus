@@ -115,8 +115,7 @@ export class AdminPersonalPage implements OnInit {
       permiteContacto: this.formData.permiteContacto,
       motivoNoContacto: this.formData.motivoNoContacto,
       departamentoId: this.formData.departamentoId,
-      rolId: undefined, 
-      fcm_token: null
+      rolId: undefined
     };
 
     this.http.put(`${this.apiUrl}/usuarios/perfil`, updates).subscribe({

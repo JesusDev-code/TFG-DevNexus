@@ -55,7 +55,7 @@ class UsuarioControllerTest {
     private val usuarioDto = UsuarioDto(
         id = 1, nombre = "Test User", biografia = null, foto_perfil = null,
         email = "user@test.com", rolNombre = "USER", departamentoNombre = "General",
-        departamentoId = 1, fcmToken = null, permiteContacto = true, motivoNoContacto = null
+        departamentoId = 1, permiteContacto = true, motivoNoContacto = null
     )
 
     // ────────────────────────────────────────────────────────────────────
@@ -80,7 +80,7 @@ class UsuarioControllerTest {
     private fun makeUpdateDto(nombre: String? = null) = UsuarioUpdateDto(
         nombre = nombre, biografia = null, foto_perfil = null,
         permiteContacto = null, motivoNoContacto = null,
-        departamentoId = null, rolId = null, fcmToken = null
+        departamentoId = null, rolId = null
     )
 
     @Test

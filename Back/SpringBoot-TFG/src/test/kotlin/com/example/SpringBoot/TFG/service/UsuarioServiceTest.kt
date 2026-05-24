@@ -143,8 +143,7 @@ class UsuarioServiceTest {
         val dto = UsuarioCreateDto(
             email = "nuevo@test.com",
             nombre = "Nuevo Usuario",
-            rolId = 1,
-            fcmToken = null
+            rolId = 1
         )
 
         given(usuarioRepo.existsByEmail("nuevo@test.com")).willReturn(false)
@@ -169,7 +168,7 @@ class UsuarioServiceTest {
 
     @Test
     fun `create lanza CONFLICT si el email ya existe`() {
-        val dto = UsuarioCreateDto(email = "duplicado@test.com", nombre = "X", rolId = 1, fcmToken = null)
+        val dto = UsuarioCreateDto(email = "duplicado@test.com", nombre = "X", rolId = 1)
         given(usuarioRepo.existsByEmail("duplicado@test.com")).willReturn(true)
 
         val ex = assertThrows<ResponseStatusException> { usuarioService.create(dto, "uid-x") }
@@ -180,7 +179,7 @@ class UsuarioServiceTest {
 
     @Test
     fun `create lanza CONFLICT si el firebaseUid ya existe`() {
-        val dto = UsuarioCreateDto(email = "nuevo@test.com", nombre = "X", rolId = 1, fcmToken = null)
+        val dto = UsuarioCreateDto(email = "nuevo@test.com", nombre = "X", rolId = 1)
         given(usuarioRepo.existsByEmail("nuevo@test.com")).willReturn(false)
         given(usuarioRepo.findByFirebaseUid("uid-dup")).willReturn(Optional.of(usuario))
 
@@ -234,7 +233,7 @@ class UsuarioServiceTest {
         val updates = UsuarioUpdateDto(
             nombre = "Nombre Nuevo", biografia = null, foto_perfil = null,
             permiteContacto = null, motivoNoContacto = null,
-            departamentoId = null, rolId = null, fcmToken = null
+            departamentoId = null, rolId = null
         )
         usuarioService.update(1, updates)
 
@@ -249,7 +248,7 @@ class UsuarioServiceTest {
         val updates = UsuarioUpdateDto(
             nombre = null, biografia = null, foto_perfil = null,
             permiteContacto = null, motivoNoContacto = null,
-            departamentoId = null, rolId = null, fcmToken = null
+            departamentoId = null, rolId = null
         )
         val ex = assertThrows<ResponseStatusException> { usuarioService.update(999, updates) }
 

@@ -38,10 +38,6 @@ data class Usuario(
     @JoinColumn(name = "departamento_id")
     var departamento: Departamento? = null,
 
-    @Column(name = "fcm_token", length = 255)
-    var fcmToken: String? = null,
-
-    // ✅ NUEVOS CAMPOS DE PRIVACIDAD
     @Column(name = "permite_contacto", nullable = false)
     var permiteContacto: Boolean = true,
 

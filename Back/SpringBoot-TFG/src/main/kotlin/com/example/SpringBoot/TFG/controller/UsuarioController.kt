@@ -147,7 +147,6 @@ class UsuarioController(
         rolNombre = this.rol.nombre,
         departamentoId = this.departamento?.id,
         departamentoNombre = this.departamento?.nombre,
-        fcmToken = this.fcmToken,
         permiteContacto = this.permiteContacto,
         motivoNoContacto = if (mostrarMotivo) this.motivoNoContacto else null
     )

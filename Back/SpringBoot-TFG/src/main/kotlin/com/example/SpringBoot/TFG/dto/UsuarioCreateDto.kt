@@ -1,6 +1,5 @@
 package com.example.SpringBoot.TFG.dto
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -27,8 +26,5 @@ data class UsuarioCreateDto(
     val rolId: Int,
 
     @field:Positive(message = "El ID del departamento debe ser positivo")
-    val departamentoId: Int? = null,
-
-    @JsonProperty("fcm_token")
-    val fcmToken: String?
+    val departamentoId: Int? = null
 )

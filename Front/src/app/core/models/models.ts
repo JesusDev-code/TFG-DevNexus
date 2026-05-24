@@ -5,7 +5,6 @@ export interface UsuarioDto {
   rolNombre: string;
   departamentoNombre?: string;
   departamentoId?: number;
-  fcm_token?: string;
   biografia?: string;
   foto_perfil?: string;
   permiteContacto: boolean;
@@ -18,7 +17,6 @@ export interface UsuarioCreateDto {
   email: string;
   rolId: number;
   departamentoId?: number;
-  fcm_token?: string;
 }
 
 export interface UsuarioUpdateDto {
@@ -29,7 +27,6 @@ export interface UsuarioUpdateDto {
   motivoNoContacto?: string;
   departamentoId?: number | null;
   rolId?: number;
-  fcm_token?: string | null;
 }
 
 export interface DiarioTemaCreateDto {

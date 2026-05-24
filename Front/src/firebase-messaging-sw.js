@@ -18,10 +18,10 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification.title || 'Aviso';
   const notificationOptions = {
     body: payload.notification.body,
-    icon: '/assets/icon/favicon.png',
+    icon: '/assets/images/daemon-logo3.png',
+    badge: '/assets/images/daemon-logo3.png',
     data: {
-      // ✅ Capturamos la URL dinámica enviada por el Backend
-      url: payload.data ? payload.data.url : '/user-messages' 
+      url: payload.data ? payload.data.url : '/user-messages'
     }
   };
 
