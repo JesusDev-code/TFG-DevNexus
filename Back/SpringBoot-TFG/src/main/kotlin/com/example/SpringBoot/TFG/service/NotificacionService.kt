@@ -143,6 +143,19 @@ class NotificacionService(
         repo.deleteById(id)
     }
 
+    @Transactional
+    fun notificarSoporte(userId: Long) {
+        securityService.checkRole("STAFF", "ADMIN")
+        val usuario = usuarioRepo.findById(userId)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        enviar(
+            usuario = usuario,
+            mensaje = "El equipo de soporte te ha enviado un mensaje",
+            titulo = "Nuevo mensaje de soporte",
+            data = mapOf("tipo" to "soporte", "url" to "/dashboard/soporte")
+        )
+    }
+
     private fun Notificacion.toDto() = NotificacionDto(
         id = this.id ?: 0,
         mensaje = this.mensaje,

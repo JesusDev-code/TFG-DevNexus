@@ -1,28 +1,31 @@
 import { Injectable, inject } from '@angular/core';
-import { 
-  Firestore, 
-  collection, 
-  addDoc, 
-  collectionData, 
-  docData, 
-  query, 
-  orderBy, 
-  Timestamp, 
-  doc, 
+import {
+  Firestore,
+  collection,
+  addDoc,
+  collectionData,
+  docData,
+  query,
+  orderBy,
+  Timestamp,
+  doc,
   setDoc,
-  deleteDoc, 
+  deleteDoc,
   updateDoc,
   getDocs
 } from '@angular/fire/firestore';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MensajeChat, ChatRoom } from '../core/models/models';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SupportChatService {
   private firestore = inject(Firestore);
+  private http = inject(HttpClient);
 
   getChatMessages(chatId: string): Observable<MensajeChat[]> {
     const mensajesRef = collection(this.firestore, `soporte/${chatId}/mensajes`);
@@ -52,9 +55,15 @@ export class SupportChatService {
       id: chatId,
       ultimoMensaje: texto,
       fecha: Timestamp.now(),
-      estado: esStaff ? 'RESPONDIDO' : 'PENDIENTE', 
-      usuarioNombre: nombre 
+      estado: esStaff ? 'RESPONDIDO' : 'PENDIENTE',
+      usuarioNombre: nombre
     }, { merge: true });
+
+    if (esStaff) {
+      const userId = chatId.replace('user_', '');
+      this.http.post(`${environment.apiUrl}/notificaciones/soporte/${userId}`, {})
+        .subscribe({ error: () => {} });
+    }
   }
 
   getAllChats(): Observable<ChatRoom[]> {
