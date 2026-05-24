@@ -144,7 +144,7 @@ class NotificacionService(
     }
 
     @Transactional
-    fun notificarSoporte(userId: Long) {
+    fun notificarSoporte(userId: Int) {
         securityService.checkRole("STAFF", "ADMIN")
         val usuario = usuarioRepo.findById(userId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }

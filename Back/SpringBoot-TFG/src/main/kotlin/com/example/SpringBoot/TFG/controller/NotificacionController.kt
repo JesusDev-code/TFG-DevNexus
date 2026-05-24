@@ -25,7 +25,7 @@ class NotificacionController(private val service: NotificacionService) {
 
     @PostMapping("/soporte/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun notificarSoporte(@PathVariable userId: Long) = service.notificarSoporte(userId)
+    fun notificarSoporte(@PathVariable userId: Int) = service.notificarSoporte(userId)
 
     @PostMapping("/test-push")
     fun testPush(): String = service.testPush()
