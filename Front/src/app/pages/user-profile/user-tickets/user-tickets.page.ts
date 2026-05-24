@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, signal, computed, effect } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, computed, effect, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController, LoadingController, AlertController } from '@ionic/angular';
@@ -103,28 +103,30 @@ export class UserTicketsPage {
       return;
     }
 
+    await this.loadingCtrl.dismiss().catch(() => {});
+
     const loading = await this.loadingCtrl.create({ message: 'Enviando ticket...' });
     await loading.present();
 
-    this.ticketService.crearTicket({
-      titulo: this.nuevoTitulo,
-      descripcion: this.nuevaDescripcion,
-      prioridad: this.nuevaPrioridad
-    }).subscribe({
-      next: () => {
-        loading.dismiss();
-        this.nuevoTicketVisible.set(false);
-        this.nuevoTitulo = '';
-        this.nuevaDescripcion = '';
-        this.cargarTickets();
-        this.presentToast('Incidencia registrada con éxito', 'success');
-      },
-      error: (err) => {
-        loading.dismiss();
-        console.error('Error al crear ticket:', err);
-        this.presentToast('No se pudo enviar el ticket', 'danger');
-      }
-    });
+    try {
+      await new Promise<void>((resolve, reject) => {
+        this.ticketService.crearTicket({
+          titulo: this.nuevoTitulo,
+          descripcion: this.nuevaDescripcion,
+          prioridad: this.nuevaPrioridad
+        }).subscribe({ next: () => resolve(), error: reject });
+      });
+      this.nuevoTicketVisible.set(false);
+      this.nuevoTitulo = '';
+      this.nuevaDescripcion = '';
+      this.cargarTickets();
+      this.presentToast('Incidencia registrada con éxito', 'success');
+    } catch (err) {
+      console.error('Error al crear ticket:', err);
+      this.presentToast('No se pudo enviar el ticket', 'danger');
+    } finally {
+      loading.dismiss();
+    }
   }
 
   toggleChat(ticket: TicketDto) {
