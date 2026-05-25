@@ -1,4 +1,4 @@
-import { Component, inject, effect, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { Component, inject, effect, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { IonApp, IonRouterOutlet, Platform, ToastController } from '@ionic/angular/standalone';
 import { App } from '@capacitor/app';
@@ -18,8 +18,6 @@ import { FcmTokenService, Plataforma } from './services/fcm-token.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-  @ViewChild(IonRouterOutlet, { static: true }) private routerOutlet!: IonRouterOutlet;
-
   private authService = inject(AuthService);
   private fcmService = inject(FcmService);
   private fcmTokenService = inject(FcmTokenService);
@@ -28,6 +26,7 @@ export class AppComponent {
   private toastCtrl = inject(ToastController);
 
   private lastBackPress = 0;
+  private rootNavId = 0;
 
   constructor() {
     effect(() => {
@@ -88,8 +87,13 @@ export class AppComponent {
   }
 
   private configurarBotonAtras() {
+    // Guardar el navigationId inicial (tras el redirect de boot) como referencia de "root"
+    this.rootNavId = window.history.state?.navigationId ?? 1;
+
     this.platform.backButton.subscribeWithPriority(10, async () => {
-      if (this.routerOutlet?.canGoBack()) {
+      const currentNavId = window.history.state?.navigationId ?? 1;
+
+      if (currentNavId > this.rootNavId) {
         this.location.back();
         return;
       }
