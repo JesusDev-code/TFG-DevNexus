@@ -295,7 +295,7 @@
 
     <div class="commit-input-row" *ngIf="permiteGestionCommits">
       <input [(ngModel)]="nuevoCommitTexto"
-             placeholder="Describí qué hiciste..."
+             placeholder="Describe qué hiciste..."
              class="commit-input"
              (keyup.enter)="commitLog_guardar()">
       <button class="btn-commit" (click)="commitLog_guardar()" [disabled]="!nuevoCommitTexto.trim()">
@@ -318,7 +318,7 @@
       </ng-container>
 
       <div *ngIf="!commitLog.length" class="commit-empty">
-        Sin commits aún. Describí tus cambios y dales a Commit.
+        Sin commits aún. Describe tus cambios y haz clic en Commit.
       </div>
     </div>
   </div>

@@ -1,5 +1,6 @@
-import { Component, ViewChild, inject, effect, ChangeDetectionStrategy } from '@angular/core';
-import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
+import { Component, inject, effect, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
+import { IonApp, IonRouterOutlet, Platform, ToastController } from '@ionic/angular/standalone';
 import { App } from '@capacitor/app';
 import { StatusBar } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
@@ -17,12 +18,16 @@ import { FcmTokenService, Plataforma } from './services/fcm-token.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-  @ViewChild(IonRouterOutlet, { static: true }) routerOutlet?: IonRouterOutlet;
+  @ViewChild(IonRouterOutlet, { static: true }) private routerOutlet!: IonRouterOutlet;
 
   private authService = inject(AuthService);
   private fcmService = inject(FcmService);
   private fcmTokenService = inject(FcmTokenService);
   private platform = inject(Platform);
+  private location = inject(Location);
+  private toastCtrl = inject(ToastController);
+
+  private lastBackPress = 0;
 
   constructor() {
     effect(() => {
@@ -83,9 +88,23 @@ export class AppComponent {
   }
 
   private configurarBotonAtras() {
-    this.platform.backButton.subscribeWithPriority(-1, () => {
-      if (!this.routerOutlet?.canGoBack()) {
-        App.exitApp();
+    this.platform.backButton.subscribeWithPriority(10, async () => {
+      if (this.routerOutlet?.canGoBack()) {
+        this.location.back();
+        return;
+      }
+
+      const now = Date.now();
+      if (now - this.lastBackPress < 2000) {
+        await App.exitApp();
+      } else {
+        this.lastBackPress = now;
+        const toast = await this.toastCtrl.create({
+          message: 'Pulsa de nuevo para salir',
+          duration: 2000,
+          position: 'bottom',
+        });
+        await toast.present();
       }
     });
   }

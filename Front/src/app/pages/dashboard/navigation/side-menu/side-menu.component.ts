@@ -14,7 +14,7 @@ import { addIcons } from 'ionicons';
 import {
   personOutline, homeOutline, businessOutline,
   mailOutline, newspaperOutline, helpCircleOutline,
-  logOutOutline, shieldCheckmarkOutline
+  logOutOutline, shieldCheckmarkOutline, peopleOutline
 } from 'ionicons/icons';
 import { MenuItem, menuItemsList } from '../../models/side-menu';
 import { AuthService } from 'src/app/services/auth.service';
@@ -46,7 +46,7 @@ export class SideMenuComponent implements OnInit {
     addIcons({
       personOutline, homeOutline, businessOutline,
       mailOutline, newspaperOutline, helpCircleOutline,
-      logOutOutline, shieldCheckmarkOutline
+      logOutOutline, shieldCheckmarkOutline, peopleOutline
     });
   }
 
